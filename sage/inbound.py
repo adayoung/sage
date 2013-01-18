@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import ansi
+from __future__ import absolute_import
+from sage import ansi
 import sage
 
 

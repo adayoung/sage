@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 from twisted.internet import reactor
 #from sage.console import interact
-from sage.console import urwid
+#from sage.console import urwid
 import sage.telnet as telnet
 
 
@@ -24,12 +24,12 @@ def run(host=None, port=None, local_port=None):
     # Add shutdown event
     reactor.addSystemEventTrigger("before", "shutdown", shutdown)
 
-    urwid.app.run()
+    #urwid.app.run()
     #reactor.callWhenRunning(urwid.app.run)
     #reactor.callWhenRunning(interact, stopReactor=True, local=imports)
 
     # Lets go!
-    #reactor.run()
+    reactor.run()
 
 
 def shutdown():

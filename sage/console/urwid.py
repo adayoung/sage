@@ -4,6 +4,8 @@ import urwid
 from sage.telnet import reactor
 from sage.signals import telnet as telnet_signals
 from sage.signals import gmcp as gmcp_signals
+from sage import ansi
+import sage
 
 banner = """
 The SAGE Framework v2.0.0
@@ -13,6 +15,9 @@ Ready to connect
 
 -
 """
+
+def decode_color(self, line):
+    pass
 
 
 class ReverseWalker(urwid.SimpleFocusListWalker):
@@ -25,7 +30,7 @@ class ReverseWalker(urwid.SimpleFocusListWalker):
 class Header(object):
 
     def __init__(self):
-        self.window_txt = urwid.Text('[Window: Log]', align='left')
+        self.window_txt = urwid.Text('[Window: Debug]', align='left')
         self.status_txt = urwid.Text('Status: Disconnected', align='center')
         self.ping_txt = urwid.Text('Ping: N/A', align='center')
         self.title_txt = urwid.Text(u'SAGE 2.0.0', align='right')
@@ -60,11 +65,15 @@ class SageConsoleUI(object):
         self.log_walker = ReverseWalker(self.log_list)
         self.log = urwid.ListBox(self.log_walker)
 
-        self.body = self.log
-
         self.header = Header()
         self.header_cols = urwid.AttrWrap(self.header.get(), 'header')
-        self.frame = urwid.Frame(self.body, header=self.header_cols)
+
+        self.mud_list = list()
+        self.mud_walker = ReverseWalker(self.mud_list)
+        self.mud = urwid.ListBox(self.mud_walker)
+        self.mud_editor = urwid.Edit('>')
+
+        self.frame = urwid.Frame(self.log, header=self.header_cols)
 
         twisted_loop = urwid.TwistedEventLoop(
             reactor=reactor,
@@ -76,19 +85,24 @@ class SageConsoleUI(object):
 
         telnet_signals.connected.connect(self.connect)
         telnet_signals.disconnected.connect(self.disconnect)
+        telnet_signals.inbound.connect(self.mud_reciever)
         gmcp_signals.ping.connect(self.ping)
 
     def handle_keys(self, key):
         if key == 'f1':
-            self.view = self.log
-            self.writelog('f1')
-            self.frame._invalidate()
+            self.writelog('Switch to log window')
+            self.header.window_txt.set_text('[Window: Debug]')
+            self.frame.body = self.log
+            self.frame.footer = None
         elif key == 'f2':
-            self.writelog('f2')
-            self.frame._invalidate()
+            self.writelog('Switch to mud window')
+            self.header.window_txt.set_text('[Window: Achaea]')
+            self.frame.body = self.mud
+            self.frame.footer = self.mud_editor
 
     def writelog(self, msg):
         self.log_walker.write(urwid.Text(msg))
+        self.loop.draw_screen()
 
     def run(self):
 
@@ -99,16 +113,25 @@ class SageConsoleUI(object):
 
         # convert to readable ms
         value = int(round(value * 1000))
-        self.view.header.ping_txt.set_text('Ping: %sms' % value)
+        self.header.ping_txt.set_text('Ping: %sms' % value)
         self.loop.draw_screen()
 
     def connect(self, sender, **kwargs):
-        self.view.header.status_txt.set_text('Status: Connected')
+        self.header.status_txt.set_text('Status: Connected')
         self.loop.draw_screen()
 
     def disconnect(self, sender, **kwargs):
-        self.view.header.status_txt.set_text('Status: Disconnected')
-        self.view.header.ping_txt.set_text('Ping: N/A')
+        self.header.status_txt.set_text('Status: Disconnected')
+        self.header.ping_txt.set_text('Ping: N/A')
+        self.loop.draw_screen()
+
+    def mud_reciever(self, sender, **kwargs):
+        for line in kwargs['lines']:
+            if line.output != None:
+                self.writelog(decode_color(line.output))
+                self.mud_walker.write(urwid.Text(line.output))
+
+        self.mud_walker.write(urwid.Text(kwargs['prompt']))
         self.loop.draw_screen()
 
 

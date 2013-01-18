@@ -14,8 +14,7 @@ import sage.inbound as inbound
 import sage.outbound as outbound
 import sage.gmcp as gmcp
 from sage.signals import telnet as signal
-from sage import prompt
-#import ansi
+from sage import prompt, ansi
 import re
 import zlib
 
@@ -143,6 +142,9 @@ class TelnetClient(Telnet):
             output = '\r\n'.join(lines) + '\r\n'
 
         output += prompt_output + '\r\n'
+
+        signal.inbound.send(sender=self, lines=sage.buffer, \
+            prompt=prompt_output)
 
         self.to_client(output)
 

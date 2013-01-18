@@ -12,7 +12,8 @@ def echo(msg):
 
 
 def log(msg):
-    sage.console.urwid.app.writelog("%s %s" % (timestamp(), msg))
+    pass
+    #sage.console.urwid.app.writelog("%s %s" % (timestamp(), msg))
 
 
 def write(msg):
