@@ -17,4 +17,4 @@ You might enjoy sage if:
 
 ## Requirements
 - Python 2.7+ (2.7.3 recommended) or PyPy 1.8+ (1.9 recommended)
-- Unix-like operating system (OS X, any Linux, BSD, etc...)
+- Unix-like operating system (OS X, Linux, BSD, etc...)
