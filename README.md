@@ -16,5 +16,5 @@ You might enjoy sage if:
 * You are unique and would rather build your own system than use a pre-built one.
 
 ## Requirements
-- Python 2.7+ (2.7.3 recommended)
+- Python 2.7+ (2.7.3 recommended) or PyPy 1.8+ (1.9 recommended)
 - Unix-like operating system (OS X, any Linux, BSD, etc...)
