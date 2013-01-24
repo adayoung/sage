@@ -1,2 +1,6 @@
 .env
 *.pyc
+_trial_temp
+*.egg-info
+dist
+dev

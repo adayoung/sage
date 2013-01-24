@@ -118,23 +118,24 @@ class TelnetClient(Telnet):
             data = data[1:]
 
         # Fix color-only leading line
-        if self.color_newline.match(data):
-            color = data[0:7]
-            data = color + data[8:]
+        color_newline = self.color_newline.match(data)
+        if color_newline:
+            color = data[0:color_newline.end() - 1]
+            data = color + data[color_newline.end():]
 
         data = data.split('\n')
 
         # lines recieved
         lines = data[:-1]
 
-        # send lines to inbound receiver
-        lines = inbound.receiver(lines)
-
         # last line is always the prompt
         prompt_data = data[-1]
 
         # Send the prompt to the prompt receiver
         prompt_output = prompt.receiver(prompt_data)
+
+        # send lines to inbound receiver
+        lines = inbound.receiver(lines)
 
         output = ''
 
@@ -152,11 +153,9 @@ class TelnetClient(Telnet):
         for option in self.options_enabled:
             self.do(option)
 
-        self.server.transport.resumeProducing()
         sage.connected = True
-        sage.log('Connected to Achaea')
         signal.connected.send(sender=self)
-        sage._write = self.transport.write
+        sage._send = self.transport.write
 
     def connectionLost(self, reason):
         sage.connected = False
@@ -164,9 +163,6 @@ class TelnetClient(Telnet):
         if self.server is not None:
             self.server.transport.loseConnection()
             self.server = None
-
-        #if reactor.running:
-            #reactor.stop()
 
     def dataReceived(self, data):
         """ Recieves and processes raw data from the server """

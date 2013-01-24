@@ -7,9 +7,7 @@ threadable.init()
 from code import InteractiveConsole as _InteractiveConsole
 try:
     import readline  # gives us command history in the console
-    # gives us tab-completion, yay!
-    import rlcompleter
-    readline.parse_and_bind("tab:complete")
+    import rlcompleter  # gives us tab-completion, yay!
 except ImportError:
     print("ImportError: readline not available")
     pass
@@ -110,5 +108,9 @@ def interact(banner=None, readfunc=None, local=None, stopReactor=False):
     console = TwistedInteractiveConsole(local)
     if readfunc is not None:
         console.raw_input = readfunc
+
+    readline.set_completer(
+        rlcompleter.Completer(local).complete)
+    readline.parse_and_bind('tab:complete')
 
     console.interact(banner, stopReactor)

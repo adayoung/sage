@@ -192,6 +192,7 @@ class GMCPReceiver(object):
                 items[int(item['id'])] = item['name']
 
             player.room.items = items
+            gmcp_signals.room_items.send(self, items=player.room.items)
 
         elif d['location'] == 'inv':
             player.inv.clear()

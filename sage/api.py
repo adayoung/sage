@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 from sage.server import run as run_server
 import sage
-from sage.utils import timestamp
+import weakref
 
 
 def echo(msg):
@@ -11,21 +11,22 @@ def echo(msg):
         sage._echo("%s\n" % msg)
 
 
-def log(msg):
-    pass
-    #sage.console.urwid.app.writelog("%s %s" % (timestamp(), msg))
-
-
-def write(msg):
+def send(msg):
     """ Send a message to the server """
-    #write_out(msg)
-    if sage._write:
-        sage._write("%s\n" % msg)
+    if sage._send:
+        sage._send("%s\n" % msg)
 
 
 def run():
     """ Start the SAGE server """
 
-    #print("SAGE Framework %s" % sage.__version__)
+    print("SAGE Framework %s\nhttp://github.com/astralinae/sage" \
+        % sage.__version__)
 
     run_server()
+
+
+def defer_to_prompt(method, *args):
+    """ Defer execution of a method until the prompt is received """
+
+    sage._deferred.append((weakref.ref(method), args))

@@ -2,7 +2,8 @@
 from __future__ import absolute_import
 import re
 from time import time
-from sage.dispatch.signal import Signal, Hook
+from sage.dispatch.signal import Hook
+from twisted.internet import reactor
 
 
 class MatchableCreationError(Exception):
@@ -19,6 +20,9 @@ class Matchable(object):
         self.name = kwargs.pop('name', None)
         self.pattern = kwargs.pop('pattern', None)
         self.enabled = kwargs.pop('enabled', None)
+        self.delay = kwargs.pop('delay', None)
+        self.disable_on_match = kwargs.pop('disable_on_match', False)
+        self.timer = None
 
         self.line = None
         self.time = None
@@ -40,18 +44,28 @@ class Matchable(object):
     def destroy(self):
         self.parent._remove(self)
 
-    def connect(self, *args, **kwargs):
-        self.signals.connect(*args, **kwargs)
+    def bind(self, method):
+        self.methods.connect(method)
 
-    def disconnect(self, **kwargs):
-        self.signals.disconnect(**kwargs)
+    def unbind(self, method):
+        self.methods.disconnect(method)
 
     def successful_match(self, line):
-
         self.line = line
         self.time = time()
-        self.methods.send(self)
+
+        if self.disable_on_match:
+            self.disable()
+
+        if self.delay:
+            self.timer = reactor.callLater(self.delay, self.call_methods)
+        else:
+            self.call_methods()
+
         return True
+
+    def call_methods(self):
+        self.methods.send(self)
 
 
 class CIMatchable(Matchable):
@@ -192,13 +206,17 @@ class Group(dict):
         mtype,
         pattern,
         enabled=True,
-        ignorecase=True):
+        ignorecase=True,
+        delay=None,
+        disable_on_match=False):
         """ Create a trigger or alias """
 
         kwargs = {
             'name': name,
             'pattern': pattern,
             'enabled': enabled,
+            'delay': delay,
+            'disable_on_match': disable_on_match,
             'parent': self
         }
 
@@ -289,16 +307,15 @@ class Group(dict):
         return False
 
     def get(self, name):
-        if ':' in name:
+        if '/' in name:
             return self._parse_name(name)
         else:
-            super(Group, self).get(self, name)
-
-    def get_group(self, name):
-        if ':' in name:
-            return self._parse_group(name)
-        elif name in self.groups:
-            return self.groups[name]
+            if name in self:
+                return self[name]
+            elif name in self.groups:
+                return self.groups[name]
+            else:
+                return None
 
     def names(self):
         return self.keys()
@@ -313,18 +330,8 @@ class Group(dict):
     def _remove(self, instance):
         self.parent._remove(instance)
 
-    def _parse_group(self, name):
-        parts = name.split(':')
-
-        group = self
-
-        for segment in parts:
-            group = group.groups[segment]
-
-        return group
-
     def _parse_name(self, name):
-        parts = name.split(':')
+        parts = name.split('/')
         head = parts[:-1]
         tail = parts[-1]
 
@@ -333,7 +340,12 @@ class Group(dict):
         for segment in head:
             group = group.groups[segment]
 
-        return group[tail]
+        if tail in group.groups:
+            return group.groups[tail]
+        elif tail in group:
+            return group[tail]
+        else:
+            return None
 
     def _decorator(self, **kwargs):
         name = kwargs.pop('name', None)
@@ -342,6 +354,7 @@ class Group(dict):
         pattern = kwargs.pop('pattern', None)
         enabled = kwargs.pop('enabled', True)
         ignorecase = kwargs.pop('ignorecase', True)
+        delay = kwargs.pop('delay', None)
 
         def dec(func):
 
@@ -361,7 +374,7 @@ class Group(dict):
                         % mname)
 
             m = self.create(mname, mtype, pattern, \
-                enabled=enabled, ignorecase=ignorecase)
+                enabled=enabled, ignorecase=ignorecase, delay=delay)
             m.methods.connect(func)
 
             return func

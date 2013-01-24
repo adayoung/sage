@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from twisted.internet import reactor
-#from sage.console import interact
-#from sage.console import urwid
+from sage.console.term import interact
 import sage.telnet as telnet
 
 
@@ -24,9 +23,16 @@ def run(host=None, port=None, local_port=None):
     # Add shutdown event
     reactor.addSystemEventTrigger("before", "shutdown", shutdown)
 
-    #urwid.app.run()
-    #reactor.callWhenRunning(urwid.app.run)
-    #reactor.callWhenRunning(interact, stopReactor=True, local=imports)
+    import sage
+    import sage.player as player
+    import sage.gmcp as gmcp
+    imports = {
+        'sage': sage,
+        'player': player,
+        'gmcp': gmcp
+    }
+
+    reactor.callWhenRunning(interact, stopReactor=True, local=imports)
 
     # Lets go!
     reactor.run()

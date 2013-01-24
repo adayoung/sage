@@ -7,7 +7,7 @@ SAGE Framework
 SAGE makes it easy and fun to write client-independent systems for Iron Realms
 games.
 
-:copyright: (c) 2012 by Todd Wilson.
+:copyright: (c) 2013 by Todd Wilson.
 :license: GPLv3, see LICENSE for more details.
 """
 
@@ -25,7 +25,7 @@ try:
 except ImportError:
     pass
 
-from .api import run, echo, write, log
+from .api import run, echo, send, defer_to_prompt
 from .utils import error, debug
 from .matching import TriggerMasterGroup, AliasMasterGroup
 from .app import Apps
@@ -37,8 +37,11 @@ connected = False
 buffer = None
 
 # telnet write and echo internal methods
-_write = None
+_send = None
 _echo = None
+
+# methods defered to the prompt
+_deferred = list()
 
 # Trigger and aliases interfaces
 triggers = TriggerMasterGroup()

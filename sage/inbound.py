@@ -27,10 +27,11 @@ class Buffer(list):
 
     def __init__(self, lines):
 
-        i = 0
         for line in lines:
-            self.append(Line(line, i))
-            i += 1
+            self.append(line)
+
+    def append(self, line):
+        super(Buffer, self).append(Line(line, len(self)))
 
 
 def receiver(lines):
@@ -39,6 +40,15 @@ def receiver(lines):
     # run trigger matching over lines
     for trigger in sage.triggers.enabled:
         map(trigger.match, sage.buffer)
+
+    # since the prompt has already run, we execute deferred methods here
+    for ref, args in sage._deferred:
+        method = ref()
+
+        if method is not None:
+            method(*args)
+
+    sage._deferred = list()
 
     output = [line.output for line in sage.buffer if line.output != None]
 

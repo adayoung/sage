@@ -6,3 +6,6 @@ goodbye = Signal()
 
 # Recieved a GMCP Ping from Achaea
 ping = Signal(providing_args=['latency'])
+
+# Updated room items
+room_items = Signal(providing_args=['items'])
