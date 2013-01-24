@@ -12,3 +12,4 @@ You might enjoy sage if:
 * You like Python and want to take full advantage of the language's power.
 * Mixing code inside XML makes your nose bleed.
 * You enjoy modularity and like sharing your code with others.
+* You are unique and would rather build your own system than use a pre-build one.
