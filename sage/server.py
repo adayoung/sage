@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from twisted.internet import reactor
-from sage.console.term import interact
 import sage.telnet as telnet
 
 
@@ -20,25 +19,29 @@ def run(host=None, port=None, local_port=None):
     # Setup reactor to listen
     reactor.listenTCP(telnet.options['local_port'], telnet.build_factory())
 
-    # Add shutdown event
-    reactor.addSystemEventTrigger("before", "shutdown", shutdown)
+    # Add shutdown events
+    reactor.addSystemEventTrigger('before', 'shutdown', pre_shutdown)
+    reactor.addSystemEventTrigger('after', 'shutdown', post_shutdown)
 
+    '''
     import sage
     import sage.player as player
     import sage.gmcp as gmcp
+
     imports = {
         'sage': sage,
         'player': player,
         'gmcp': gmcp
     }
+    '''
 
-    reactor.callWhenRunning(interact, stopReactor=True, local=imports)
-
-    # Lets go!
     reactor.run()
 
 
-def shutdown():
+def pre_shutdown():
     """Attempt to gracefully shutdown SAGE"""
+    pass
 
+
+def post_shutdown():
     pass

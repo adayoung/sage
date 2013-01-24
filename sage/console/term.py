@@ -21,7 +21,7 @@ class TwistedInteractiveConsole(_InteractiveConsole):
     def __init__(self, locals=None, filename="<console>"):
         _InteractiveConsole.__init__(self, locals, filename)
 
-    def interact(self, banner=None, stopReactor=False):
+    def interact(self, banner=None, stopReactor=True):
         """
         The optional banner argument specify the banner to print
         before the first interaction
@@ -73,6 +73,7 @@ class TwistedInteractiveConsole(_InteractiveConsole):
     def _processInputError(self, failure):
         failure.trap(EOFError)
         self.write("\n")
+
         if bool(self.stopReactor):
             reactor.stop()
 
@@ -90,7 +91,7 @@ class TwistedInteractiveConsole(_InteractiveConsole):
         return threads.deferToThread(raw_input, prompt)
 
 
-def interact(banner=None, readfunc=None, local=None, stopReactor=False):
+def setup_console(readfunc=None, local=None):
     """Closely emulate the interactive Python interpreter.
 
     This is a backwards compatible interface to the InteractiveConsole
@@ -113,4 +114,4 @@ def interact(banner=None, readfunc=None, local=None, stopReactor=False):
         rlcompleter.Completer(local).complete)
     readline.parse_and_bind('tab:complete')
 
-    console.interact(banner, stopReactor)
+    return console
