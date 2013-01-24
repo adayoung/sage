@@ -13,3 +13,7 @@ You might enjoy sage if:
 * Mixing code inside XML makes your nose bleed.
 * You enjoy modularity and like sharing your code with others.
 * You are unique and would rather build your own system than use a pre-built one.
+
+## Requirements
+- Python 2.7+ (2.7.3 recommended)
+- Unix-like operating system (OS X, any Linux, BSD, etc...)
