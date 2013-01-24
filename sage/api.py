@@ -4,6 +4,13 @@ from sage.server import run as run_server
 import sage
 import weakref
 
+banner = """   _________ _____ ____
+  / ___/ __ `/ __ `/ _ \\
+ (__  ) /_/ / /_/ /  __/
+/____/\__,_/\__, /\___/
+           /____/ v%s (%s)
+""" % (sage.__version__, sage.__series__)
+
 
 def echo(msg):
     """ Echo a message back to the client """
@@ -18,10 +25,9 @@ def send(msg):
 
 
 def run():
-    """ Start the SAGE server """
+    """ Start the sage server """
 
-    print("SAGE Framework %s\nhttp://github.com/astralinae/sage" \
-        % sage.__version__)
+    print(banner)
 
     run_server()
 

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """
-SAGE Framework
+Sage Framework
 ~~~~~~~~~~~~~~
 
-SAGE makes it easy and fun to write client-independent systems for Iron Realms
+Sage makes it easy and fun to write client-independent systems for Iron Realms
 games.
 
 :copyright: (c) 2013 by Todd Wilson.
@@ -13,8 +13,9 @@ games.
 
 version = (2, 0, 0)
 
-__title__ = 'sage-framework'
+__title__ = 'sage'
 __version__ = '.'.join(str(i) for i in version)
+__series__ = 'Something'
 __author__ = 'Todd Wilson'
 __license__ = 'GPLv3'
 __copyright__ = 'Copyright 2012 Todd Wilson'
@@ -25,14 +26,14 @@ try:
 except ImportError:
     pass
 
+# configuration
+from .defaults import defaults
+config = defaults
+
 from .api import run, echo, send, defer_to_prompt
 from .utils import error, debug
 from .matching import TriggerMasterGroup, AliasMasterGroup
 from .app import Apps
-from .defaults import defaults
-
-# configuration
-config = defaults
 
 # States
 connected = False

@@ -9,7 +9,9 @@ except ImportError:
 
 requires = [
     'twisted',
-    'setproctitle'
+    'setproctitle',
+    'pyasn1',
+    'pycrypto'
 ]
 
 entrypoints = {

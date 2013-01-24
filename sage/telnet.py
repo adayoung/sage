@@ -8,13 +8,10 @@ from __future__ import absolute_import
 from twisted.conch.telnet import Telnet, StatefulTelnetProtocol
 from twisted.internet.protocol import ClientFactory, Factory
 from twisted.internet import reactor
-from sage.utils import error
 import sage
-import sage.inbound as inbound
-import sage.outbound as outbound
-import sage.gmcp as gmcp
+from sage.utils import error
+from sage import inbound, outbound, gmcp, prompt, config
 from sage.signals import telnet as signal
-from sage import prompt, ansi
 import re
 import zlib
 
@@ -56,13 +53,6 @@ WONT = chr(252)     # Indicates the refusal to perform, or continue performing, 
 DO = chr(253)       # Indicates the request that the other party perform, or confirmation that you are expecting the other party to perform, the indicated option.
 DONT = chr(254)     # Indicates the demand that the other party stop performing, or confirmation that you are no longer expecting the other party to perform, the indicated option.
 IAC = chr(255)      # Interpret as a command
-
-# connection options
-options = {
-    'host': 'achaea.com',
-    'port': 2003,
-    'local_port': 8007
-}
 
 
 class TelnetClient(Telnet):
@@ -320,7 +310,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     def connectionMade(self):
         """ Local client connected. Start client connection to server. """
         self.factory.transports.append(self.transport)
-        self.transport.write("SAGE - Connected to %s:%s\n" % (options['host'], options['port']))
+        self.transport.write("SAGE - Connected to %s:%s\n" % (config.host, config.port))
         self.client = self.client_factory.client
         self.client.server = self
         sage._echo = self.write
@@ -332,7 +322,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
             self.client.buffer = ''
 
         if self.client.connected == False:
-            reactor.connectTCP(options['host'], options['port'], self.client_factory)
+            reactor.connectTCP(config.host, config.port, self.client_factory)
 
     def connectionLost(self, reason):
         self.connected = False
