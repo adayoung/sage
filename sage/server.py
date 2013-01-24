@@ -39,9 +39,10 @@ def run(host=None, port=None, local_port=None):
 
 
 def pre_shutdown():
-    """Attempt to gracefully shutdown SAGE"""
+    """ Before the reactor stops """
     pass
 
 
 def post_shutdown():
+    """ After the reactor has stopped """
     pass

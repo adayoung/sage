@@ -29,6 +29,10 @@ from .api import run, echo, send, defer_to_prompt
 from .utils import error, debug
 from .matching import TriggerMasterGroup, AliasMasterGroup
 from .app import Apps
+from .defaults import defaults
+
+# configuration
+config = defaults
 
 # States
 connected = False
