@@ -15,10 +15,10 @@ version = (2, 0, 0)
 
 __title__ = 'sage'
 __version__ = '.'.join(str(i) for i in version)
-__series__ = 'Something'
+__series__ = 'Aegis'
 __author__ = 'Todd Wilson'
 __license__ = 'GPLv3'
-__copyright__ = 'Copyright 2012 Todd Wilson'
+__copyright__ = 'Copyright 2013 Todd Wilson'
 
 try:
     from setproctitle import setproctitle

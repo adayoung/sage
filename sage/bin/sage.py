@@ -4,24 +4,17 @@ import os
 import sys
 import sage
 
+banner = """   _________ _____ ____
+  / ___/ __ `/ __ `/ _ \\
+ (__  ) /_/ / /_/ /  __/
+/____/\__,_/\__, /\___/
+           /____/ v%s (%s)
+""" % (sage.__version__, sage.__series__)
+
 
 def main():
-    parser = argparse.ArgumentParser(
-    description='Framework and proxy for IRE\'s Achaea')
-    parser.add_argument('--version', action='version', version=sage.__version__)
-    subparsers = parser.add_subparsers()
-
-    parser_run = subparsers.add_parser('run',
-        help='start sage with your module')
-    parser_run.set_defaults(func=run)
-    parser_run.add_argument('-i', '--interactive', action='store_true',
-        help='run sage with an interactive interpreter')
-    parser_run.add_argument('file')
-
-    parser_app = subparsers.add_parser('app', help='create a new sage app')
-    parser_app.set_defaults(func=app)
-
     args = parser.parse_args()
+    print(banner)
     args.func(args)
 
 
@@ -33,3 +26,9 @@ def run(args):
 
 def app(args):
     print 'app'
+
+
+parser = argparse.ArgumentParser(
+description='Framework and proxy for IRE\'s Achaea')
+parser.add_argument('--version', action='version', version=sage.__version__)
+parser.add_argument('file')
