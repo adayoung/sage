@@ -24,14 +24,6 @@ def main():
         app = imports.import_file(app)
         sage.apps[app.__name__] = app
 
-        print sage.aliases
-        del(app)
-
-    del(sage.apps['jaiko'])
-    del(sys.modules['jaiko'])
-
-    print sage.aliases
-
     from sage.server import run
     run()
 
