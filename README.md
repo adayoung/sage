@@ -27,5 +27,4 @@ You might enjoy sage if:
 ## Support
 Please feel free to file an issue here if you have a problem or find a bug.
 
-*IRC*
-\#astralinae on Freenode
+You might find some helpful folks at \#astralinae on Freenode IRC.
