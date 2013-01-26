@@ -4,6 +4,7 @@ import re
 from time import time
 from sage.dispatch.signal import Hook
 from twisted.internet import reactor
+import weakref
 
 
 class MatchableCreationError(Exception):
@@ -190,13 +191,14 @@ class CIEndswith(CIMatchable):
         return False
 
 
-class Group(dict):
+class Group(object):
 
     def __init__(self, name, parent, enabled=True):
         self.name = name
         self.parent = parent
 
-        self.groups = {}
+        self.groups = weakref.WeakValueDictionary()
+        self.matchables = weakref.WeakValueDictionary()
         self._states = {}
 
         self.enabled = enabled
@@ -239,7 +241,7 @@ class Group(dict):
             # you didn't specify a correct type!
             pass
 
-        self[name] = m
+        self.matchables[name] = m
 
         if enabled:
             self.parent._enable(m)
@@ -249,17 +251,17 @@ class Group(dict):
     def disable(self, name=None):
 
         if name is None:
-            for instance in self.values():
+            for instance in self.matchables.values():
                 self.parent._disable(instance)
             self.enabled = False
             return True
-        elif ':' in name:
+        elif '/' in name:
             instance = self._parse_name(name)
             instance.disable()
             return True
         else:
             if name in self:
-                self[name].disable()
+                self.matchables[name].disable()
                 return True
 
         return False
@@ -267,18 +269,18 @@ class Group(dict):
     def enable(self, name=None):
 
         if name is None:
-            for instance in self.values():
+            for instance in self.matchables.values():
                 if instance.enabled:
                     self.parent._enable(instance)
             self.enabled = True
             return True
-        elif ':' in name:
+        elif '/' in name:
             instance = self._parse_name(name)
             instance.enable()
             return True
         else:
             if name in self:
-                self[name].enable()
+                self.matchables[name].enable()
                 return True
 
         return False
@@ -298,10 +300,10 @@ class Group(dict):
 
     def remove(self, name):
 
-        if name in self:
-            instance = self[name]
+        if name in self.matchables:
+            instance = self.matchables[name]
             self.parent._remove(instance)
-            del(self[name])
+            del(self.matchables[name])
             return True
 
         return False
@@ -310,15 +312,15 @@ class Group(dict):
         if '/' in name:
             return self._parse_name(name)
         else:
-            if name in self:
-                return self[name]
+            if name in self.matchables:
+                return self.matchables[name]
             elif name in self.groups:
                 return self.groups[name]
             else:
                 return None
 
     def names(self):
-        return self.keys()
+        return self.matchables.keys()
 
     def _enable(self, instance):
         if self.enabled:
@@ -383,7 +385,7 @@ class Group(dict):
 
     def __repr__(self):
         return "%s '%s' (%s groups, %s objects)" % (self.__class__, \
-            self.name, len(self.groups), len(self))
+            self.name, len(self.groups), len(self.matchables))
 
 
 class TriggerGroup(Group):
@@ -404,7 +406,8 @@ class AliasGroup(Group):
 
     def create_group(self, name, enabled=True):
 
-        self.groups[name] = AliasGroup(name, self, enabled)
+        g = AliasGroup(name, self, enabled)
+        self.groups[name] = g
         return self.groups[name]
 
 
@@ -414,7 +417,8 @@ class MasterGroup(Group):
 
         self.enabled = set()
         self.parent = self
-        self.groups = {}
+        self.groups = weakref.WeakValueDictionary()
+        self.matchables = weakref.WeakValueDictionary()
 
     def _disable(self, instance):
         self.enabled.discard(instance)
@@ -424,7 +428,7 @@ class MasterGroup(Group):
 
     def __repr__(self):
         return "%s (%s groups, %s objects)" % (self.__class__, \
-            len(self.groups), len(self))
+            len(self.groups), len(self.matchables))
 
 
 class TriggerMasterGroup(MasterGroup, TriggerGroup):

@@ -3,10 +3,9 @@
 from __future__ import absolute_import
 
 import imp as _imp
-import importlib
 from contextlib import contextmanager
 import sys
-import os
+import os as _os
 
 
 class NotAPackage(Exception):
@@ -15,7 +14,7 @@ class NotAPackage(Exception):
 
 @contextmanager
 def cwd_in_path():
-    cwd = os.getcwd()
+    cwd = _os.getcwd()
     if cwd in sys.path:
         yield
     else:
@@ -29,20 +28,41 @@ def cwd_in_path():
                 pass
 
 
-def find_module(module, path=None, imp=None):
-    """Version of :func:`imp.find_module` supporting dots."""
-    if imp is None:
-        imp = importlib.import_module
-    with cwd_in_path():
-        if '.' in module:
-            last = None
-            parts = module.split('.')
-            for i, part in enumerate(parts[:-1]):
-                mpart = imp('.'.join(parts[:i + 1]))
-                try:
-                    path = mpart.__path__
-                except AttributeError:
-                    raise NotAPackage(module)
-                last = _imp.find_module(parts[i + 1], path)
-            return last
-        return _imp.find_module(module)
+def import_file(fpath):
+    '''
+    fpath - the relative or absolute path to the .py file which is imported.
+
+    Returns the imported module.
+
+    NOTE: if import_file is called twice with the same module, the module is reloaded.
+    '''
+    if hasattr(_os, 'getcwdu'):
+        # python 2 returns question marks in os.path.realpath for
+        # ascii input (eg '.').
+        original_path = _os.path.realpath(_os.getcwdu())
+    else:
+        original_path = _os.path.realpath(_os.path.curdir)
+    dst_path = _os.path.dirname(fpath)
+    if dst_path == '':
+        dst_path = '.'
+
+    # remove the .py suffix
+    script_name = _os.path.basename(fpath)
+    if script_name.endswith('.py'):
+        mod_name = script_name[:-3]
+    else:
+        # packages for example.
+        mod_name = script_name
+
+    _os.chdir(dst_path)
+    fhandle = None
+    try:
+        tup = _imp.find_module(mod_name, ['.'])
+        module = _imp.load_module(mod_name, *tup)
+        fhandle = tup[0]
+    finally:
+        _os.chdir(original_path)
+        if fhandle is not None:
+            fhandle.close()
+
+    return module

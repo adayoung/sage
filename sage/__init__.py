@@ -30,7 +30,7 @@ except ImportError:
 from .defaults import defaults
 config = defaults
 
-from .api import run, echo, send, defer_to_prompt
+from .api import echo, send, defer_to_prompt
 from .utils import error, debug
 from .matching import TriggerMasterGroup, AliasMasterGroup
 from .app import Apps

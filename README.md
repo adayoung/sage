@@ -20,3 +20,12 @@ You might enjoy sage if:
 ## Requirements
 - Python 2.7+ (2.7.3 recommended) or PyPy 1.8+ (1.9 recommended)
 - Unix-like operating system (OS X, Linux, BSD, etc...)
+
+## Installation
+- Coming soon
+
+## Support
+Please feel free to file an issue here if you have a problem or find a bug.
+
+### IRC
+#astralinae on Freenode

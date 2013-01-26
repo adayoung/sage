@@ -1,10 +1,11 @@
 from __future__ import absolute_import
 import argparse
-import os
-import sys
 import sage
+from sage.utils import imports
+import sys
 
-banner = """   _________ _____ ____
+banner = """** WARNING: This is a pre-release version of sage and it WILL EAT YOUR CAT! **
+   _________ _____ ____
   / ___/ __ `/ __ `/ _ \\
  (__  ) /_/ / /_/ /  __/
 /____/\__,_/\__, /\___/
@@ -14,21 +15,28 @@ banner = """   _________ _____ ____
 
 def main():
     args = parser.parse_args()
+
     print(banner)
-    args.func(args)
 
+    app = args.app
 
-def run(args):
-    path = "%s/%s" % (os.getcwd(), args.file)
-    if not os.path.isfile(path):
-        sys.exit("Error: %s is not a file" % args.file)
+    with imports.cwd_in_path():
+        app = imports.import_file(app)
+        sage.apps[app.__name__] = app
 
+        print sage.aliases
+        del(app)
 
-def app(args):
-    print 'app'
+    del(sage.apps['jaiko'])
+    del(sys.modules['jaiko'])
+
+    print sage.aliases
+
+    from sage.server import run
+    run()
 
 
 parser = argparse.ArgumentParser(
-description='Framework and proxy for IRE\'s Achaea')
+    description='Framework and proxy for IRE\'s Achaea')
 parser.add_argument('--version', action='version', version=sage.__version__)
-parser.add_argument('file')
+parser.add_argument('app')

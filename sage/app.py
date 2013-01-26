@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 import sys
+from twisted.python.rebuild import rebuild
 
 
-class Apps(object):
+class Apps(dict):
     """ Container of loaded apps """
 
-    def __init__(self):
-        self.apps = {}
+    def reload(self, name):
+        """ Try to fully rebuild an app """
 
-    def load(self, module):
-        pass
+        if name not in self:
+            return False
+
+        self[name] = rebuild(self[name])
