@@ -2,10 +2,13 @@
 from __future__ import absolute_import
 from twisted.internet import reactor
 from sage import telnet, config
+from sage.signals import pre_start
 
 
 def run():
     """ Start Twisted """
+
+    pre_start.send(sender=None)
 
     # Setup reactor to listen
     reactor.listenTCP(config.proxy_port, telnet.build_factory())
