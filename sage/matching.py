@@ -21,6 +21,7 @@ class Matchable(object):
         self.name = kwargs.pop('name', None)
         self.pattern = kwargs.pop('pattern', None)
         self.enabled = kwargs.pop('enabled', None)
+        methods = kwargs.pop('methods', None)
         self.delay = kwargs.pop('delay', None)
         self.disable_on_match = kwargs.pop('disable_on_match', False)
         self.timer = None
@@ -33,6 +34,10 @@ class Matchable(object):
         self.matchobj = None
 
         self.methods = Hook()
+
+        if methods:
+            for method in methods:
+                self.bind(method)
 
     def enable(self):
         self.parent._enable(self)
@@ -102,8 +107,8 @@ class Substring(Matchable):
 
     def match(self, line):
 
-        if self.pattern in line.line:
-            self.prefix, self.suffix = line.line.split(self.pattern)
+        if self.pattern in line:
+            self.prefix, self.suffix = line.split(self.pattern)
             return self.successful_match(line)
 
         return False
@@ -114,7 +119,7 @@ class CISubstring(CIMatchable):
     def match(self, line):
 
         if self.pattern in line.lower():
-            self.prefix, self.suffix = line.line.split(self.pattern)
+            self.prefix, self.suffix = line.split(self.pattern)
             return self.successful_match(line)
 
         return False
@@ -137,7 +142,7 @@ class Regex(Matchable):
 
     def match(self, line):
 
-        match = self.pattern.match(line.line)
+        match = self.pattern.match(line)
 
         if match:
             self.matchobj = match
@@ -151,8 +156,8 @@ class Startswith(Matchable):
 
     def match(self, line):
 
-        if line.line.startswith(self.pattern):
-            self.suffix = line.line.split(self.pattern)[1]
+        if line.startswith(self.pattern):
+            self.suffix = line.split(self.pattern)[1]
             return self.successful_match(line)
 
         return False
@@ -162,8 +167,8 @@ class CIStartswith(CIMatchable):
 
     def match(self, line):
 
-        if line.line.lower().startswith(self.pattern):
-            self.suffix = line.line.split(self.pattern)[1]
+        if line.lower().startswith(self.pattern):
+            self.suffix = line.split(self.pattern)[1]
             return self.successful_match(line)
 
         return False
@@ -173,8 +178,8 @@ class Endswith(Matchable):
 
     def match(self, line):
 
-        if line.line.endswith(self.pattern):
-            self.prefix = line.line.split(self.pattern)[0]
+        if line.endswith(self.pattern):
+            self.prefix = line.split(self.pattern)[0]
             return self.successful_match(line)
 
         return False
@@ -184,8 +189,8 @@ class CIEndswith(CIMatchable):
 
     def match(self, line):
 
-        if self.line.line.lower().endswith(self.pattern):
-            self.prefix = line.line.split(self.pattern)[0]
+        if self.line.lower().endswith(self.pattern):
+            self.prefix = line.split(self.pattern)[0]
             return self.successful_match(line)
 
         return False
@@ -207,6 +212,7 @@ class Group(object):
         name,
         mtype,
         pattern,
+        methods=[],
         enabled=True,
         ignorecase=True,
         delay=None,
@@ -216,6 +222,7 @@ class Group(object):
         kwargs = {
             'name': name,
             'pattern': pattern,
+            'methods': methods,
             'enabled': enabled,
             'delay': delay,
             'disable_on_match': disable_on_match,
@@ -395,7 +402,8 @@ class TriggerGroup(Group):
 
     def create_group(self, name, enabled=True):
 
-        self.groups[name] = TriggerGroup(name, self, enabled)
+        g = TriggerGroup(name, self, enabled)  # I have to do this for weakrefs
+        self.groups[name] = g
         return self.groups[name]
 
 
@@ -406,7 +414,7 @@ class AliasGroup(Group):
 
     def create_group(self, name, enabled=True):
 
-        g = AliasGroup(name, self, enabled)
+        g = AliasGroup(name, self, enabled)  # I have to do this for weakrefs
         self.groups[name] = g
         return self.groups[name]
 
