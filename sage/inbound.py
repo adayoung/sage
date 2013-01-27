@@ -5,6 +5,7 @@ import sage
 
 
 class Line(object):
+    """ An individual line in sage's buffer """
 
     def __init__(self, line, position):
 
@@ -24,6 +25,7 @@ class Line(object):
 
 
 class Buffer(list):
+    """ All lines received since the last prompt """
 
     def __init__(self, lines):
 
@@ -39,6 +41,8 @@ class Buffer(list):
 
 
 def receiver(lines):
+    """ Receives lines since the last prompt """
+
     sage.buffer = Buffer(lines)
 
     # create a local for faster access

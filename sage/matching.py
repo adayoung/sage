@@ -16,6 +16,7 @@ class MatchableGroupError(Exception):
 
 
 class Matchable(object):
+    """ Base class for a trigger or alias """
 
     def __init__(self, **kwargs):
         self.name = kwargs.pop('name', None)
@@ -51,12 +52,15 @@ class Matchable(object):
         self.parent._remove(self)
 
     def bind(self, method):
+        """ add a method to a matchable """
         self.methods.connect(method)
 
     def unbind(self, method):
+        """ Remove a method from a matchable """
         self.methods.disconnect(method)
 
     def successful_match(self, line):
+        """ Ran when the matchable matches """
         self.line = line
         self.time = time()
 
@@ -71,6 +75,7 @@ class Matchable(object):
         return True
 
     def call_methods(self):
+        """ Send to all bound methods """
         self.methods.send(self)
 
 
