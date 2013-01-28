@@ -1,14 +1,14 @@
 *sage2 is under heavy initial development and won't be useful to anyone until I finish and write documentation. Stay tuned!
 
 ![Sage Logo](https://raw.github.com/astralinae/sage/master/docs/source/_static/logo-full.png)
-sage -- a framework and proxy for Achaea in Python
-==================================================
+Sage -- A Python Framework and Proxy for Achaea
+===============================================
 
 ## Description
 
 Sage is a telnet client, telnet proxy, and application framework created specifically to make writing code for IRE's [Achaea](http://achaea.com) easier and more fun.
 
-You might enjoy sage if:
+You might enjoy Sage if:
 
 * You'd prefer to write your system in an IDE or text editor instead of your MUD client.
 * You like Python and want to take full advantage of the language's power.
