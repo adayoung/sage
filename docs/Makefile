@@ -111,14 +111,14 @@ latex:
 #	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
 
 latexpdf:
-    $(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(PDFBUILDDIR)/latex
-    #                                          ^^^
-    @echo "Running LaTeX files through pdflatex..."
-    make -C $(PDFBUILDDIR)/latex all-pdf
-    #         ^^^
-    cp $(PDFBUILDDIR)/latex/*.pdf $(PDF)
-    #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    @echo "pdflatex finished; see $(PDF)"
+	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(PDFBUILDDIR)/latex
+	#                                          ^^^
+	@echo "Running LaTeX files through pdflatex..."
+	make -C $(PDFBUILDDIR)/latex all-pdf
+	#         ^^^
+	cp $(PDFBUILDDIR)/latex/*.pdf $(PDF)
+	#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	@echo "pdflatex finished; see $(PDF)"
 
 text:
 	$(SPHINXBUILD) -b text $(ALLSPHINXOPTS) $(BUILDDIR)/text
