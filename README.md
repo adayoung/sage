@@ -6,7 +6,7 @@ Sage -- A Python Framework and Proxy for Achaea
 
 ## Description
 
-Sage is a telnet client, telnet proxy, and application framework created specifically to make writing code for IRE's [Achaea](http://achaea.com) easier and more fun.
+Sage is a telnet client, telnet proxy, and application framework created specifically to make writing code for IRE's [Achaea](http://achaea.com) fun and easy.
 
 You might enjoy Sage if:
 
