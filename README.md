@@ -22,13 +22,14 @@ You might enjoy Sage if:
 * Easiest way to write a system for Achaea.
 * Twisted-based telnet proxy allowing you to connect a client of your choice.
 * Full GMCP support.
-* Extensive 'signal' or 'pub/sub' system for easy handling of asynchronous events. 
+* Extensive 'signal' or 'pub/sub' system for easy handling of asynchronous events.
 * Powerful, fast, and easy to use triggers/aliases.
 * An alternative syntax for making large numbers of triggers and aliases.
 * Extensibility through add-on 'sage apps'.
+* Interactive console allowing you to write live code in a running app.
 
 ## Requirements
-- Python 2.7+ (2.7.3 recommended) or PyPy 1.8+ (1.9 recommended)
+- Python 2.7+ (2.7.3 recommended) or PyPy 1.8+ (1.9 recommended). 3+ not yet supported.
 - Unix-like operating system (OS X, Linux, BSD, etc...)
 _If you'd like to be the Windows maintainer for sage, please get in touch with me._
 
