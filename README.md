@@ -1,6 +1,6 @@
 *sage2 is under heavy initial development and won't be useful to anyone until I finish and write documentation. Stay tuned!
 
-![Sage Logo](http://s9.postimage.org/oag560y4v/sage_logo_small2.png)
+![Sage Logo](https://raw.github.com/astralinae/sage/master/docs/source/_static/logo-full.png)
 sage -- a framework and proxy for Achaea in Python
 ==================================================
 
