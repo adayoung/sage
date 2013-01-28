@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-sage.player
-~~~~~~~~~~~
-
 This module contains all player "state" data much like a session.
 """
 from __future__ import division
@@ -12,6 +9,7 @@ from time import time
 
 
 class Balance(object):
+    """ Tracks a balance """
 
     def __init__(self):
         self.balance = True
@@ -76,6 +74,7 @@ class Rift(dict):
 
 
 class Vital(MutableInt):
+    """ Tracks a vital value (health, mana, etc) """
 
     def __init__(self):
         self.value = None
@@ -88,6 +87,8 @@ class Vital(MutableInt):
         self.new = True
 
     def update(self, value, newmax=None):
+        """ Update the vital's value """
+
         if newmax:
             self.max = int(newmax)
 
@@ -104,98 +105,92 @@ class Vital(MutableInt):
         self.percentage = int(round(self.value / self.max * 100))
 
 
-# name of the player
+#: name of the player
 name = None
 
-# name with titles and suffixes
+#: name with titles and suffixes
 fullname = None
 
-# age of character
+#: age of character
 age = None
 
-# race of character
+#: race of character
 race = None
 
-# class of character
+#: class of character
 combatclass = None
 
-# character specialization
+#: character specialization
 specialization = None
 
-# level of your character
+#: level of your character
 level = None
 
-# experience until next level in percentage
+#: experience until next level in percentage
 xp = None
 
-# rank by experience
+#: rank by experience
 xprank = None
 
-# city character inhabits
+#: city character inhabits
 city = None
 
-# house character is a member of
+#: house character is a member of
 house = None
 
-# order character belongs to
+#: order character belongs to
 order = None
 
-# number of bound credits
+#: number of bound credits
 boundcredits = None
 
-# number of unbound credits
+#: number of unbound credits
 credits = None
 
-# number of mayan crowns
+#: number of mayan crowns
 mayancrowns = None
 
-# number of bound mayan crowns
+#: number of bound mayan crowns
 boundmayancrowns = None
 
-# number of lessons
+#: number of lessons
 lessons = None
 
-# rank in exploreres
+#: rank in exploreres
 explorerrank = None
 
-# skill => rank out of the 12 levels of compentency
+#: skill => rank out of the 12 levels of compentency
 skill_groups = {}
 
-# dictionary of skills and contained abilities
+#: dictionary of skills and contained abilities
 skills = {}
 
-# player vitals
+#: player health vital
 health = Vital()
+
+#: player mana vital
 mana = Vital()
+
+#: player willpower vital
 willpower = Vital()
+
+#: player endurance vital
 endurance = Vital()
 
-# Comm Channels like clans, newbie, HT, etc
+#: Comm Channels like clans, newbie, HT, etc
 comm_channels = None
 
-# Room data
+#: Room data
 room = Room()
 
-# Player inventory dict
+#: Player inventory dict
 inv = Inventory()
 
-# Rift dict
+#: Rift data
 rift = Rift()
 
-# Balances
+#: 'balance' balance
 balance = Balance()
+
+#: 'equilibrium' balance
 equilibrium = Balance()
-
-# stunned
-stunned = False
-
-
-# balance + eq + no stun
-def ready():
-    if balance == False or equilibrium == False:
-        return False
-
-    if stunned:
-        return False
-
-    return True

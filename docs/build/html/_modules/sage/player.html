@@ -1,0 +1,276 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sage.player &mdash; sage 2.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="sage 2.0.0 documentation" href="../../index.html" />
+    <link rel="up" title="sage" href="../sage.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">sage 2.0.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../sage.html" accesskey="U">sage</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for sage.player</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains all player &quot;state&quot; data much like a session.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">sage.utils</span> <span class="kn">import</span> <span class="n">MutableInt</span>
+<span class="kn">from</span> <span class="nn">sage.inventory</span> <span class="kn">import</span> <span class="n">Inventory</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+
+
+<div class="viewcode-block" id="Balance"><a class="viewcode-back" href="../../api.html#sage.player.Balance">[docs]</a><span class="k">class</span> <span class="nc">Balance</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Tracks a balance &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_on</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_off</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="Balance.on"><a class="viewcode-back" href="../../api.html#sage.player.Balance.on">[docs]</a>    <span class="k">def</span> <span class="nf">on</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set to on balance &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_on</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Balance.on_for"><a class="viewcode-back" href="../../api.html#sage.player.Balance.on_for">[docs]</a>    <span class="k">def</span> <span class="nf">on_for</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return how long the balance has been available for or False if not&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="k">return</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_on</span>
+</div>
+<div class="viewcode-block" id="Balance.off"><a class="viewcode-back" href="../../api.html#sage.player.Balance.off">[docs]</a>    <span class="k">def</span> <span class="nf">off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set to off balance &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_off</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Balance.off_for"><a class="viewcode-back" href="../../api.html#sage.player.Balance.off_for">[docs]</a>    <span class="k">def</span> <span class="nf">off_for</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return how long the balance has been off for or False if on &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">balance</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="k">return</span> <span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_off</span>
+</div>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">balance</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">==</span> <span class="n">other</span>
+
+</div>
+<div class="viewcode-block" id="Room"><a class="viewcode-back" href="../../api.html#sage.player.Room">[docs]</a><span class="k">class</span> <span class="nc">Room</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Container for room information &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exits</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">environment</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coords</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">details</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="p">{}</span>
+
+</div>
+<div class="viewcode-block" id="Rift"><a class="viewcode-back" href="../../api.html#sage.player.Rift">[docs]</a><span class="k">class</span> <span class="nc">Rift</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Container for the Rift &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="Vital"><a class="viewcode-back" href="../../api.html#sage.player.Vital">[docs]</a><span class="k">class</span> <span class="nc">Vital</span><span class="p">(</span><span class="n">MutableInt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Tracks a vital value (health, mana, etc) &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">percentage</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta_percentage</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">new</span> <span class="o">=</span> <span class="bp">True</span>
+
+<div class="viewcode-block" id="Vital.update"><a class="viewcode-back" href="../../api.html#sage.player.Vital.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">newmax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Update the vital&#39;s value &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">newmax</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">newmax</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">new</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delta_percentage</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">percentage</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
+
+
+<span class="c">#: name of the player</span></div></div>
+<span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: name with titles and suffixes</span>
+<span class="n">fullname</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: age of character</span>
+<span class="n">age</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: race of character</span>
+<span class="n">race</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: class of character</span>
+<span class="n">combatclass</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: character specialization</span>
+<span class="n">specialization</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: level of your character</span>
+<span class="n">level</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: experience until next level in percentage</span>
+<span class="n">xp</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: rank by experience</span>
+<span class="n">xprank</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: city character inhabits</span>
+<span class="n">city</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: house character is a member of</span>
+<span class="n">house</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: order character belongs to</span>
+<span class="n">order</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: number of bound credits</span>
+<span class="n">boundcredits</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: number of unbound credits</span>
+<span class="n">credits</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: number of mayan crowns</span>
+<span class="n">mayancrowns</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: number of bound mayan crowns</span>
+<span class="n">boundmayancrowns</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: number of lessons</span>
+<span class="n">lessons</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: rank in exploreres</span>
+<span class="n">explorerrank</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: skill =&gt; rank out of the 12 levels of compentency</span>
+<span class="n">skill_groups</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c">#: dictionary of skills and contained abilities</span>
+<span class="n">skills</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c">#: player health vital</span>
+<span class="n">health</span> <span class="o">=</span> <span class="n">Vital</span><span class="p">()</span>
+
+<span class="c">#: player mana vital</span>
+<span class="n">mana</span> <span class="o">=</span> <span class="n">Vital</span><span class="p">()</span>
+
+<span class="c">#: player willpower vital</span>
+<span class="n">willpower</span> <span class="o">=</span> <span class="n">Vital</span><span class="p">()</span>
+
+<span class="c">#: player endurance vital</span>
+<span class="n">endurance</span> <span class="o">=</span> <span class="n">Vital</span><span class="p">()</span>
+
+<span class="c">#: Comm Channels like clans, newbie, HT, etc</span>
+<span class="n">comm_channels</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="c">#: Room data</span>
+<span class="n">room</span> <span class="o">=</span> <span class="n">Room</span><span class="p">()</span>
+
+<span class="c">#: Player inventory dict</span>
+<span class="n">inv</span> <span class="o">=</span> <span class="n">Inventory</span><span class="p">()</span>
+
+<span class="c">#: Rift data</span>
+<span class="n">rift</span> <span class="o">=</span> <span class="n">Rift</span><span class="p">()</span>
+
+<span class="c">#: &#39;balance&#39; balance</span>
+<span class="n">balance</span> <span class="o">=</span> <span class="n">Balance</span><span class="p">()</span>
+
+<span class="c">#: &#39;equilibrium&#39; balance</span>
+<span class="n">equilibrium</span> <span class="o">=</span> <span class="n">Balance</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">sage 2.0.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../sage.html" >sage</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    </div>
+  </body>
+</html>

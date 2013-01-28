@@ -1,17 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-sage.ansi
-~~~~~~~~~
-
 Helper methods for ANSI formatting and colors.
-
-This is hardly compliant to the standard. Please don't use this for anything
-but Achaea.
-
-A sage color tuple works in this format:
-    (bright/bold, foreground, background, underline)
-
-We don't support other (less-supported) options like blink, etc.
 
 Credits for help on this file go to the Lyntin project and Django Termcolors
 """
@@ -38,6 +27,10 @@ def colorize(text='', opts=(), **kwargs):
     the opts tuple/list.
 
     Returns the RESET code if no parameters are given.
+
+    :param text: string that will be colored
+    :param opts: (optional) extra options
+    :param \*\*kwargs: (optional) parameters such as fg and bg
 
     Valid colors:
         'black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'

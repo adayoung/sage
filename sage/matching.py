@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+    Defines sage's triggers and aliases.
+
+    In sage, a 'matchable' is either a trigger or an alias. The behavior of
+    both are identical. The only difference is where they occur in execution.
+"""
 from __future__ import absolute_import
 import re
 from time import time
@@ -41,18 +47,21 @@ class Matchable(object):
                 self.bind(method)
 
     def enable(self):
+        """ Enable the matchable """
         self.parent._enable(self)
         self.enabled = True
 
     def disable(self):
+        """ Disable the matchable """
         self.parent._disable(self)
         self.enabled = False
 
     def destroy(self):
+        """ Destroys (deletes) the matchable """
         self.parent._remove(self)
 
     def bind(self, method):
-        """ add a method to a matchable """
+        """ Add a method to a matchable """
         self.methods.connect(method)
 
     def unbind(self, method):
@@ -60,7 +69,7 @@ class Matchable(object):
         self.methods.disconnect(method)
 
     def successful_match(self, line):
-        """ Ran when the matchable matches """
+        """ Called when the matchable successfully matches """
         self.line = line
         self.time = time()
 
@@ -80,6 +89,7 @@ class Matchable(object):
 
 
 class CIMatchable(Matchable):
+    """ Case-insensitive matchable """
 
     def __init__(self, **kwargs):
 
@@ -89,6 +99,7 @@ class CIMatchable(Matchable):
 
 
 class Exact(Matchable):
+    """ Exact-match matchable """
 
     def match(self, line):
 
@@ -99,6 +110,7 @@ class Exact(Matchable):
 
 
 class CIExact(CIMatchable):
+    """ Case-insensitive exact-match matchable """
 
     def match(self, line):
 
@@ -109,6 +121,7 @@ class CIExact(CIMatchable):
 
 
 class Substring(Matchable):
+    """ Substring matchable """
 
     def match(self, line):
 
@@ -120,6 +133,7 @@ class Substring(Matchable):
 
 
 class CISubstring(CIMatchable):
+    """ Case-insensitive substring matchable """
 
     def match(self, line):
 
@@ -131,6 +145,7 @@ class CISubstring(CIMatchable):
 
 
 class Regex(Matchable):
+    """ Regular expression matchable """
 
     def __init__(self, **kwargs):
 
@@ -158,6 +173,7 @@ class Regex(Matchable):
 
 
 class Startswith(Matchable):
+    """ Starts-with string matchable """
 
     def match(self, line):
 
@@ -169,6 +185,7 @@ class Startswith(Matchable):
 
 
 class CIStartswith(CIMatchable):
+    """ Case-insensitive starts-with string matchable """
 
     def match(self, line):
 
@@ -180,6 +197,7 @@ class CIStartswith(CIMatchable):
 
 
 class Endswith(Matchable):
+    """ Ends-with string matchable """
 
     def match(self, line):
 
@@ -191,6 +209,7 @@ class Endswith(Matchable):
 
 
 class CIEndswith(CIMatchable):
+    """ Case-insensitive ends-with string matchable """
 
     def match(self, line):
 
@@ -202,6 +221,7 @@ class CIEndswith(CIMatchable):
 
 
 class Group(object):
+    """ Base matchable group """
 
     def __init__(self, name, parent, enabled=True):
         self.name = name
@@ -222,7 +242,28 @@ class Group(object):
         ignorecase=True,
         delay=None,
         disable_on_match=False):
-        """ Create a trigger or alias """
+        """ Create a trigger or alias (depending on the master group)
+
+            :param name: name of the matchable.
+            :type name: string
+            :param mtype: 'type' of matchable. Must be 'exact', 'substring',
+                'regex', 'startswith', or 'endswith'.
+            :type mtype: string
+            :param pattern: pattern to match against.
+            :type pattern: string
+            :param methods: (optional) methods to bind to the matchable.
+            :type methods: list
+            :param enabled: (optional) is the matchable enabled.
+            :type enabled: bool
+            :param ignorecase: (optional) is the matchable case-insensitive.
+            :type ignorecase: bool
+            :param delay: (optional) how many seconds to delay execution of
+                bound methods after a successful match.
+            :type delay: int or None
+            :param disable_on_match: (optional) disable matchable after a
+                successful match.
+            :type disable_on_match: bool
+        """
 
         kwargs = {
             'name': name,

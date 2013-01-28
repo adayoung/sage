@@ -5,7 +5,7 @@ from sage.utils import imports
 
 
 class Apps(dict):
-    """ Container of loaded apps """
+    """ Dict-like container of loaded apps """
 
     def load(self, names):
         """ Load a module or package into the namespace """
@@ -35,7 +35,7 @@ class Apps(dict):
         return True
 
     def unload(self, name):
-        """ A really sad attempt to remove a module from the namespace """
+        """ Attempt to remove a module from the namespace """
 
         if name not in self:
             return False
@@ -43,3 +43,6 @@ class Apps(dict):
         del(self[name])
         del(sys.modules[name])
         return True
+
+    def __repr__(self):
+        return str(self.__class__)

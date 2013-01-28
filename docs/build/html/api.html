@@ -1,0 +1,747 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API &mdash; sage 2.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="sage 2.0.0 documentation" href="index.html" />
+    <link rel="prev" title="Foreword" href="foreword.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="foreword.html" title="Foreword"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">sage 2.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="api">
+<span id="id1"></span><h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-sage"></span><p>This part of the documentation covers all the interfaces of Sage.  For
+parts where Sage depends on external libraries, we document the most
+important right here and provide links to the canonical documentation.</p>
+<div class="section" id="sage">
+<h2><cite>sage</cite><a class="headerlink" href="#sage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="main-methods">
+<h3>Main Methods<a class="headerlink" href="#main-methods" title="Permalink to this headline">¶</a></h3>
+<p>The following are some primary methods available from the <cite>sage</cite> namespace.</p>
+<dl class="function">
+<dt id="sage.echo">
+<tt class="descclassname">sage.</tt><tt class="descname">echo</tt><big>(</big><em>msg</em><big>)</big><a class="headerlink" href="#sage.echo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Echo a message back to the client</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>msg</strong> (<em>string or list</em>) &#8211; message to be echoed back to the client.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sage.send">
+<tt class="descclassname">sage.</tt><tt class="descname">send</tt><big>(</big><em>msg</em><big>)</big><a class="headerlink" href="#sage.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a message to the server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>msg</strong> (<em>string or list</em>) &#8211; message to be sent to the server.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sage.defer_to_prompt">
+<tt class="descclassname">sage.</tt><tt class="descname">defer_to_prompt</tt><big>(</big><em>method</em>, <em>*args</em><big>)</big><a class="headerlink" href="#sage.defer_to_prompt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defer execution of a method until the prompt is received</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>method</strong> &#8211; the method to be deferred.</li>
+<li><strong>*args</strong> &#8211; optional arguments to be passed to the provided method.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="main-states">
+<h3>Main States<a class="headerlink" href="#main-states" title="Permalink to this headline">¶</a></h3>
+<dl class="data">
+<dt id="sage.connected">
+<tt class="descclassname">sage.</tt><tt class="descname">connected</tt><em class="property"> = False</em><a class="headerlink" href="#sage.connected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is sage connected</p>
+</dd></dl>
+
+</div>
+<div class="section" id="main-containers">
+<h3>Main Containers<a class="headerlink" href="#main-containers" title="Permalink to this headline">¶</a></h3>
+<dl class="data">
+<dt id="sage.config">
+<tt class="descclassname">sage.</tt><tt class="descname">config</tt><em class="property"> = {'backdoor_port': 8006, 'proxy_port': 8007, 'host': 'achaea.com', 'backdoor': True, 'backdoor_user': 'sage', 'port': 2003, 'backdoor_password': 'sage'}</em><a class="headerlink" href="#sage.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container for sage configuration</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.apps">
+<tt class="descclassname">sage.</tt><tt class="descname">apps</tt><em class="property"> = &lt;class 'sage.app.Apps'&gt;</em><a class="headerlink" href="#sage.apps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dict-like container of loaded apps</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.app.Apps">
+<em class="property">class </em><tt class="descclassname">sage.app.</tt><tt class="descname">Apps</tt><a class="reference internal" href="_modules/sage/app.html#Apps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.app.Apps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dict-like container of loaded apps</p>
+<dl class="method">
+<dt id="sage.app.Apps.load">
+<tt class="descname">load</tt><big>(</big><em>names</em><big>)</big><a class="reference internal" href="_modules/sage/app.html#Apps.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.app.Apps.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a module or package into the namespace</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.app.Apps.reload">
+<tt class="descname">reload</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/sage/app.html#Apps.reload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.app.Apps.reload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to fully rebuild an app</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.app.Apps.unload">
+<tt class="descname">unload</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/sage/app.html#Apps.unload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.app.Apps.unload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to remove a module from the namespace</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.buffer">
+<tt class="descclassname">sage.</tt><tt class="descname">buffer</tt><em class="property"> = &lt;class 'sage.inbound.Buffer'&gt;</em><a class="headerlink" href="#sage.buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of all lines received since the last prompt</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.inbound.Buffer">
+<em class="property">class </em><tt class="descclassname">sage.inbound.</tt><tt class="descname">Buffer</tt><big>(</big><em>lines</em><big>)</big><a class="reference internal" href="_modules/sage/inbound.html#Buffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.inbound.Buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of all lines received since the last prompt</p>
+<dl class="method">
+<dt id="sage.inbound.Buffer.append">
+<tt class="descname">append</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="_modules/sage/inbound.html#Buffer.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.inbound.Buffer.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append a line to the buffer as a <tt class="xref py py-class docutils literal"><span class="pre">sage.inbound.Line</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.aliases">
+<tt class="descclassname">sage.</tt><tt class="descname">aliases</tt><em class="property"> = &lt;class 'sage.matching.AliasMasterGroup'&gt; (0 groups, 0 objects)</em><a class="headerlink" href="#sage.aliases" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="sage.triggers">
+<tt class="descclassname">sage.</tt><tt class="descname">triggers</tt><em class="property"> = &lt;class 'sage.matching.TriggerMasterGroup'&gt; (0 groups, 0 objects)</em><a class="headerlink" href="#sage.triggers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-sage.ansi">
+<span id="sage-ansi"></span><h2><cite>sage.ansi</cite><a class="headerlink" href="#module-sage.ansi" title="Permalink to this headline">¶</a></h2>
+<p>Helper methods for ANSI formatting and colors.</p>
+<p>Credits for help on this file go to the Lyntin project and Django Termcolors</p>
+<dl class="function">
+<dt id="sage.ansi.colorize">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">colorize</tt><big>(</big><em>text=''</em>, <em>opts=()</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/ansi.html#colorize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.ansi.colorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns your text, enclosed in ANSI graphics codes.</p>
+<p>Depends on the keyword arguments &#8216;fg&#8217; and &#8216;bg&#8217;, and the contents of
+the opts tuple/list.</p>
+<p>Returns the RESET code if no parameters are given.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>text</strong> &#8211; string that will be colored</li>
+<li><strong>opts</strong> &#8211; (optional) extra options</li>
+<li><strong>**kwargs</strong> &#8211; (optional) parameters such as fg and bg</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Valid colors:</dt>
+<dd>&#8216;black&#8217;, &#8216;red&#8217;, &#8216;green&#8217;, &#8216;yellow&#8217;, &#8216;blue&#8217;, &#8216;magenta&#8217;, &#8216;cyan&#8217;, &#8216;white&#8217;</dd>
+<dt>Valid options:</dt>
+<dd>&#8216;bold&#8217;
+&#8216;underscore&#8217;
+&#8216;blink&#8217;
+&#8216;reverse&#8217;
+&#8216;conceal&#8217;
+&#8216;noreset&#8217; - string will not be auto-terminated with the RESET code</dd>
+<dt>Examples:</dt>
+<dd>colorize(&#8216;hello&#8217;, fg=&#8217;red&#8217;, bg=&#8217;blue&#8217;, opts=(&#8216;blink&#8217;,))
+colorize()
+colorize(&#8216;goodbye&#8217;, opts=(&#8216;underscore&#8217;,))
+print(colorize(&#8216;first line&#8217;, fg=&#8217;red&#8217;, opts=(&#8216;noreset&#8217;,)))
+print(&#8216;this should be red too&#8217;)
+print(colorize(&#8216;and so should this&#8217;))
+print(&#8216;this should not be red&#8217;)</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.filter">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">filter</tt><big>(</big><em>text</em><big>)</big><a class="reference internal" href="_modules/sage/ansi.html#filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.ansi.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes in text and filters out the ANSI color codes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.make_style">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">make_style</tt><big>(</big><em>opts=()</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/ansi.html#make_style"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.ansi.make_style" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a function with default parameters for colorize()</p>
+<dl class="docutils">
+<dt>Example:</dt>
+<dd>bold_red = make_style(opts=(&#8216;bold&#8217;,), fg=&#8217;red&#8217;)
+print(bold_red(&#8216;hello&#8217;))
+KEYWORD = make_style(fg=&#8217;yellow&#8217;)
+COMMENT = make_style(fg=&#8217;blue&#8217;, opts=(&#8216;bold&#8217;,))</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.split">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">split</tt><big>(</big><em>text</em><big>)</big><a class="reference internal" href="_modules/sage/ansi.html#split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.ansi.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits text and ANSI color sequences</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.split_expanded">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">split_expanded</tt><big>(</big><em>text</em><big>)</big><a class="reference internal" href="_modules/sage/ansi.html#split_expanded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.ansi.split_expanded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split a string into string parts and tuples of color sequences</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.white">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">white</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#sage.ansi.white" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.black">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">black</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#sage.ansi.black" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.red">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">red</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#sage.ansi.red" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.green">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">green</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#sage.ansi.green" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.yellow">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">yellow</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#sage.ansi.yellow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.blue">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">blue</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#sage.ansi.blue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.magenta">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">magenta</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#sage.ansi.magenta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.cyan">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">cyan</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#sage.ansi.cyan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="sage.ansi.bold_white">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">bold_white</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#sage.ansi.bold_white" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-sage.matching">
+<span id="sage-matching"></span><h2><cite>sage.matching</cite><a class="headerlink" href="#module-sage.matching" title="Permalink to this headline">¶</a></h2>
+<p>Defines sage&#8217;s triggers and aliases.</p>
+<p>In sage, a &#8216;matchable&#8217; is either a trigger or an alias. The behavior of
+both are identical. The only difference is where they occur in execution.</p>
+<dl class="class">
+<dt id="sage.matching.CIEndswith">
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">CIEndswith</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#CIEndswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.CIEndswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Case-insensitive ends-with string matchable</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.matching.CIExact">
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">CIExact</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#CIExact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.CIExact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Case-insensitive exact-match matchable</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.matching.CIMatchable">
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">CIMatchable</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#CIMatchable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.CIMatchable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Case-insensitive matchable</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.matching.CIStartswith">
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">CIStartswith</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#CIStartswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.CIStartswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Case-insensitive starts-with string matchable</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.matching.CISubstring">
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">CISubstring</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#CISubstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.CISubstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Case-insensitive substring matchable</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.matching.Endswith">
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">Endswith</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Endswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Endswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ends-with string matchable</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.matching.Exact">
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">Exact</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Exact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Exact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exact-match matchable</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.matching.Group">
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">Group</tt><big>(</big><em>name</em>, <em>parent</em>, <em>enabled=True</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base matchable group</p>
+<dl class="method">
+<dt id="sage.matching.Group.create">
+<tt class="descname">create</tt><big>(</big><em>name</em>, <em>mtype</em>, <em>pattern</em>, <em>methods=</em><span class="optional">[</span><span class="optional">]</span>, <em>enabled=True</em>, <em>ignorecase=True</em>, <em>delay=None</em>, <em>disable_on_match=False</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a trigger or alias (depending on the master group)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>string</em>) &#8211; name of the matchable.</li>
+<li><strong>mtype</strong> (<em>string</em>) &#8211; &#8216;type&#8217; of matchable. Must be &#8216;exact&#8217;, &#8216;substring&#8217;,
+&#8216;regex&#8217;, &#8216;startswith&#8217;, or &#8216;endswith&#8217;.</li>
+<li><strong>pattern</strong> (<em>string</em>) &#8211; pattern to match against.</li>
+<li><strong>methods</strong> (<em>list</em>) &#8211; (optional) methods to bind to the matchable.</li>
+<li><strong>enabled</strong> (<em>bool</em>) &#8211; (optional) is the matchable enabled.</li>
+<li><strong>ignorecase</strong> (<em>bool</em>) &#8211; (optional) is the matchable case-insensitive.</li>
+<li><strong>delay</strong> (<em>int or None</em>) &#8211; (optional) how many seconds to delay execution of
+bound methods after a successful match.</li>
+<li><strong>disable_on_match</strong> (<em>bool</em>) &#8211; (optional) disable matchable after a
+successful match.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.matching.Matchable">
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">Matchable</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Matchable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Matchable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for a trigger or alias</p>
+<dl class="method">
+<dt id="sage.matching.Matchable.bind">
+<tt class="descname">bind</tt><big>(</big><em>method</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Matchable.bind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Matchable.bind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a method to a matchable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Matchable.call_methods">
+<tt class="descname">call_methods</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Matchable.call_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Matchable.call_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send to all bound methods</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Matchable.destroy">
+<tt class="descname">destroy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Matchable.destroy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Matchable.destroy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Destroys (deletes) the matchable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Matchable.disable">
+<tt class="descname">disable</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Matchable.disable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Matchable.disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disable the matchable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Matchable.enable">
+<tt class="descname">enable</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Matchable.enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Matchable.enable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable the matchable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Matchable.successful_match">
+<tt class="descname">successful_match</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Matchable.successful_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Matchable.successful_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the matchable successfully matches</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Matchable.unbind">
+<tt class="descname">unbind</tt><big>(</big><em>method</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Matchable.unbind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Matchable.unbind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a method from a matchable</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.matching.Regex">
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">Regex</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Regex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Regex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Regular expression matchable</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.matching.Startswith">
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">Startswith</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Startswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Startswith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts-with string matchable</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.matching.Substring">
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">Substring</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Substring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Substring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Substring matchable</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-sage.player">
+<span id="sage-player"></span><h2><cite>sage.player</cite><a class="headerlink" href="#module-sage.player" title="Permalink to this headline">¶</a></h2>
+<p>This module contains all player &#8220;state&#8221; data much like a session.</p>
+<dl class="class">
+<dt id="sage.player.Balance">
+<em class="property">class </em><tt class="descclassname">sage.player.</tt><tt class="descname">Balance</tt><a class="reference internal" href="_modules/sage/player.html#Balance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.player.Balance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tracks a balance</p>
+<dl class="method">
+<dt id="sage.player.Balance.off">
+<tt class="descname">off</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/player.html#Balance.off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.player.Balance.off" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set to off balance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.player.Balance.off_for">
+<tt class="descname">off_for</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/player.html#Balance.off_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.player.Balance.off_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return how long the balance has been off for or False if on</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.player.Balance.on">
+<tt class="descname">on</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/player.html#Balance.on"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.player.Balance.on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set to on balance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.player.Balance.on_for">
+<tt class="descname">on_for</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/player.html#Balance.on_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.player.Balance.on_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return how long the balance has been available for or False if not</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.player.Rift">
+<em class="property">class </em><tt class="descclassname">sage.player.</tt><tt class="descname">Rift</tt><a class="reference internal" href="_modules/sage/player.html#Rift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.player.Rift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container for the Rift</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.player.Room">
+<em class="property">class </em><tt class="descclassname">sage.player.</tt><tt class="descname">Room</tt><a class="reference internal" href="_modules/sage/player.html#Room"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.player.Room" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container for room information</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.player.Vital">
+<em class="property">class </em><tt class="descclassname">sage.player.</tt><tt class="descname">Vital</tt><a class="reference internal" href="_modules/sage/player.html#Vital"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.player.Vital" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tracks a vital value (health, mana, etc)</p>
+<dl class="method">
+<dt id="sage.player.Vital.update">
+<tt class="descname">update</tt><big>(</big><em>value</em>, <em>newmax=None</em><big>)</big><a class="reference internal" href="_modules/sage/player.html#Vital.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.player.Vital.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the vital&#8217;s value</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.age">
+<tt class="descclassname">sage.player.</tt><tt class="descname">age</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.age" title="Permalink to this definition">¶</a></dt>
+<dd><p>age of character</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.balance">
+<tt class="descclassname">sage.player.</tt><tt class="descname">balance</tt><em class="property"> = True</em><a class="headerlink" href="#sage.player.balance" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#8216;balance&#8217; balance</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.boundcredits">
+<tt class="descclassname">sage.player.</tt><tt class="descname">boundcredits</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.boundcredits" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of bound credits</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.boundmayancrowns">
+<tt class="descclassname">sage.player.</tt><tt class="descname">boundmayancrowns</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.boundmayancrowns" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of bound mayan crowns</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.city">
+<tt class="descclassname">sage.player.</tt><tt class="descname">city</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.city" title="Permalink to this definition">¶</a></dt>
+<dd><p>city character inhabits</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.combatclass">
+<tt class="descclassname">sage.player.</tt><tt class="descname">combatclass</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.combatclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>class of character</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.comm_channels">
+<tt class="descclassname">sage.player.</tt><tt class="descname">comm_channels</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.comm_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Comm Channels like clans, newbie, HT, etc</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.credits">
+<tt class="descclassname">sage.player.</tt><tt class="descname">credits</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.credits" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of unbound credits</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.endurance">
+<tt class="descclassname">sage.player.</tt><tt class="descname">endurance</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.endurance" title="Permalink to this definition">¶</a></dt>
+<dd><p>player endurance vital</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.equilibrium">
+<tt class="descclassname">sage.player.</tt><tt class="descname">equilibrium</tt><em class="property"> = True</em><a class="headerlink" href="#sage.player.equilibrium" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#8216;equilibrium&#8217; balance</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.explorerrank">
+<tt class="descclassname">sage.player.</tt><tt class="descname">explorerrank</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.explorerrank" title="Permalink to this definition">¶</a></dt>
+<dd><p>rank in exploreres</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.fullname">
+<tt class="descclassname">sage.player.</tt><tt class="descname">fullname</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.fullname" title="Permalink to this definition">¶</a></dt>
+<dd><p>name with titles and suffixes</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.health">
+<tt class="descclassname">sage.player.</tt><tt class="descname">health</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.health" title="Permalink to this definition">¶</a></dt>
+<dd><p>player health vital</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.house">
+<tt class="descclassname">sage.player.</tt><tt class="descname">house</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.house" title="Permalink to this definition">¶</a></dt>
+<dd><p>house character is a member of</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.inv">
+<tt class="descclassname">sage.player.</tt><tt class="descname">inv</tt><em class="property"> = {}</em><a class="headerlink" href="#sage.player.inv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Player inventory dict</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.lessons">
+<tt class="descclassname">sage.player.</tt><tt class="descname">lessons</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.lessons" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of lessons</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.level">
+<tt class="descclassname">sage.player.</tt><tt class="descname">level</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>level of your character</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.mana">
+<tt class="descclassname">sage.player.</tt><tt class="descname">mana</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.mana" title="Permalink to this definition">¶</a></dt>
+<dd><p>player mana vital</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.mayancrowns">
+<tt class="descclassname">sage.player.</tt><tt class="descname">mayancrowns</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.mayancrowns" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of mayan crowns</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.name">
+<tt class="descclassname">sage.player.</tt><tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>name of the player</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.order">
+<tt class="descclassname">sage.player.</tt><tt class="descname">order</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.order" title="Permalink to this definition">¶</a></dt>
+<dd><p>order character belongs to</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.race">
+<tt class="descclassname">sage.player.</tt><tt class="descname">race</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.race" title="Permalink to this definition">¶</a></dt>
+<dd><p>race of character</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.rift">
+<tt class="descclassname">sage.player.</tt><tt class="descname">rift</tt><em class="property"> = {}</em><a class="headerlink" href="#sage.player.rift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rift data</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.room">
+<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x103121f50&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
+<dd><p>Room data</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.skill_groups">
+<tt class="descclassname">sage.player.</tt><tt class="descname">skill_groups</tt><em class="property"> = {}</em><a class="headerlink" href="#sage.player.skill_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>skill =&gt; rank out of the 12 levels of compentency</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.skills">
+<tt class="descclassname">sage.player.</tt><tt class="descname">skills</tt><em class="property"> = {}</em><a class="headerlink" href="#sage.player.skills" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of skills and contained abilities</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.specialization">
+<tt class="descclassname">sage.player.</tt><tt class="descname">specialization</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.specialization" title="Permalink to this definition">¶</a></dt>
+<dd><p>character specialization</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.willpower">
+<tt class="descclassname">sage.player.</tt><tt class="descname">willpower</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.willpower" title="Permalink to this definition">¶</a></dt>
+<dd><p>player willpower vital</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.xp">
+<tt class="descclassname">sage.player.</tt><tt class="descname">xp</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.xp" title="Permalink to this definition">¶</a></dt>
+<dd><p>experience until next level in percentage</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.player.xprank">
+<tt class="descclassname">sage.player.</tt><tt class="descname">xprank</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.xprank" title="Permalink to this definition">¶</a></dt>
+<dd><p>rank by experience</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API</a><ul>
+<li><a class="reference internal" href="#sage"><cite>sage</cite></a><ul>
+<li><a class="reference internal" href="#main-methods">Main Methods</a></li>
+<li><a class="reference internal" href="#main-states">Main States</a></li>
+<li><a class="reference internal" href="#main-containers">Main Containers</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-sage.ansi"><cite>sage.ansi</cite></a></li>
+<li><a class="reference internal" href="#module-sage.matching"><cite>sage.matching</cite></a></li>
+<li><a class="reference internal" href="#module-sage.player"><cite>sage.player</cite></a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="foreword.html"
+                        title="previous chapter">Foreword</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/api.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="foreword.html" title="Foreword"
+             >previous</a> |</li>
+        <li><a href="index.html">sage 2.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+    </div>
+  </body>
+</html>

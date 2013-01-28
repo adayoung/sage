@@ -26,20 +26,31 @@ try:
 except ImportError:
     pass
 
-# configuration
+
 from .defaults import defaults
+
+#: default configuration
 config = defaults
 
 from .api import echo, send, defer_to_prompt
 from .utils import error, debug
 from .matching import TriggerMasterGroup, AliasMasterGroup
 from .app import Apps
+from .inbound import Buffer
 
-# States
+#: Is sage connected
 connected = False
 
-# Input buffer of lines
-buffer = None
+#: Loaded applications
+apps = Apps()
+
+#: Input buffer of lines (:class:`sage.inbound.Buffer`)
+buffer = Buffer([])
+
+#: Master alias group (:class:`sage.matching.AliasMasterGroup`)
+aliases = AliasMasterGroup()
+
+triggers = TriggerMasterGroup()
 
 # telnet write and echo internal methods
 _send = None
@@ -47,10 +58,3 @@ _echo = None
 
 # methods defered to the prompt
 _deferred = list()
-
-# Trigger and aliases interfaces
-triggers = TriggerMasterGroup()
-aliases = AliasMasterGroup()
-
-# Loaded applications
-apps = Apps()

@@ -25,7 +25,7 @@ class Line(object):
 
 
 class Buffer(list):
-    """ All lines received since the last prompt """
+    """ List of all lines received since the last prompt """
 
     def __init__(self, lines):
 
@@ -37,7 +37,11 @@ class Buffer(list):
         self.raw_lines = [line.line for line in self]
 
     def append(self, line):
+        """ Append a line to the buffer as a :class:`sage.inbound.Line` """
         super(Buffer, self).append(Line(line, len(self)))
+
+    def __repr__(self):
+        return str(self.__class__)
 
 
 def receiver(lines):
