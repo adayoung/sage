@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 
+import sys
+import os
+
+if sys.version_info < (2, 7, 0):
+    sys.stderr.write("sage requires Python 2.7 or newer.")
+    sys.stderr.write(os.linesep)
+    sys.exit(-1)
+
 import sage
 
 try:
