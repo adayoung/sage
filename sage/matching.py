@@ -21,6 +21,10 @@ class MatchableGroupError(Exception):
     pass
 
 
+class InvalidMatchableType(Exception):
+    pass
+
+
 class Matchable(object):
     """ Base class for a trigger or alias """
 
@@ -291,8 +295,7 @@ class Group(object):
             m = CIEndswith(**kwargs) if ignorecase == False \
                 else Endswith(**kwargs)
         else:
-            # you didn't specify a correct type!
-            pass
+            raise InvalidMatchableType('Unsupported matchable type: %s' % mtype)
 
         self.matchables[name] = m
 
@@ -397,8 +400,8 @@ class Group(object):
 
         if tail in group.groups:
             return group.groups[tail]
-        elif tail in group:
-            return group[tail]
+        elif tail in group.matchables:
+            return group.matchables[tail]
         else:
             return None
 
