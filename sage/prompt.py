@@ -8,7 +8,7 @@ def receiver(raw):
     """ Receives the raw prompt text and parses """
 
     # strip out the colors
-    prompt = ansi.filter(raw)
+    prompt = ansi.filter_ansi(raw)
 
     # What is this??
     if '-' not in prompt:

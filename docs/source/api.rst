@@ -59,6 +59,11 @@ Main Containers
 .. autofunction:: sage.ansi.bold_magenta
 .. autofunction:: sage.ansi.bold_cyan
 
+`sage.inbound`
+--------------
+.. automodule:: sage.inbound
+    :members:
+
 `sage.matching`
 ---------------
 .. automodule:: sage.matching

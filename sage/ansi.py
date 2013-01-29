@@ -81,7 +81,7 @@ def make_style(opts=(), **kwargs):
     return lambda text: colorize(text, opts, **kwargs)
 
 
-def filter(text):
+def filter_ansi(text):
     """ Takes in text and filters out the ANSI color codes. """
 
     return ANSI_COLOR_REGEXP.sub('', text)

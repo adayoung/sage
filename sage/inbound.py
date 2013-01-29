@@ -1,42 +1,29 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from sage import ansi
+from sage.ansi import filter_ansi
 import sage
 
 
-class Line(object):
+class Line(str):
     """ An individual line in sage's buffer """
 
-    def __init__(self, line, position):
-
-        #: the 'raw' line without ANSI filtering
-        self.raw = line
-
-        #: the filtered line
-        self.line = ansi.filter(line)
-
-        #: position in the buffer
-        self.position = position
-
-        #: output that will be sent to the client
-        self.output = line
+    def __new__(cls, string):
+        line = str.__new__(cls, filter_ansi(string))
+        line.raw = string
+        line.output = string
+        return line
 
     def gag(self):
         """ Gag the line """
         self.output = None
 
-    def __eq__(self, other):
-        return self.line == other
-
-    def __repr__(self):
-        return str(self.line)
-
-    def __str__(self):
-        return self.line
-
 
 class Buffer(list):
-    """ List of all lines received since the last prompt """
+    """ List of all lines received since the last prompt
+
+        .. warning:: It's very import all values of Buffer are instances of
+            :class:`sage.inbound.Line`
+    """
 
     def __init__(self, lines):
 
@@ -45,13 +32,10 @@ class Buffer(list):
 
     def append(self, line):
         """ Append a line to the buffer as a :class:`sage.inbound.Line` """
-        super(Buffer, self).append(Line(line, len(self)))
+        super(Buffer, self).append(Line(line))
 
     def __repr__(self):
         return str(self.__class__)
-
-    def __setitem__(self, key, value):
-        super(Buffer, self).__setitem__(key, Line(value))
 
 
 def receiver(lines):
