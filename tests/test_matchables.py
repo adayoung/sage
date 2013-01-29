@@ -80,7 +80,7 @@ class TestMatchables(unittest.TestCase):
 
         self.assertEqual(trigger.name, 'test_42')
 
-    def test_get_single_chaning(self):
+    def test_get_chaning(self):
         group = triggers.create_group('test_get')
 
         self._make_triggers(group)
@@ -91,15 +91,40 @@ class TestMatchables(unittest.TestCase):
 
         self.assertEqual(trigger.enabled, False)
 
-    def _make_triggers(self, group):
+    def test_group_disable(self):
+        group = triggers.create_group('test')
 
-        for x in range(100):
+        self._make_triggers(group, 10, 'dis_')
+
+        group.disable()
+
+        self.assertEqual(self._trigger_in_enabled('dis_1'), False)
+
+    def test_trigger_disable(self):
+        group = triggers.create_group('test')
+
+        self._make_triggers(group, 10, 'dis_')
+
+        group.disable('dis_2')
+
+        self.assertEqual(self._trigger_in_enabled('dis_2'), False)
+
+    def _trigger_in_enabled(self, trigger_name):
+        for enabled in triggers.enabled:
+            if enabled.name == trigger_name:
+                return True
+
+        return False
+
+    def _make_triggers(self, group, num=100, prefix='test_'):
+
+        for x in range(num):
 
             mtype = choice(['exact', 'substring', 'regex', 'startswith',
                 'endswith'])
 
             kwargs = {
-                'name': 'test_%s' % x,
+                'name': '%s%s' % (prefix, x),
                 'mtype': mtype,
                 'pattern': 'Test pattern'
             }
