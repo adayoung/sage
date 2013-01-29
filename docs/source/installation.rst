@@ -3,6 +3,11 @@
 Installation
 ============
 
+.. warning::
+    Sage is currently alpha-stage software. The API will be changing often.
+    Please take this into consideration before you begin any significant
+    development with Sage.
+
 Sage works with CPython version 2.7 and greater, but it will not work (yet) with
 Python 3 as Twisted (a dependency) hasn't fully supported it yet. Sage also
 can be used with `PyPy <http://pypy.org/>`_.
