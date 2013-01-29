@@ -158,10 +158,9 @@ gh-pages:
 	rm -rf build/*
 	make html
 	mv build/html ../_html
-	cd ..
 	git checkout gh-pages
-	git rm -r html
-	mv _html html
-	git add -A html
+	git rm -r ../html
+	mv ../_html ../html
+	git add -A ../html
 	git commit -m "Generated gh-pages for `git log master -1 --pretty=short --abbrev-commit`" && git push origin gh-pages ; git checkout master
-	git rm -r html
+	git rm -r ../html
