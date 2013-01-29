@@ -15,8 +15,9 @@ from setuptools import setup, find_packages
 requires = [
     'twisted',
     'setproctitle',
+    'pycrypto',
     'pyasn1',
-    'pycrypto'
+    'PyYAML'
 ]
 
 entrypoints = {
