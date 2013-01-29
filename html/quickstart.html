@@ -105,6 +105,10 @@ two parameters. The <tt class="docutils literal"><span class="pre">pattern</span
 type of trigger it is (in this case &#8216;regex&#8217;). We &#8216;wrap&#8217; <tt class="xref py py-meth docutils literal"><span class="pre">exits()</span></tt> with
 the decorator to <a class="reference internal" href="api.html#sage.matching.Matchable.bind" title="sage.matching.Matchable.bind"><tt class="xref py py-data docutils literal"><span class="pre">bind</span></tt></a> it to the trigger it
 creates for us.</p>
+<p>In Sage, triggers and aliases are better known as <cite>matchables</cite> since they are
+identical. Methods bound to matchables like <tt class="xref py py-meth docutils literal"><span class="pre">exits()</span></tt> accept a single
+parameter that is the <a class="reference internal" href="api.html#sage.matching.Matchable" title="sage.matching.Matchable"><tt class="xref py py-class docutils literal"><span class="pre">Matchable</span></tt></a> instance they
+belong to.</p>
 </div>
 </div>
 

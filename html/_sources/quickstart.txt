@@ -56,6 +56,11 @@ type of trigger it is (in this case 'regex'). We 'wrap' :py:meth:`exits` with
 the decorator to :py:data:`~sage.matching.Matchable.bind` it to the trigger it
 creates for us.
 
+In Sage, triggers and aliases are better known as `matchables` since they are
+identical. Methods bound to matchables like :py:meth:`exits` accept a single
+parameter that is the :py:class:`~sage.matching.Matchable` instance they
+belong to.
+
 
 
 
