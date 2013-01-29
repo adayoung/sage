@@ -8,7 +8,7 @@ if sys.version_info < (2, 7, 0):
     sys.stderr.write(os.linesep)
     sys.exit(-1)
 
-import sage
+from sage import __version__
 
 try:
     from setuptools import setup
