@@ -60,6 +60,15 @@ class TestMatchables(unittest.TestCase):
 
         self.assertEqual(trigger, None)
 
+    def test_fail_get_group(self):
+        group = triggers.create_group('test_get')
+
+        subgroup = group.create_group('subgroup')
+
+        testgroup = group.get('subgroup2')
+
+        self.assertEqual(testgroup, None)
+
     def test_relative_get_trigger(self):
         group = triggers.create_group('test_get')
 
