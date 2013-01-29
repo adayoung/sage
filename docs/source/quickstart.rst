@@ -187,4 +187,31 @@ Adding an Alias
 
 Leaving our exits trigger enabled would be perfectly acceptable, but lets
 say you only want it on when you 'ql' (quick-look in Achaea). To do this, you
-need to make an alias. This works nearly identical to how triggers work.
+need to make an alias. This works nearly identical to how triggers work: ::
+
+    from sage import triggers, aliases, ansi, send  # notice we add send
+
+    room_triggers = triggers.create_group('room')
+
+    # create a new aliases group
+    room_aliases = aliases.create_group('room')
+
+
+    # We create an alias similar to how we create a trigger
+    @room_aliases.alias(pattern="ql", type="exact")
+    def ql(alias):
+        # send to Achaea
+        send('ql')
+
+
+    @room_triggers.trigger(
+        pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
+        type="regex")
+    def exits(trigger):
+        exit_str = trigger.groups[1]
+        exit_str = exit_str.replace('and', '')
+        exits = [ansi.bold_white(e.strip()) for e in exit_str.split(',')]
+        new_str = ', '.join(exits)
+        trigger.line.output = "Exits: " + new_str
+
+
