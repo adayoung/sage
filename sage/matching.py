@@ -103,7 +103,7 @@ class Exact(Matchable):
 
     def match(self, line):
 
-        if self.pattern == line:
+        if self.pattern == line.line:
             return self.successful_match(line)
 
         return False
@@ -114,7 +114,7 @@ class CIExact(CIMatchable):
 
     def match(self, line):
 
-        if self.pattern == line.lower():
+        if self.pattern == line.line.lower():
             return self.successful_match(line)
 
         return False
@@ -125,8 +125,8 @@ class Substring(Matchable):
 
     def match(self, line):
 
-        if self.pattern in line:
-            self.prefix, self.suffix = line.split(self.pattern)
+        if self.pattern in line.line:
+            self.prefix, self.suffix = line.line.split(self.pattern)
             return self.successful_match(line)
 
         return False
@@ -137,7 +137,7 @@ class CISubstring(CIMatchable):
 
     def match(self, line):
 
-        if self.pattern in line.lower():
+        if self.pattern in line.line.lower():
             self.prefix, self.suffix = line.split(self.pattern)
             return self.successful_match(line)
 
@@ -162,7 +162,7 @@ class Regex(Matchable):
 
     def match(self, line):
 
-        match = self.pattern.match(line)
+        match = self.pattern.match(line.line)
 
         if match:
             self.matchobj = match
@@ -177,8 +177,8 @@ class Startswith(Matchable):
 
     def match(self, line):
 
-        if line.startswith(self.pattern):
-            self.suffix = line.split(self.pattern)[1]
+        if line.line.startswith(self.pattern):
+            self.suffix = line.line.split(self.pattern)[1]
             return self.successful_match(line)
 
         return False
@@ -189,8 +189,8 @@ class CIStartswith(CIMatchable):
 
     def match(self, line):
 
-        if line.lower().startswith(self.pattern):
-            self.suffix = line.split(self.pattern)[1]
+        if line.line.lower().startswith(self.pattern):
+            self.suffix = line.line.split(self.pattern)[1]
             return self.successful_match(line)
 
         return False
@@ -201,8 +201,8 @@ class Endswith(Matchable):
 
     def match(self, line):
 
-        if line.endswith(self.pattern):
-            self.prefix = line.split(self.pattern)[0]
+        if line.line.endswith(self.pattern):
+            self.prefix = line.line.split(self.pattern)[0]
             return self.successful_match(line)
 
         return False
@@ -213,8 +213,8 @@ class CIEndswith(CIMatchable):
 
     def match(self, line):
 
-        if self.line.lower().endswith(self.pattern):
-            self.prefix = line.split(self.pattern)[0]
+        if self.line.line.lower().endswith(self.pattern):
+            self.prefix = line.line.split(self.pattern)[0]
             return self.successful_match(line)
 
         return False
