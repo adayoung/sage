@@ -96,7 +96,7 @@ First, we need to break up the exits into a
         # exits now is ['north', 'east', 'south', 'west', 'up (open door)', 'down', 'out']
 
 Notice that the `trigger` object already had the regular expression groups for
-you. Now lets reformat this information in a better way with some color. Add
+you. Now let's reformat this information in a better way with some color. Add
 :py:mod:`~sage.ansi` to your imports: ::
 
     from sage import echo, triggers, ansi
