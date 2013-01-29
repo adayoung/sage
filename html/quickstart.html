@@ -100,15 +100,44 @@ see a line where Sage is echoing &#8220;Exits detected!&#8221; to you.</p>
 is technically the top-level <a class="reference internal" href="api.html#sage.matching.Group" title="sage.matching.Group"><tt class="xref py py-class docutils literal"><span class="pre">group</span></tt></a> of
 triggers in Sage. From that group, we use a
 <a class="reference external" href="http://docs.python.org/2/reference/compound_stmts.html#function">decorator</a>
-to call the <tt class="xref py py-meth docutils literal"><span class="pre">trigger()</span></tt> method and pass it
-two parameters. The <tt class="docutils literal"><span class="pre">pattern</span></tt> is what we match against and the <tt class="docutils literal"><span class="pre">type</span></tt> is the
-type of trigger it is (in this case &#8216;regex&#8217;). We &#8216;wrap&#8217; <tt class="xref py py-meth docutils literal"><span class="pre">exits()</span></tt> with
-the decorator to <a class="reference internal" href="api.html#sage.matching.Matchable.bind" title="sage.matching.Matchable.bind"><tt class="xref py py-data docutils literal"><span class="pre">bind</span></tt></a> it to the trigger it
-creates for us.</p>
+(declared by the &#64;) to call the <tt class="xref py py-meth docutils literal"><span class="pre">trigger()</span></tt>
+method and pass it two parameters. The <tt class="docutils literal"><span class="pre">pattern</span></tt> is what we match against and
+the <tt class="docutils literal"><span class="pre">type</span></tt> is the type of trigger it is (in this case &#8216;regex&#8217;). We &#8216;wrap&#8217;
+<tt class="xref py py-meth docutils literal"><span class="pre">exits()</span></tt> with the decorator to <a class="reference internal" href="api.html#sage.matching.Matchable.bind" title="sage.matching.Matchable.bind"><tt class="xref py py-data docutils literal"><span class="pre">bind</span></tt></a>
+it to the trigger it creates for us.</p>
 <p>In Sage, triggers and aliases are better known as <cite>matchables</cite> since they are
 identical. Methods bound to matchables like <tt class="xref py py-meth docutils literal"><span class="pre">exits()</span></tt> accept a single
 parameter that is the <a class="reference internal" href="api.html#sage.matching.Matchable" title="sage.matching.Matchable"><tt class="xref py py-class docutils literal"><span class="pre">Matchable</span></tt></a> instance they
 belong to.</p>
+<div class="section" id="taking-it-to-the-next-level">
+<h3>Taking It To The Next Level<a class="headerlink" href="#taking-it-to-the-next-level" title="Permalink to this headline">¶</a></h3>
+<p>Lets use our new exits trigger to make the exits more readable. Assume the line
+we are processing is:</p>
+<div class="highlight-python"><pre>You see exits leading north, east, south, west, up (open door), down, and out.</pre>
+</div>
+<p>First, we need to break up the exits into a
+<a class="reference external" href="http://docs.python.org/2/tutorial/introduction.html#lists">list</a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@triggers.trigger</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
+
+    <span class="c"># get the second regex group (0 would be the first)</span>
+    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">trigger</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c"># exit_str now is &quot;north, east, south, west, up (open door), down, and out&quot;</span>
+
+    <span class="c"># lets remove &#39;and&#39; from the string for sake of consistency</span>
+    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; and&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="c"># exit_str now is &quot;north, east, south, west, up (open door), down, out&quot;</span>
+
+    <span class="c"># now break up the exits into a list and trim off any white space</span>
+    <span class="c"># To do this, we&#39;ll use a list comprehension, a powerful Python tool!</span>
+    <span class="n">exits</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)]</span>
+
+    <span class="c"># exits now is [&#39;north&#39;, &#39;east&#39;, &#39;south&#39;, &#39;west&#39;, &#39;up (open door)&#39;, &#39;down&#39;, &#39;out&#39;]</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
@@ -121,7 +150,10 @@ belong to.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Quickstart</a><ul>
-<li><a class="reference internal" href="#a-truly-minimal-application">A Truly &#8216;Minimal&#8217; Application</a></li>
+<li><a class="reference internal" href="#a-truly-minimal-application">A Truly &#8216;Minimal&#8217; Application</a><ul>
+<li><a class="reference internal" href="#taking-it-to-the-next-level">Taking It To The Next Level</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

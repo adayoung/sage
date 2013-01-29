@@ -50,18 +50,44 @@ Lets go over the parts of this snippet. We import two objects from
 is technically the top-level :py:class:`group <sage.matching.Group>` of
 triggers in Sage. From that group, we use a
 `decorator <http://docs.python.org/2/reference/compound_stmts.html#function>`_
-to call the :py:meth:`~sage.matching.TriggerGroup.trigger` method and pass it
-two parameters. The ``pattern`` is what we match against and the ``type`` is the
-type of trigger it is (in this case 'regex'). We 'wrap' :py:meth:`exits` with
-the decorator to :py:data:`~sage.matching.Matchable.bind` it to the trigger it
-creates for us.
+(declared by the @) to call the :py:meth:`~sage.matching.TriggerGroup.trigger`
+method and pass it two parameters. The ``pattern`` is what we match against and
+the ``type`` is the type of trigger it is (in this case 'regex'). We 'wrap'
+:py:meth:`exits` with the decorator to :py:data:`~sage.matching.Matchable.bind`
+it to the trigger it creates for us.
 
 In Sage, triggers and aliases are better known as `matchables` since they are
 identical. Methods bound to matchables like :py:meth:`exits` accept a single
 parameter that is the :py:class:`~sage.matching.Matchable` instance they
 belong to.
 
+Taking It To The Next Level
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Lets use our new exits trigger to make the exits more readable. Assume the line
+we are processing is: ::
 
+    You see exits leading north, east, south, west, up (open door), down, and out.
 
+First, we need to break up the exits into a
+`list <http://docs.python.org/2/tutorial/introduction.html#lists>`_: ::
+
+    @triggers.trigger(pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$", type="regex")
+    def exits(trigger):
+
+        # get the second regex group (0 would be the first)
+        exit_str = trigger.groups[1]
+
+        # exit_str now is "north, east, south, west, up (open door), down, and out"
+
+        # lets remove 'and' from the string for sake of consistency
+        exit_str = exit_str.replace(' and', '')
+
+        # exit_str now is "north, east, south, west, up (open door), down, out"
+
+        # now break up the exits into a list and trim off any white space
+        # To do this, we'll use a list comprehension, a powerful Python tool!
+        exits = [e.strip() for e in exit_str.split(',')]
+
+        # exits now is ['north', 'east', 'south', 'west', 'up (open door)', 'down', 'out']
 
