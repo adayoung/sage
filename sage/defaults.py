@@ -22,9 +22,9 @@ class Configuration(dict):
 defaults = Configuration({
     'port': 2003,
     'host': 'achaea.com',
-    'proxy_port': 8007,
+    'proxy_port': 5493,
     'backdoor': True,
     'backdoor_user': 'sage',
     'backdoor_password': 'sage',
-    'backdoor_port': 8006
+    'backdoor_port': 5494
 })
