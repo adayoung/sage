@@ -45,7 +45,16 @@ with `regular expressions <http://xkcd.com/208/>`_, you should research them as
 they are vital to making apps with Sage. Now whenever you see an exit, you'll
 see a line where Sage is echoing "Exits detected!" to you.
 
-
+Lets go over the parts of this snippet. We import two objects from
+:py:mod:`sage`: :py:meth:`~sage.echo` and :py:data:`~sage.triggers`. The latter
+is technically the top-level :py:class:`group <sage.matching.Group>` of
+triggers in Sage. From that group, we use a
+`decorator <http://docs.python.org/2/reference/compound_stmts.html#function>`_
+to call the :py:meth:`~sage.matching.TriggerGroup.trigger` method and pass it
+two parameters. The ``pattern`` is what we match against and the ``type`` is the
+type of trigger it is (in this case 'regex'). We 'wrap' :py:meth:`exits` with
+the decorator to :py:data:`~sage.matching.Matchable.bind` it to the trigger it
+creates for us.
 
 
 
