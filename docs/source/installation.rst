@@ -28,8 +28,8 @@ Pip makes installing Sage and its dependencies painless.
 
     $ pip install -e git+https://github.com/astralinae/sage.git#egg=sage
 
-Manally
--------
+Manually
+--------
 
 Because of `Issue #4 <https://github.com/astralinae/sage/issues/4>`_, you might
 have to install `pyasn1` manually first if you are using a virtualenv:
