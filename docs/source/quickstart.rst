@@ -36,7 +36,9 @@ Cool as that is, it's not terribly useful. Now lets make a trigger for the
 
     from sage import echo, triggers
 
-    @triggers.trigger(pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$", type="regex")
+    @triggers.trigger(
+        pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
+        type="regex")
     def exits(trigger):
         echo('Exits detected!')
 
@@ -72,7 +74,9 @@ we are processing is: ::
 First, we need to break up the exits into a
 `list <http://docs.python.org/2/tutorial/introduction.html#lists>`_: ::
 
-    @triggers.trigger(pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$", type="regex")
+    @triggers.trigger(
+        pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
+        type="regex")
     def exits(trigger):
 
         # get the second regex group (0 would be the first)
@@ -92,5 +96,26 @@ First, we need to break up the exits into a
         # exits now is ['north', 'east', 'south', 'west', 'up (open door)', 'down', 'out']
 
 Notice that the `trigger` object already had the regular expression groups for
-you.
+you. Now lets reformat this information in a better way with some color. Add
+:py:mod:`~sage.ansi` to your imports: ::
+
+    from sage import echo, triggers, ansi
+
+Now modify that list comprehension to also color the exits: ::
+
+    exits = [ansi.bold_white(e.strip()) for e in exit_str.split(',')]
+
+Now all of our exits will be in bright white. Lets turn the list back into a
+string now: ::
+
+    # joins the list as a string delimited by a comma and a space
+    new_str = ', '.join(exits)
+
+    # echo our new exits back to the client
+    echo("Exits: " + new_str)
+
+Not bad! Now we can see those exits much better, but this still isn't ideal.
+The line we echo comes at the top of every room and the original exits line is
+still there. While :py:meth:`~sage.echo` is easy to use, it's not the right
+tool for this job. Instead, lets replace the actual exits line from the game: ::
 
