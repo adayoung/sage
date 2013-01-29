@@ -9,10 +9,8 @@ if sys.version_info < (2, 7, 0):
     sys.stderr.write(os.linesep)
     sys.exit(-1)
 
-try:
-    from setuptools import setup, find_packages
-except ImportError:
-    from distutils.core import setup, find_packages
+
+from setuptools import setup, find_packages
 
 requires = [
     'twisted',
