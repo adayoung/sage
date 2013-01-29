@@ -5,3 +5,5 @@ _trial_temp
 dist
 dev
 build
+html
+doctrees
