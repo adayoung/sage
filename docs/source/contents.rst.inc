@@ -6,6 +6,11 @@ User's Guide
 
    installation
    quickstart
+   matchables
+   buffer
+   signals
+   apps
+   backdoor
 
 API Reference
 -------------
