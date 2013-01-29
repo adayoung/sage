@@ -311,13 +311,11 @@ class Group(object):
                 self.parent._disable(instance)
             self.enabled = False
             return True
-        elif '/' in name:
-            instance = self._parse_name(name)
-            instance.disable()
-            return True
         else:
-            if name in self:
-                self.matchables[name].disable()
+            target = self.get(name)
+
+            if target:
+                target.disable()
                 return True
 
         return False
@@ -330,13 +328,11 @@ class Group(object):
                     self.parent._enable(instance)
             self.enabled = True
             return True
-        elif '/' in name:
-            instance = self._parse_name(name)
-            instance.enable()
-            return True
         else:
-            if name in self:
-                self.matchables[name].enable()
+            target = self.get(name)
+
+            if target:
+                target.enable()
                 return True
 
         return False
