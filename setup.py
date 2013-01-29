@@ -8,8 +8,6 @@ if sys.version_info < (2, 7, 0):
     sys.stderr.write(os.linesep)
     sys.exit(-1)
 
-from sage import __version__
-
 try:
     from setuptools import setup
 except ImportError:
@@ -28,7 +26,7 @@ entrypoints = {
 
 setup(
     name='sage',
-    version=sage.__version__,
+    version='2.0.0',
     description="Proxy and development framework for IRE's Achaea.",
     author='Todd Wilson',
     url='http://github.com/astralinae/sage',
