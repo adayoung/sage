@@ -15,6 +15,10 @@ supported it yet. Sage also can be used with `PyPy <http://pypy.org/>`_.
 It's also recommended to have `libyaml <http://pyyaml.org/wiki/LibYAML>`_
 installed but not required.
 
+.. warning::
+    Sage currently does not support Windows. Please read :ref:`windows`
+    for more info.
+
 Using Pip
 ---------
 

@@ -86,7 +86,9 @@ writing a single line of code!</p>
 &#8216;exits&#8217; line you&#8217;d see in every room in Achaea. In <cite>myapp.py</cite>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">echo</span><span class="p">,</span> <span class="n">triggers</span>
 
-<span class="nd">@triggers.trigger</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
+<span class="nd">@triggers.trigger</span><span class="p">(</span>
+    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="n">echo</span><span class="p">(</span><span class="s">&#39;Exits detected!&#39;</span><span class="p">)</span>
 </pre></div>
@@ -117,7 +119,9 @@ we are processing is:</p>
 </div>
 <p>First, we need to break up the exits into a
 <a class="reference external" href="http://docs.python.org/2/tutorial/introduction.html#lists">list</a>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="nd">@triggers.trigger</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@triggers.trigger</span><span class="p">(</span>
+    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
 
     <span class="c"># get the second regex group (0 would be the first)</span>
@@ -138,7 +142,121 @@ we are processing is:</p>
 </pre></div>
 </div>
 <p>Notice that the <cite>trigger</cite> object already had the regular expression groups for
-you.</p>
+you. Now lets reformat this information in a better way with some color. Add
+<a class="reference internal" href="api.html#module-sage.ansi" title="sage.ansi"><tt class="xref py py-mod docutils literal"><span class="pre">ansi</span></tt></a> to your imports:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">echo</span><span class="p">,</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">ansi</span>
+</pre></div>
+</div>
+<p>Now modify that list comprehension to also color the exits:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">exits</span> <span class="o">=</span> <span class="p">[</span><span class="n">ansi</span><span class="o">.</span><span class="n">bold_white</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>Now all of our exits will be in bright white. Lets turn the list back into a
+string now:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># joins the list as a string delimited by a comma and a space</span>
+<span class="n">new_str</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exits</span><span class="p">)</span>
+
+<span class="c"># echo our new exits back to the client</span>
+<span class="n">echo</span><span class="p">(</span><span class="s">&quot;Exits: &quot;</span> <span class="o">+</span> <span class="n">new_str</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Not bad! Now we can see those exits much better, but this still isn&#8217;t ideal.
+The line we echo comes at the top of every room and the original exits line is
+still there. While <a class="reference internal" href="api.html#sage.echo" title="sage.echo"><tt class="xref py py-meth docutils literal"><span class="pre">echo()</span></tt></a> is easy to use, it&#8217;s not the right
+tool for this job. Instead, lets replace the actual exits line from the game.
+Fortunately, Sage makes this very easy. Remove the call to
+<a class="reference internal" href="api.html#sage.echo" title="sage.echo"><tt class="xref py py-meth docutils literal"><span class="pre">echo()</span></tt></a> and replace it with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># replace the line&#39;s output with new_str</span>
+<span class="n">trigger</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="s">&quot;Exits: &quot;</span> <span class="o">+</span> <span class="n">new_str</span>
+</pre></div>
+</div>
+<p>Sage provides you the matching line with <cite>trigger.line</cite>. This object is an
+instance of the special <a class="reference internal" href="api.html#sage.inbound.Line" title="sage.inbound.Line"><tt class="xref py py-class docutils literal"><span class="pre">sage.inbound.Line</span></tt></a>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">You must never use assignment (=) on a <a class="reference internal" href="api.html#sage.inbound.Line" title="sage.inbound.Line"><tt class="xref py py-class docutils literal"><span class="pre">Line</span></tt></a>! Only
+change its <cite>.output</cite> attribute.</p>
+</div>
+<p>Now we have nice easy to read exits. Here&#8217;s the app in its entirety so far:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">ansi</span>
+
+
+<span class="nd">@triggers.trigger</span><span class="p">(</span>
+    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
+    <span class="c"># get the second regex group (0 would be the first)</span>
+    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">trigger</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c"># lets remove &#39;and&#39; from the string for sake of consistency</span>
+    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;and&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="c"># now break up the exits into a list and trim off any white space while</span>
+    <span class="c"># adding color using a list comprehension</span>
+    <span class="n">exits</span> <span class="o">=</span> <span class="p">[</span><span class="n">ansi</span><span class="o">.</span><span class="n">bold_white</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)]</span>
+
+    <span class="c"># joins the list as a string delimited by a comma and a space</span>
+    <span class="n">new_str</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exits</span><span class="p">)</span>
+
+    <span class="c"># replace the line&#39;s output with new_str</span>
+    <span class="n">trigger</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="s">&quot;Exits: &quot;</span> <span class="o">+</span> <span class="n">new_str</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-organized">
+<h3>Get Organized<a class="headerlink" href="#get-organized" title="Permalink to this headline">¶</a></h3>
+<p>It&#8217;s probably not a good idea to just make triggers in the &#8216;master&#8217; trigger
+group. Lets organize your trigger into its own <a class="reference internal" href="api.html#sage.matching.Group" title="sage.matching.Group"><tt class="xref py py-class docutils literal"><span class="pre">Group</span></tt></a>.
+The app now changes to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">ansi</span>
+
+<span class="c"># create a new group called &#39;room&#39;</span>
+<span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">)</span>
+
+<span class="c"># notice how the decorator changes to the group</span>
+<span class="nd">@room_triggers.trigger</span><span class="p">(</span>
+    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
+    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">trigger</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;and&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">exits</span> <span class="o">=</span> <span class="p">[</span><span class="n">ansi</span><span class="o">.</span><span class="n">bold_white</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)]</span>
+    <span class="n">new_str</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exits</span><span class="p">)</span>
+    <span class="n">trigger</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="s">&quot;Exits: &quot;</span> <span class="o">+</span> <span class="n">new_str</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="adding-an-alias">
+<h3>Adding an Alias<a class="headerlink" href="#adding-an-alias" title="Permalink to this headline">¶</a></h3>
+<p>Leaving our exits trigger enabled would be perfectly acceptable, but lets
+say you only want it on when you &#8216;ql&#8217; (quick-look in Achaea). To do this, you
+need to make an alias. This works nearly identical to how triggers work:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">aliases</span><span class="p">,</span> <span class="n">ansi</span><span class="p">,</span> <span class="n">send</span>  <span class="c"># notice we add send</span>
+
+<span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">)</span>
+
+<span class="c"># create a new aliases group</span>
+<span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">)</span>
+
+
+<span class="c"># We create an alias similar to how we create a trigger</span>
+<span class="nd">@room_aliases.alias</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;ql&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">ql</span><span class="p">(</span><span class="n">alias</span><span class="p">):</span>
+    <span class="c"># send to Achaea</span>
+    <span class="n">send</span><span class="p">(</span><span class="s">&#39;ql&#39;</span><span class="p">)</span>
+
+
+<span class="nd">@room_triggers.trigger</span><span class="p">(</span>
+    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
+    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">trigger</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;and&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">exits</span> <span class="o">=</span> <span class="p">[</span><span class="n">ansi</span><span class="o">.</span><span class="n">bold_white</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)]</span>
+    <span class="n">new_str</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exits</span><span class="p">)</span>
+    <span class="n">trigger</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="s">&quot;Exits: &quot;</span> <span class="o">+</span> <span class="n">new_str</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -154,6 +272,8 @@ you.</p>
 <li><a class="reference internal" href="#">Quickstart</a><ul>
 <li><a class="reference internal" href="#a-minimal-application">A Minimal Application</a><ul>
 <li><a class="reference internal" href="#taking-it-to-the-next-level">Taking It To The Next Level</a></li>
+<li><a class="reference internal" href="#get-organized">Get Organized</a></li>
+<li><a class="reference internal" href="#adding-an-alias">Adding an Alias</a></li>
 </ul>
 </li>
 </ul>

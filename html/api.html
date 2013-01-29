@@ -163,16 +163,32 @@ important right here and provide links to the canonical documentation.</p>
 <dt id="sage.buffer">
 <tt class="descclassname">sage.</tt><tt class="descname">buffer</tt><em class="property"> = &lt;class 'sage.inbound.Buffer'&gt;</em><a class="headerlink" href="#sage.buffer" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of all lines received since the last prompt</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">It&#8217;s very import all values of Buffer are instances of
+<a class="reference internal" href="#sage.inbound.Line" title="sage.inbound.Line"><tt class="xref py py-class docutils literal"><span class="pre">sage.inbound.Line</span></tt></a></p>
+</div>
 </dd></dl>
 
 <dl class="class">
 <dt id="sage.inbound.Buffer">
 <em class="property">class </em><tt class="descclassname">sage.inbound.</tt><tt class="descname">Buffer</tt><big>(</big><em>lines</em><big>)</big><a class="reference internal" href="_modules/sage/inbound.html#Buffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.inbound.Buffer" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of all lines received since the last prompt</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">It&#8217;s very import all values of Buffer are instances of
+<a class="reference internal" href="#sage.inbound.Line" title="sage.inbound.Line"><tt class="xref py py-class docutils literal"><span class="pre">sage.inbound.Line</span></tt></a></p>
+</div>
 <dl class="method">
 <dt id="sage.inbound.Buffer.append">
 <tt class="descname">append</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="_modules/sage/inbound.html#Buffer.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.inbound.Buffer.append" title="Permalink to this definition">¶</a></dt>
-<dd><p>Append a line to the buffer as a <tt class="xref py py-class docutils literal"><span class="pre">sage.inbound.Line</span></tt></p>
+<dd><p>Append a line to the buffer as a <a class="reference internal" href="#sage.inbound.Line" title="sage.inbound.Line"><tt class="xref py py-class docutils literal"><span class="pre">sage.inbound.Line</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.inbound.Buffer.insert">
+<tt class="descname">insert</tt><big>(</big><em>index</em>, <em>line</em><big>)</big><a class="reference internal" href="_modules/sage/inbound.html#Buffer.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.inbound.Buffer.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert line before index as a <a class="reference internal" href="#sage.inbound.Line" title="sage.inbound.Line"><tt class="xref py py-class docutils literal"><span class="pre">sage.inbound.Line</span></tt></a></p>
 </dd></dl>
 
 </dd></dl>
@@ -235,8 +251,8 @@ print(&#8216;this should not be red&#8217;)</dd>
 </dd></dl>
 
 <dl class="function">
-<dt id="sage.ansi.filter">
-<tt class="descclassname">sage.ansi.</tt><tt class="descname">filter</tt><big>(</big><em>text</em><big>)</big><a class="reference internal" href="_modules/sage/ansi.html#filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.ansi.filter" title="Permalink to this definition">¶</a></dt>
+<dt id="sage.ansi.filter_ansi">
+<tt class="descclassname">sage.ansi.</tt><tt class="descname">filter_ansi</tt><big>(</big><em>text</em><big>)</big><a class="reference internal" href="_modules/sage/ansi.html#filter_ansi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.ansi.filter_ansi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes in text and filters out the ANSI color codes.</p>
 </dd></dl>
 
@@ -344,6 +360,61 @@ COMMENT = make_style(fg=&#8217;blue&#8217;, opts=(&#8216;bold&#8217;,))</dd>
 <dt id="sage.ansi.bold_cyan">
 <tt class="descclassname">sage.ansi.</tt><tt class="descname">bold_cyan</tt><big>(</big><em>text</em><big>)</big><a class="headerlink" href="#sage.ansi.bold_cyan" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</div>
+<div class="section" id="module-sage.inbound">
+<span id="sage-inbound"></span><h2><cite>sage.inbound</cite><a class="headerlink" href="#module-sage.inbound" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">sage.inbound.</tt><tt class="descname">Buffer</tt><big>(</big><em>lines</em><big>)</big><a class="reference internal" href="_modules/sage/inbound.html#Buffer"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>List of all lines received since the last prompt</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">It&#8217;s very import all values of Buffer are instances of
+<a class="reference internal" href="#sage.inbound.Line" title="sage.inbound.Line"><tt class="xref py py-class docutils literal"><span class="pre">sage.inbound.Line</span></tt></a></p>
+</div>
+<dl class="method">
+<dt>
+<tt class="descname">append</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="_modules/sage/inbound.html#Buffer.append"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Append a line to the buffer as a <a class="reference internal" href="#sage.inbound.Line" title="sage.inbound.Line"><tt class="xref py py-class docutils literal"><span class="pre">sage.inbound.Line</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">insert</tt><big>(</big><em>index</em>, <em>line</em><big>)</big><a class="reference internal" href="_modules/sage/inbound.html#Buffer.insert"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Insert line before index as a <a class="reference internal" href="#sage.inbound.Line" title="sage.inbound.Line"><tt class="xref py py-class docutils literal"><span class="pre">sage.inbound.Line</span></tt></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sage.inbound.Line">
+<em class="property">class </em><tt class="descclassname">sage.inbound.</tt><tt class="descname">Line</tt><a class="reference internal" href="_modules/sage/inbound.html#Line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.inbound.Line" title="Permalink to this definition">¶</a></dt>
+<dd><p>An individual line in sage&#8217;s buffer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attribute raw:</th><td class="field-body">the original &#8216;raw&#8217; value of the line</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Attribute output:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">output that will be sent to the client</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="sage.inbound.Line.gag">
+<tt class="descname">gag</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/inbound.html#Line.gag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.inbound.Line.gag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gag the line</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sage.inbound.receiver">
+<tt class="descclassname">sage.inbound.</tt><tt class="descname">receiver</tt><big>(</big><em>lines</em><big>)</big><a class="reference internal" href="_modules/sage/inbound.html#receiver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.inbound.receiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receives lines since the last prompt</p>
+</dd></dl>
 
 </div>
 <div class="section" id="module-sage.matching">
@@ -690,7 +761,7 @@ successful match.</li>
 
 <dl class="data">
 <dt id="sage.player.room">
-<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x10a84f110&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x11053b250&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
 <dd><p>Room data</p>
 </dd></dl>
 
@@ -749,6 +820,7 @@ successful match.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-sage.ansi"><cite>sage.ansi</cite></a></li>
+<li><a class="reference internal" href="#module-sage.inbound"><cite>sage.inbound</cite></a></li>
 <li><a class="reference internal" href="#module-sage.matching"><cite>sage.matching</cite></a></li>
 <li><a class="reference internal" href="#module-sage.player"><cite>sage.player</cite></a></li>
 </ul>
