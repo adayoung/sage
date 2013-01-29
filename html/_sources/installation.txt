@@ -22,5 +22,32 @@ Pip makes installing Sage and its dependencies painless.
 
 .. code-block:: console
 
-    pip install -e git+https://github.com/astralinae/sage.git#egg=sage
+    $ pip install -e git+https://github.com/astralinae/sage.git#egg=sage
 
+Manally
+-------
+
+Because of `Issue #4 <https://github.com/astralinae/sage/issues/4>`_, you might
+have to install `pyasn1` manually first if you are using a virtualenv:
+
+.. code-block:: console
+
+    $ pip install pyasn1
+
+Clone Sage and build with `setup.py`:
+
+.. code-block:: console
+
+    $ git clone git://github.com/astralinae/sage.git
+    $ cd sage
+    $ python setup.py install
+
+Screenwidth 0
+-------------
+
+The only configuration option Sage requires in Achaea is `screenwidth 0`. Sage
+is not (nor ever will be) designed to work with screenwidth 80.
+
+.. code-block:: console
+
+    config screenwidth 0

@@ -64,8 +64,8 @@
 <p>Ready to get started?  This page gives a good introduction to Sage.  It
 assumes you already have Sage installed.  If you do not, head over to the
 <a class="reference internal" href="installation.html#installation"><em>Installation</em></a> section. Lets go!</p>
-<div class="section" id="a-truly-minimal-application">
-<h2>A Truly &#8216;Minimal&#8217; Application<a class="headerlink" href="#a-truly-minimal-application" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="a-minimal-application">
+<h2>A Minimal Application<a class="headerlink" href="#a-minimal-application" title="Permalink to this headline">¶</a></h2>
 <p>Lets make your first Sage app. Create a file called <cite>myapp.py</cite>:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> touch myapp.py
 </pre></div>
@@ -75,7 +75,7 @@ assumes you already have Sage installed.  If you do not, head over to the
 </pre></div>
 </div>
 <p>Sage is now running your app and gives you some port numbers for the proxy and
-the &#8216;backdoor&#8217; (which we&#8217;ll cover later). You can now connect your MUD client
+the &#8216;<em class="xref std std-ref">backdoor</em>&#8216; (which we&#8217;ll cover later). You can now connect your MUD client
 to <cite>127.0.0.1:5493</cite>. Congratulations, you have made your first app without
 writing a single line of code!</p>
 <div class="admonition note">
@@ -104,7 +104,7 @@ triggers in Sage. From that group, we use a
 method and pass it two parameters. The <tt class="docutils literal"><span class="pre">pattern</span></tt> is what we match against and
 the <tt class="docutils literal"><span class="pre">type</span></tt> is the type of trigger it is (in this case &#8216;regex&#8217;). We &#8216;wrap&#8217;
 <tt class="xref py py-meth docutils literal"><span class="pre">exits()</span></tt> with the decorator to <a class="reference internal" href="api.html#sage.matching.Matchable.bind" title="sage.matching.Matchable.bind"><tt class="xref py py-data docutils literal"><span class="pre">bind</span></tt></a>
-it to the trigger it creates for us.</p>
+it to the trigger it creates for you.</p>
 <p>In Sage, triggers and aliases are better known as <cite>matchables</cite> since they are
 identical. Methods bound to matchables like <tt class="xref py py-meth docutils literal"><span class="pre">exits()</span></tt> accept a single
 parameter that is the <a class="reference internal" href="api.html#sage.matching.Matchable" title="sage.matching.Matchable"><tt class="xref py py-class docutils literal"><span class="pre">Matchable</span></tt></a> instance they
@@ -131,12 +131,14 @@ we are processing is:</p>
     <span class="c"># exit_str now is &quot;north, east, south, west, up (open door), down, out&quot;</span>
 
     <span class="c"># now break up the exits into a list and trim off any white space</span>
-    <span class="c"># To do this, we&#39;ll use a list comprehension, a powerful Python tool!</span>
+    <span class="c"># To do this, we&#39;ll use a list comprehension</span>
     <span class="n">exits</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)]</span>
 
     <span class="c"># exits now is [&#39;north&#39;, &#39;east&#39;, &#39;south&#39;, &#39;west&#39;, &#39;up (open door)&#39;, &#39;down&#39;, &#39;out&#39;]</span>
 </pre></div>
 </div>
+<p>Notice that the <cite>trigger</cite> object already had the regular expression groups for
+you.</p>
 </div>
 </div>
 </div>
@@ -150,7 +152,7 @@ we are processing is:</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Quickstart</a><ul>
-<li><a class="reference internal" href="#a-truly-minimal-application">A Truly &#8216;Minimal&#8217; Application</a><ul>
+<li><a class="reference internal" href="#a-minimal-application">A Minimal Application</a><ul>
 <li><a class="reference internal" href="#taking-it-to-the-next-level">Taking It To The Next Level</a></li>
 </ul>
 </li>

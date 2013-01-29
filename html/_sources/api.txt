@@ -50,7 +50,14 @@ Main Containers
 .. autofunction:: sage.ansi.blue
 .. autofunction:: sage.ansi.magenta
 .. autofunction:: sage.ansi.cyan
+.. autofunction:: sage.ansi.grey
 .. autofunction:: sage.ansi.bold_white
+.. autofunction:: sage.ansi.bold_red
+.. autofunction:: sage.ansi.bold_green
+.. autofunction:: sage.ansi.bold_yellow
+.. autofunction:: sage.ansi.bold_blue
+.. autofunction:: sage.ansi.bold_magenta
+.. autofunction:: sage.ansi.bold_cyan
 
 `sage.matching`
 ---------------

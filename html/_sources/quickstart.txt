@@ -7,7 +7,7 @@ Ready to get started?  This page gives a good introduction to Sage.  It
 assumes you already have Sage installed.  If you do not, head over to the
 :ref:`installation` section. Lets go!
 
-A Truly 'Minimal' Application
+A Minimal Application
 -----------------------------
 
 Lets make your first Sage app. Create a file called `myapp.py`:
@@ -23,7 +23,7 @@ Now run it with Sage:
     $ sage myapp.py
 
 Sage is now running your app and gives you some port numbers for the proxy and
-the 'backdoor' (which we'll cover later). You can now connect your MUD client
+the ':ref:`backdoor`' (which we'll cover later). You can now connect your MUD client
 to `127.0.0.1:5493`. Congratulations, you have made your first app without
 writing a single line of code!
 
@@ -54,7 +54,7 @@ triggers in Sage. From that group, we use a
 method and pass it two parameters. The ``pattern`` is what we match against and
 the ``type`` is the type of trigger it is (in this case 'regex'). We 'wrap'
 :py:meth:`exits` with the decorator to :py:data:`~sage.matching.Matchable.bind`
-it to the trigger it creates for us.
+it to the trigger it creates for you.
 
 In Sage, triggers and aliases are better known as `matchables` since they are
 identical. Methods bound to matchables like :py:meth:`exits` accept a single
@@ -86,8 +86,11 @@ First, we need to break up the exits into a
         # exit_str now is "north, east, south, west, up (open door), down, out"
 
         # now break up the exits into a list and trim off any white space
-        # To do this, we'll use a list comprehension, a powerful Python tool!
+        # To do this, we'll use a list comprehension
         exits = [e.strip() for e in exit_str.split(',')]
 
         # exits now is ['north', 'east', 'south', 'west', 'up (open door)', 'down', 'out']
+
+Notice that the `trigger` object already had the regular expression groups for
+you.
 
