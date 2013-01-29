@@ -5,7 +5,11 @@ import sage
 
 
 class Line(str):
-    """ An individual line in sage's buffer """
+    """ An individual line in sage's buffer
+
+        :attribute raw: the original 'raw' value of the line
+        :attribute output: output that will be sent to the client
+    """
 
     def __new__(cls, string):
         line = str.__new__(cls, filter_ansi(string))
@@ -32,7 +36,17 @@ class Buffer(list):
 
     def append(self, line):
         """ Append a line to the buffer as a :class:`sage.inbound.Line` """
-        super(Buffer, self).append(Line(line))
+        if isinstance(line, Line) == False:
+            super(Buffer, self).append(Line(line))
+        else:
+            super(Buffer, self).append(line)
+
+    def insert(self, index, line):
+        """ Insert line before index as a :class:`sage.inbound.Line` """
+        if isinstance(line, Line) == False:
+            super(Buffer, self).insert(index, Line(line))
+        else:
+            super(Buffer, self).insert(index, line)
 
     def __repr__(self):
         return str(self.__class__)

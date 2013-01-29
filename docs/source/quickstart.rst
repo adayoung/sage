@@ -117,5 +117,74 @@ string now: ::
 Not bad! Now we can see those exits much better, but this still isn't ideal.
 The line we echo comes at the top of every room and the original exits line is
 still there. While :py:meth:`~sage.echo` is easy to use, it's not the right
-tool for this job. Instead, lets replace the actual exits line from the game: ::
+tool for this job. Instead, lets replace the actual exits line from the game.
+Fortunately, Sage makes this very easy. Remove the call to
+:py:meth:`~sage.echo` and replace it with: ::
 
+    # replace the line's output with new_str
+    trigger.line.output = "Exits: " + new_str
+
+Sage provides you the matching line with `trigger.line`. This object is an
+instance of the special :py:class:`sage.inbound.Line`.
+
+.. warning::
+    You must never use assignment (=) on a :py:class:`~sage.inbound.Line`! Only
+    change its `.output` attribute.
+
+Now we have nice easy to read exits. Here's the app in its entirety so far: ::
+
+    from sage import triggers, ansi
+
+
+    @triggers.trigger(
+        pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
+        type="regex")
+    def exits(trigger):
+        # get the second regex group (0 would be the first)
+        exit_str = trigger.groups[1]
+
+        # lets remove 'and' from the string for sake of consistency
+        exit_str = exit_str.replace('and', '')
+
+        # now break up the exits into a list and trim off any white space while
+        # adding color using a list comprehension
+        exits = [ansi.bold_white(e.strip()) for e in exit_str.split(',')]
+
+        # joins the list as a string delimited by a comma and a space
+        new_str = ', '.join(exits)
+
+        # replace the line's output with new_str
+        trigger.line.output = "Exits: " + new_str
+
+Get Organized
+~~~~~~~~~~~~~
+
+It's probably not a good idea to just make triggers in the 'master' trigger
+group. Lets organize your trigger into its own :py:class:`~sage.matching.Group`.
+The app now changes to: ::
+
+    from sage import triggers, ansi
+
+    # create a new group called 'room'
+    room_triggers = triggers.create_group('room')
+
+    # notice how the decorator changes to the group
+    @room_triggers.trigger(
+        pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
+        type="regex")
+    def exits(trigger):
+        exit_str = trigger.groups[1]
+        exit_str = exit_str.replace('and', '')
+        exits = [ansi.bold_white(e.strip()) for e in exit_str.split(',')]
+        new_str = ', '.join(exits)
+        trigger.line.output = "Exits: " + new_str
+
+
+
+
+Adding an Alias
+~~~~~~~~~~~~~~~
+
+Leaving our exits trigger enabled would be perfectly acceptable, but lets
+say you only want it on when you 'ql' (quick-look in Achaea). To do this, you
+need to make an alias. This works nearly identical to how triggers work.
