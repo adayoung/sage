@@ -4,6 +4,3 @@ _trial_temp
 *.egg-info
 dist
 dev
-build
-html
-doctrees
