@@ -12,7 +12,6 @@ from sage.dispatch.signal import Hook
 from sage import apps
 from twisted.internet import reactor
 import weakref
-import sys
 
 
 class MatchableCreationError(Exception):
@@ -28,6 +27,10 @@ class InvalidMatchableType(Exception):
 
 
 class AppNotFound(Exception):
+    pass
+
+
+class OrphanedMatchableGroupError(Exception):
     pass
 
 
@@ -389,6 +392,9 @@ class Group(object):
         """
 
         if app is None:
+            if self.app is None:
+                raise OrphanedMatchableGroupError(
+                "Top-level groups must have an app declared in create_group()")
             app = self.app
         elif apps.valid(app) == False:
             raise AppNotFound("Unable to find app named '%s'" % app)
@@ -546,7 +552,7 @@ class MasterGroup(Group):
 
         self.enabled = weakref.WeakSet()
         self.parent = self
-        self.app = 'sage'
+        self.app = None
         self.groups = {}
         self.matchables = {}
 

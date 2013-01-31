@@ -19,11 +19,60 @@ def make_triggers(group, num=100, prefix='test_'):
         group.create(**kwargs)
 
 
+class TestGet(unittest.TestCase):
+
+    def setUp(self):
+        self.group = triggers.create_group('test_get', app='sage')
+        make_triggers(self.group)
+
+        self.subgroup = self.group.create_group('subgroup')
+        make_triggers(self.subgroup)
+
+    def tearDown(self):
+        triggers('test_get').destroy()
+
+    def test_get_group(self):
+        newgroup = triggers.get('test_get')
+        self.assertEqual(newgroup.name, 'test_get')
+
+    def test_get_trigger(self):
+        trigger = triggers.get('test_get/test_30')
+        self.assertEqual(trigger.name, 'test_30')
+
+    def test_get_subgroup(self):
+        new_subgroup = triggers.get('test_get/subgroup')
+        self.assertEqual(new_subgroup.name, 'subgroup')
+
+    def test_get_subtrigger(self):
+        trigger = triggers.get('test_get/subgroup/test_42')
+        self.assertEqual(trigger.name, 'test_42')
+
+    def test_fail_get_trigger(self):
+        trigger = triggers.get('test_get/fail_30')
+        self.assertEqual(trigger, None)
+
+    def test_fail_get_group(self):
+        testgroup = self.group.get('subgroup2')
+        self.assertEqual(testgroup, None)
+
+    def test_relative_get_trigger(self):
+        trigger = self.subgroup.get('test_42')
+        self.assertEqual(trigger.name, 'test_42')
+
+    def test_get_chaning(self):
+        trigger = self.group.get('test_5')
+        self.group.get('test_5').disable()
+        self.assertEqual(trigger.enabled, False)
+
+    def test_call_group_as_get(self):
+        self.assertEqual('test_get', triggers('test_get').name)
+
+
 class TestMatchables(unittest.TestCase):
 
     def test_create_group(self):
 
-        group = triggers.create_group('test_create')
+        group = triggers.create_group('test_create', app='sage')
 
         self.assertIn('test_create', triggers.groups)
 
@@ -33,92 +82,13 @@ class TestMatchables(unittest.TestCase):
 
     def test_create(self):
 
-        group = triggers.create_group('test_create')
+        group = triggers.create_group('test_create', app='sage')
         make_triggers(group)
 
         self.assertEqual(100, len(group.matchables))
 
-    def test_get_group(self):
-
-        group = triggers.create_group('test_get')
-        make_triggers(group)
-
-        newgroup = triggers.get('test_get')
-
-        self.assertEqual(newgroup.name, 'test_get')
-
-    def test_get_trigger(self):
-
-        group = triggers.create_group('test_get')
-        make_triggers(group)
-
-        trigger = triggers.get('test_get/test_30')
-
-        self.assertEqual(trigger.name, 'test_30')
-
-    def test_get_subgroup(self):
-
-        group = triggers.create_group('test_get')
-
-        subgroup = group.create_group('test_get_subgroup')
-
-        new_subgroup = triggers.get('test_get/test_get_subgroup')
-
-        self.assertEqual(new_subgroup.name, 'test_get_subgroup')
-
-    def test_get_subtrigger(self):
-
-        group = triggers.create_group('test_get')
-
-        subgroup = group.create_group('test_get_subgroup')
-
-        make_triggers(subgroup)
-
-        trigger = triggers.get('test_get/test_get_subgroup/test_42')
-
-        self.assertEqual(trigger.name, 'test_42')
-
-    def test_fail_get_trigger(self):
-        group = triggers.create_group('test_get')
-        make_triggers(group)
-
-        trigger = triggers.get('test_get/fail_30')
-
-        self.assertEqual(trigger, None)
-
-    def test_fail_get_group(self):
-        group = triggers.create_group('test_get')
-
-        subgroup = group.create_group('subgroup')
-
-        testgroup = group.get('subgroup2')
-
-        self.assertEqual(testgroup, None)
-
-    def test_relative_get_trigger(self):
-        group = triggers.create_group('test_get')
-
-        subgroup = group.create_group('test_get_subgroup')
-
-        make_triggers(subgroup)
-
-        trigger = subgroup.get('test_42')
-
-        self.assertEqual(trigger.name, 'test_42')
-
-    def test_get_chaning(self):
-        group = triggers.create_group('test_get')
-
-        make_triggers(group)
-
-        trigger = group.get('test_5')
-
-        group.get('test_5').disable()
-
-        self.assertEqual(trigger.enabled, False)
-
     def test_group_disable(self):
-        group = triggers.create_group('test')
+        group = triggers.create_group('test', app='sage')
 
         make_triggers(group, 10, 'dis_')
 
@@ -127,7 +97,7 @@ class TestMatchables(unittest.TestCase):
         self.assertEqual(self._trigger_in_enabled('dis_1'), False)
 
     def test_trigger_disable(self):
-        group = triggers.create_group('test')
+        group = triggers.create_group('test', app='sage')
 
         make_triggers(group, 10, 'dis_')
 
@@ -136,7 +106,7 @@ class TestMatchables(unittest.TestCase):
         self.assertEqual(self._trigger_in_enabled('dis_2'), False)
 
     def test_destroy(self):
-        group = triggers.create_group('test')
+        group = triggers.create_group('test', app='sage')
 
         make_triggers(group, 1)
 
@@ -148,7 +118,7 @@ class TestMatchables(unittest.TestCase):
 
     def test_remove(self):
 
-        group = triggers.create_group('test')
+        group = triggers.create_group('test', app='sage')
 
         make_triggers(group, 1)
 
@@ -158,10 +128,6 @@ class TestMatchables(unittest.TestCase):
 
         self.assertNotIn('test_0', group.matchables)
         self.assertNotIn(trigger, triggers.enabled)
-
-    def test_call_group_as_get(self):
-        group = triggers.create_group('test')
-        self.assertEqual(group, triggers('test'))
 
     def _trigger_in_enabled(self, trigger_name):
         for enabled in triggers.enabled:
