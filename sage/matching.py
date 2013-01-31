@@ -262,9 +262,9 @@ class Group(object):
 
             :param name: name of the matchable.
             :type name: string
-            :param mtype: 'type' of matchable. Must be 'exact', 'substring',
+            :param type: 'type' of matchable. Must be 'exact', 'substring',
                 'regex', 'startswith', or 'endswith'.
-            :type mtype: string
+            :type type: string
             :param pattern: pattern to match against.
             :type pattern: string
             :param methods: (optional) methods to bind to the matchable.
@@ -485,7 +485,7 @@ class Group(object):
     def _decorator(self, **kwargs):
         name = kwargs.pop('name', None)
         mtype = kwargs.pop('type', None)
-        mtype = 'substring' if mtype is None else mtype
+        mtype = 'exact' if mtype is None else mtype
         pattern = kwargs.pop('pattern', None)
         enabled = kwargs.pop('enabled', True)
         ignorecase = kwargs.pop('ignorecase', True)
