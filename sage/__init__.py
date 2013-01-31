@@ -32,24 +32,25 @@ from .defaults import defaults
 #: default configuration
 config = defaults
 
-from .api import echo, send, defer_to_prompt
-from .utils import error, debug
-from .matching import TriggerMasterGroup, AliasMasterGroup
 from .app import Apps
-from .inbound import Buffer
-
-#: Is sage connected
-connected = False
 
 #: Loaded applications
 apps = Apps()
 
+#: Is sage connected
+connected = False
+
+from .inbound import Buffer
+
 #: Input buffer of lines (:class:`sage.inbound.Buffer`)
 buffer = Buffer([])
+
+from .matching import TriggerMasterGroup, AliasMasterGroup
 
 #: Master alias group (:class:`sage.matching.AliasMasterGroup`)
 aliases = AliasMasterGroup()
 
+#: Master trigger group (:class:`sage.matching.TriggerMasterGroup`)
 triggers = TriggerMasterGroup()
 
 # telnet write and echo internal methods
@@ -58,3 +59,6 @@ _echo = None
 
 # methods defered to the prompt
 _deferred = list()
+
+from .api import echo, send, defer_to_prompt
+from .utils import error, debug

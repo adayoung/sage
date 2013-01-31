@@ -109,6 +109,30 @@ class TestMatchables(unittest.TestCase):
 
         self.assertEqual(self._trigger_in_enabled('dis_2'), False)
 
+    def test_destroy(self):
+        group = triggers.create_group('test')
+
+        self._make_triggers(group, 1)
+
+        trigger = group['test_0']
+
+        trigger.destroy()
+
+        self.assertNotIn(trigger, triggers.enabled)
+
+    def test_remove(self):
+
+        group = triggers.create_group('test')
+
+        self._make_triggers(group, 1)
+
+        trigger = group['test_0']
+
+        group.remove('test_0')
+
+        self.assertNotIn('test_0', group.matchables)
+        self.assertNotIn(trigger, triggers.enabled)
+
     def _trigger_in_enabled(self, trigger_name):
         for enabled in triggers.enabled:
             if enabled.name == trigger_name:

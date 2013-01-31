@@ -9,8 +9,10 @@ from __future__ import absolute_import
 import re
 from time import time
 from sage.dispatch.signal import Hook
+from sage import apps
 from twisted.internet import reactor
 import weakref
+import sys
 
 
 class MatchableCreationError(Exception):
@@ -22,6 +24,10 @@ class MatchableGroupError(Exception):
 
 
 class InvalidMatchableType(Exception):
+    pass
+
+
+class AppNotFound(Exception):
     pass
 
 
@@ -41,7 +47,7 @@ class Matchable(object):
         self.time = None
         self.prefix = None
         self.suffix = None
-        self.parent = kwargs.pop('parent', None)
+        self.parent = weakref.ref(kwargs.pop('parent'))
         self.matchobj = None
 
         self.methods = Hook()
@@ -52,17 +58,17 @@ class Matchable(object):
 
     def enable(self):
         """ Enable the matchable """
-        self.parent._enable(self)
+        self.parent()._enable(self)
         self.enabled = True
 
     def disable(self):
         """ Disable the matchable """
-        self.parent._disable(self)
+        self.parent()._disable(self)
         self.enabled = False
 
     def destroy(self):
         """ Destroys (deletes) the matchable """
-        self.parent._remove(self)
+        self.parent()._remove_child(self)
 
     def bind(self, method):
         """ Add a method to a matchable """
@@ -227,15 +233,16 @@ class CIEndswith(CIMatchable):
 class Group(object):
     """ Base matchable group """
 
-    def __init__(self, name, parent, enabled=True):
+    def __init__(self, name, parent, app, enabled=True):
         self.name = name
-        self.parent = parent
+        self.parent = weakref.ref(parent)
+        self.app = app
+        self.enabled = enabled
 
         self.groups = weakref.WeakValueDictionary()
+        #self.groups = {}
         self.matchables = weakref.WeakValueDictionary()
-        self._states = {}
-
-        self.enabled = enabled
+        #self.matchables = {}
 
     def create(self,
         name,
@@ -245,7 +252,8 @@ class Group(object):
         enabled=True,
         ignorecase=True,
         delay=None,
-        disable_on_match=False):
+        disable_on_match=False,
+        app=None):
         """ Create a trigger or alias (depending on the master group)
 
             :param name: name of the matchable.
@@ -267,6 +275,8 @@ class Group(object):
             :param disable_on_match: (optional) disable matchable after a
                 successful match.
             :type disable_on_match: bool
+            :param app: (optional) name of app that owns this matchable
+            :type app: string
         """
 
         kwargs = {
@@ -300,15 +310,28 @@ class Group(object):
         self.matchables[name] = m
 
         if enabled:
-            self.parent._enable(m)
+            self.parent()._enable(m)
+
+        if app:
+            self.set_app(app, m)
+        else:
+            self._set_app(self.app, m)
 
         return m
 
     def disable(self, name=None):
+        """ Disable a group or matchable
+
+            If called without a parameter, will disable the group being called.
+            If name is provided, it will do a :meth:`get`
+            lookup and call :meth:`disable` on that object.
+
+            :param name: (optional) matchable query string
+        """
 
         if name is None:
             for instance in self.matchables.values():
-                self.parent._disable(instance)
+                self.parent()._disable(instance)
             self.enabled = False
             return True
         else:
@@ -321,11 +344,19 @@ class Group(object):
         return False
 
     def enable(self, name=None):
+        """ Enable a group or matchable
+
+            If called without a parameter, will enable the group being called.
+            If name is provided, it will do a :meth:`get`
+            lookup and call :meth:`enable` on that object.
+
+            :param name: (optional) matchable query string
+        """
 
         if name is None:
             for instance in self.matchables.values():
                 if instance.enabled:
-                    self.parent._enable(instance)
+                    self.parent()._enable(instance)
             self.enabled = True
             return True
         else:
@@ -337,12 +368,33 @@ class Group(object):
 
         return False
 
-    def create_group(self, name, enabled=True):
+    '''
+    def create_group(self, name, app=None, enabled=True):
+        """ Creates a child group
 
-        self.groups[name] = Group(name, self, enabled)
+            :param name: name of group
+            :param app: name of app the group belongs to. If not set will be
+                the group's parent's app.
+            :param enabled: (optional) if group is enabled
+            :type enabled: bool
+        """
+
+        if app is None:
+            app = self.app
+        elif app not in apps:
+            raise AppNotFound("Unable to find app named '%s'" % app)
+        else:
+            app = apps[app]
+
+        self.groups[name] = Group(name, self, app, enabled)
         return self.groups[name]
+    '''
 
     def remove_group(self, name):
+        """ Removes a child group by name
+
+            :param name: name of group
+        """
 
         if name in self.groups:
             del(self.groups[name])
@@ -351,16 +403,23 @@ class Group(object):
         return False
 
     def remove(self, name):
+        """ Remove a matchable by name
+
+            :param name: name of matchable
+        """
 
         if name in self.matchables:
             instance = self.matchables[name]
-            self.parent._remove(instance)
-            del(self.matchables[name])
+            self._remove_child(instance)
             return True
 
         return False
 
     def get(self, name):
+        """ Returns a group or matchable from a matchable query string
+
+        :param name: matchable query string
+        """
         if '/' in name:
             return self._parse_name(name)
         else:
@@ -372,17 +431,42 @@ class Group(object):
                 return None
 
     def names(self):
+        """ Returns names of all matchables """
         return self.matchables.keys()
+
+    def set_app(self, app, matchable):
+        try:
+            mod = __import__(app)
+        except ImportError:
+            raise AppNotFound("Unable to find app named '%s'" % app)
+
+        return self._set_app(mod, matchable)
+
+    def _set_app(self, mod, matchable):
+        if hasattr(mod, '__matchables__'):
+            mod.__matchables__.add(matchable)
+        else:
+            mod.__matchables__ = set()
+            mod.__matchables__.add(matchable)
+
+        del(mod)
+        return True
 
     def _enable(self, instance):
         if self.enabled:
-            self.parent._enable(instance)
+            self.parent()._enable(instance)
 
     def _disable(self, instance):
-        self.parent._disable(instance)
+        self.parent()._disable(instance)
+
+    def _remove_child(self, instance):
+        if instance.name in self.matchables:
+            del(self.matchables[instance.name])
+
+        self._remove(instance)
 
     def _remove(self, instance):
-        self.parent._remove(instance)
+        self.parent()._remove(instance)
 
     def _parse_name(self, name):
         parts = name.split('/')
@@ -409,6 +493,7 @@ class Group(object):
         enabled = kwargs.pop('enabled', True)
         ignorecase = kwargs.pop('ignorecase', True)
         delay = kwargs.pop('delay', None)
+        app = kwargs.pop('app', None)
 
         def dec(func):
 
@@ -428,7 +513,7 @@ class Group(object):
                         % mname)
 
             m = self.create(mname, mtype, pattern, \
-                enabled=enabled, ignorecase=ignorecase, delay=delay)
+                enabled=enabled, ignorecase=ignorecase, delay=delay, app=app)
             m.methods.connect(func)
 
             return func
@@ -439,15 +524,25 @@ class Group(object):
         return "%s '%s' (%s groups, %s objects)" % (self.__class__, \
             self.name, len(self.groups), len(self.matchables))
 
+    def __getitem__(self, *args, **kwargs):
+        return self.matchables.__getitem__(*args, **kwargs)
+
 
 class TriggerGroup(Group):
 
     def trigger(self, **kwargs):
         return self._decorator(**kwargs)
 
-    def create_group(self, name, enabled=True):
+    def create_group(self, name, app=None, enabled=True):
 
-        g = TriggerGroup(name, self, enabled)  # I have to do this for weakrefs
+        if app is None:
+            app = self.app
+        elif app not in apps:
+            raise AppNotFound("Unable to find app named '%s'" % app)
+        else:
+            app = apps[app]
+
+        g = TriggerGroup(name, self, app, enabled)  # I have to do this for weakrefs
         self.groups[name] = g
         return self.groups[name]
 
@@ -457,9 +552,16 @@ class AliasGroup(Group):
     def alias(self, **kwargs):
         return self._decorator(**kwargs)
 
-    def create_group(self, name, enabled=True):
+    def create_group(self, name, app=None, enabled=True):
 
-        g = AliasGroup(name, self, enabled)  # I have to do this for weakrefs
+        if app is None:
+            app = self.app
+        elif app not in apps:
+            raise AppNotFound("Unable to find app named '%s'" % app)
+        else:
+            app = apps[app]
+
+        g = AliasGroup(name, self, app, enabled)  # I have to do this for weakrefs
         self.groups[name] = g
         return self.groups[name]
 
@@ -469,7 +571,9 @@ class MasterGroup(Group):
     def __init__(self):
 
         self.enabled = set()
+        #self.enabled = weakref.WeakSet()
         self.parent = self
+        self.app = sys.modules['sage']
         self.groups = weakref.WeakValueDictionary()
         self.matchables = weakref.WeakValueDictionary()
 
@@ -478,6 +582,9 @@ class MasterGroup(Group):
 
     def _enable(self, instance):
         self.enabled.add(instance)
+
+    def _remove(self, instance):
+        self.enabled.discard(instance)
 
     def __repr__(self):
         return "%s (%s groups, %s objects)" % (self.__class__, \
