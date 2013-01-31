@@ -16,7 +16,7 @@ class Apps(dict):
         }
 
         # names available before load is completed
-        self._names = set(['sage,'])
+        self._names = set(['sage'])
 
     def add_group(self, app, matchable):
         self.groups[app].add(matchable)
