@@ -239,7 +239,7 @@ class Group(object):
         self.app = app
         self.enabled = enabled
 
-        self.groups = weakref.WeakValueDictionary()
+        self.groups = {}
         #self.groups = {}
         self.matchables = weakref.WeakValueDictionary()
         #self.matchables = {}
@@ -315,7 +315,7 @@ class Group(object):
         if app:
             self.set_app(app, m)
         else:
-            self._set_app(self.app, m)
+            self.set_app(self.app, m)
 
         return m
 
@@ -368,7 +368,6 @@ class Group(object):
 
         return False
 
-    '''
     def create_group(self, name, app=None, enabled=True):
         """ Creates a child group
 
@@ -381,14 +380,17 @@ class Group(object):
 
         if app is None:
             app = self.app
-        elif app not in apps:
+        elif apps.valid(app) == False:
+            print apps._names
             raise AppNotFound("Unable to find app named '%s'" % app)
-        else:
-            app = apps[app]
 
-        self.groups[name] = Group(name, self, app, enabled)
+        if self.__class__ == TriggerMasterGroup:
+            klass = TriggerGroup
+        else:
+            klass = AliasGroup
+
+        self.groups[name] = klass(name, self, app, enabled)
         return self.groups[name]
-    '''
 
     def remove_group(self, name):
         """ Removes a child group by name
@@ -435,22 +437,10 @@ class Group(object):
         return self.matchables.keys()
 
     def set_app(self, app, matchable):
-        try:
-            mod = __import__(app)
-        except ImportError:
+        if apps.valid(app) == False:
             raise AppNotFound("Unable to find app named '%s'" % app)
 
-        return self._set_app(mod, matchable)
-
-    def _set_app(self, mod, matchable):
-        if hasattr(mod, '__matchables__'):
-            mod.__matchables__.add(matchable)
-        else:
-            mod.__matchables__ = set()
-            mod.__matchables__.add(matchable)
-
-        del(mod)
-        return True
+        apps.add_matchable(app, matchable)
 
     def _enable(self, instance):
         if self.enabled:
@@ -533,37 +523,11 @@ class TriggerGroup(Group):
     def trigger(self, **kwargs):
         return self._decorator(**kwargs)
 
-    def create_group(self, name, app=None, enabled=True):
-
-        if app is None:
-            app = self.app
-        elif app not in apps:
-            raise AppNotFound("Unable to find app named '%s'" % app)
-        else:
-            app = apps[app]
-
-        g = TriggerGroup(name, self, app, enabled)  # I have to do this for weakrefs
-        self.groups[name] = g
-        return self.groups[name]
-
 
 class AliasGroup(Group):
 
     def alias(self, **kwargs):
         return self._decorator(**kwargs)
-
-    def create_group(self, name, app=None, enabled=True):
-
-        if app is None:
-            app = self.app
-        elif app not in apps:
-            raise AppNotFound("Unable to find app named '%s'" % app)
-        else:
-            app = apps[app]
-
-        g = AliasGroup(name, self, app, enabled)  # I have to do this for weakrefs
-        self.groups[name] = g
-        return self.groups[name]
 
 
 class MasterGroup(Group):
@@ -573,8 +537,8 @@ class MasterGroup(Group):
         self.enabled = set()
         #self.enabled = weakref.WeakSet()
         self.parent = self
-        self.app = sys.modules['sage']
-        self.groups = weakref.WeakValueDictionary()
+        self.app = 'sage'
+        self.groups = {}
         self.matchables = weakref.WeakValueDictionary()
 
     def _disable(self, instance):

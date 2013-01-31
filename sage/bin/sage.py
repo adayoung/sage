@@ -20,9 +20,7 @@ def main():
 
     app = args.app
 
-    with imports.cwd_in_path():
-        app = imports.import_file(app)
-        sage.apps[app.__name__] = app
+    sage.apps.load(app)
 
     from sage.server import run
     run()

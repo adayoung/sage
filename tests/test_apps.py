@@ -24,3 +24,6 @@ class AppTests(unittest.TestCase):
 
         self.assertFalse('import_this' in sys.modules)
         self.assertFalse('import_this' in apps)
+
+if __name__ == '__main__':
+    unittest.main()

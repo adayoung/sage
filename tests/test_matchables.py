@@ -5,6 +5,16 @@ from random import choice
 
 class TestMatchables(unittest.TestCase):
 
+    def test_create_group(self):
+
+        group = triggers.create_group('test_create')
+
+        self.assertIn('test_create', triggers.groups)
+
+        group.create_group('test_subgroup')
+
+        self.assertIn('test_subgroup', group.groups)
+
     def test_create(self):
 
         group = triggers.create_group('test_create')
@@ -154,3 +164,6 @@ class TestMatchables(unittest.TestCase):
             }
 
             group.create(**kwargs)
+
+if __name__ == '__main__':
+    unittest.main()

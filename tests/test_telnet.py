@@ -46,3 +46,6 @@ class TelnetTests(unittest.TestCase):
             'fullname': 'Full Name Test'})
         self.protocol.dataReceived(data)
         self.assertEqual(player.name, 'Test')
+
+if __name__ == '__main__':
+    unittest.main()
