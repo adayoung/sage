@@ -11,15 +11,18 @@ class Apps(dict):
     def __init__(self):
         super(Apps, self).__init__(self)
 
-        self.matchables = {
+        self.groups = {
             'sage': set()
         }
 
         # names available before load is completed
         self._names = set(['sage,'])
 
-    def add_matchable(self, app, matchable):
-        self.matchables[app].add(matchable)
+    def add_group(self, app, matchable):
+        self.groups[app].add(matchable)
+
+    def remove_group(self, app, matchable):
+        self.groups[app].discard(matchable)
 
     def load(self, names):
         """ Load a module or package into the namespace """
@@ -31,7 +34,7 @@ class Apps(dict):
             self._load(names)
 
     def _load(self, name):
-        self.preload(name)
+        self._preload(name)
 
         with imports.cwd_in_path():
             app = imports.import_file(name)
@@ -39,18 +42,18 @@ class Apps(dict):
 
             return True
 
-        del(self.matchables[name])
+        del(self.groups[name])
         self._names.discard(name)
         return False
 
-    def preload(self, name):
+    def _preload(self, name):
         if '.py' in name:
             name = name[:-3]
 
         self._names.add(name)
 
-        if name not in self.matchables:
-            self.matchables[name] = set()
+        if name not in self.groups:
+            self.groups[name] = set()
 
     def reload(self, name):
         """ Try to fully rebuild an app """
@@ -67,8 +70,8 @@ class Apps(dict):
         if name not in self:
             return False
 
-        for matchable in self.matchables[name]:
-            matchable.destroy()
+        while len(self.groups[name]) > 0:
+            self.groups[name].pop().destroy()
 
         del(self[name])
         del(sys.modules[name])
@@ -76,6 +79,7 @@ class Apps(dict):
         return True
 
     def valid(self, name):
+        """ Is a string the name of a valid app """
         return name in self._names
 
     def __repr__(self):

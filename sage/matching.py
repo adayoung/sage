@@ -41,6 +41,7 @@ class Matchable(object):
         methods = kwargs.pop('methods', None)
         self.delay = kwargs.pop('delay', None)
         self.disable_on_match = kwargs.pop('disable_on_match', False)
+        self.app = kwargs.pop('app')
         self.timer = None
 
         self.line = None
@@ -240,9 +241,12 @@ class Group(object):
         self.enabled = enabled
 
         self.groups = {}
-        #self.groups = {}
-        self.matchables = weakref.WeakValueDictionary()
-        #self.matchables = {}
+        self.matchables = {}
+
+        if apps.valid(app) == False:
+            raise AppNotFound("Unable to find app named '%s'" % app)
+
+        apps.add_group(app, self)
 
     def create(self,
         name,
@@ -286,7 +290,8 @@ class Group(object):
             'enabled': enabled,
             'delay': delay,
             'disable_on_match': disable_on_match,
-            'parent': self
+            'parent': self,
+            'app': app
         }
 
         if mtype == 'exact':
@@ -311,11 +316,6 @@ class Group(object):
 
         if enabled:
             self.parent()._enable(m)
-
-        if app:
-            self.set_app(app, m)
-        else:
-            self.set_app(self.app, m)
 
         return m
 
@@ -342,6 +342,13 @@ class Group(object):
                 return True
 
         return False
+
+    def destroy(self):
+        """ Destroys (deletes) the group """
+        for matchable in self.matchables.values():
+            matchable.destroy()
+
+        self.parent()._remove_group(self.name)
 
     def enable(self, name=None):
         """ Enable a group or matchable
@@ -381,7 +388,6 @@ class Group(object):
         if app is None:
             app = self.app
         elif apps.valid(app) == False:
-            print apps._names
             raise AppNotFound("Unable to find app named '%s'" % app)
 
         if self.__class__ == TriggerMasterGroup:
@@ -399,10 +405,14 @@ class Group(object):
         """
 
         if name in self.groups:
-            del(self.groups[name])
+            self.groups[name].destroy()
             return True
 
         return False
+
+    def _remove_group(self, name):
+        apps.remove_group(self.groups[name].app, self.groups[name])
+        del(self.groups[name])
 
     def remove(self, name):
         """ Remove a matchable by name
@@ -435,12 +445,6 @@ class Group(object):
     def names(self):
         """ Returns names of all matchables """
         return self.matchables.keys()
-
-    def set_app(self, app, matchable):
-        if apps.valid(app) == False:
-            raise AppNotFound("Unable to find app named '%s'" % app)
-
-        apps.add_matchable(app, matchable)
 
     def _enable(self, instance):
         if self.enabled:
@@ -534,12 +538,11 @@ class MasterGroup(Group):
 
     def __init__(self):
 
-        self.enabled = set()
-        #self.enabled = weakref.WeakSet()
+        self.enabled = weakref.WeakSet()
         self.parent = self
         self.app = 'sage'
         self.groups = {}
-        self.matchables = weakref.WeakValueDictionary()
+        self.matchables = {}
 
     def _disable(self, instance):
         self.enabled.discard(instance)
