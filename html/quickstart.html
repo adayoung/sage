@@ -31,7 +31,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/searchtools.js"></script>
     <link rel="top" title="sage 2.0.0 documentation" href="index.html" />
-    <link rel="next" title="API" href="api.html" />
+    <link rel="next" title="Matchables" href="matchables.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
   </head>
   <body>
@@ -45,7 +45,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="api.html" title="API"
+          <a href="matchables.html" title="Matchables"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="installation.html" title="Installation"
@@ -142,7 +142,7 @@ we are processing is:</p>
 </pre></div>
 </div>
 <p>Notice that the <cite>trigger</cite> object already had the regular expression groups for
-you. Now lets reformat this information in a better way with some color. Add
+you. Now let&#8217;s reformat this information in a better way with some color. Add
 <a class="reference internal" href="api.html#module-sage.ansi" title="sage.ansi"><tt class="xref py py-mod docutils literal"><span class="pre">ansi</span></tt></a> to your imports:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">echo</span><span class="p">,</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">ansi</span>
 </pre></div>
@@ -205,13 +205,21 @@ change its <cite>.output</cite> attribute.</p>
 </div>
 <div class="section" id="get-organized">
 <h3>Get Organized<a class="headerlink" href="#get-organized" title="Permalink to this headline">¶</a></h3>
-<p>It&#8217;s probably not a good idea to just make triggers in the &#8216;master&#8217; trigger
-group. Lets organize your trigger into its own <a class="reference internal" href="api.html#sage.matching.Group" title="sage.matching.Group"><tt class="xref py py-class docutils literal"><span class="pre">Group</span></tt></a>.
-The app now changes to:</p>
+<p>It&#8217;s not a good idea to just make triggers in the &#8216;master&#8217; trigger group. Let&#8217;s organize your trigger into its own <a class="reference internal" href="api.html#sage.matching.Group" title="sage.matching.Group"><tt class="xref py py-class docutils literal"><span class="pre">Group</span></tt></a>. This is
+how you&#8217;ll actually handle your matchables in your apps.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You have to tell Sage which app &#8216;owns&#8217; a group by passing the name of the
+the app in the <tt class="docutils literal"><span class="pre">app</span></tt> parameter for
+<a class="reference internal" href="api.html#sage.matching.Group.create_group" title="sage.matching.Group.create_group"><tt class="xref py py-meth docutils literal"><span class="pre">create_group()</span></tt></a>. Failing to do this will
+raise <tt class="xref py py-exc docutils literal"><span class="pre">OrphanedMatchableGroupError</span></tt>. It&#8217;s highly
+recommended you read more about <a class="reference internal" href="matchables.html#matchables-ownership"><em>Ownership</em></a>.</p>
+</div>
+<p>The code now changes to:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">ansi</span>
 
-<span class="c"># create a new group called &#39;room&#39;</span>
-<span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">)</span>
+<span class="c"># create a new group called &#39;room&#39; owned by the app &#39;myapp&#39;</span>
+<span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;myapp&#39;</span><span class="p">)</span>
 
 <span class="c"># notice how the decorator changes to the group</span>
 <span class="nd">@room_triggers.trigger</span><span class="p">(</span>
@@ -235,8 +243,8 @@ need to make an alias. This works nearly identical to how triggers work:</p>
 
 <span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">)</span>
 
-<span class="c"># create a new aliases group</span>
-<span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">)</span>
+<span class="c"># create a new aliases group (owned by &#39;myapp&#39;)</span>
+<span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;myapp&#39;</span><span class="p">)</span>
 
 
 <span class="c"># We create an alias similar to how we create a trigger</span>
@@ -284,8 +292,8 @@ need to make an alias. This works nearly identical to how triggers work:</p>
   <p class="topless"><a href="installation.html"
                         title="previous chapter">Installation</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="api.html"
-                        title="next chapter">API</a></p>
+  <p class="topless"><a href="matchables.html"
+                        title="next chapter">Matchables</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/quickstart.txt"
@@ -305,7 +313,7 @@ need to make an alias. This works nearly identical to how triggers work:</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="api.html" title="API"
+          <a href="matchables.html" title="Matchables"
              >next</a> |</li>
         <li class="right" >
           <a href="installation.html" title="Installation"

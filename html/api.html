@@ -31,7 +31,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/searchtools.js"></script>
     <link rel="top" title="sage 2.0.0 documentation" href="index.html" />
-    <link rel="prev" title="Quickstart" href="quickstart.html" /> 
+    <link rel="prev" title="Matchables" href="matchables.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,7 +44,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="quickstart.html" title="Quickstart"
+          <a href="matchables.html" title="Matchables"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">sage 2.0.0 documentation</a> &raquo;</li> 
       </ul>
@@ -155,6 +155,12 @@ important right here and provide links to the canonical documentation.</p>
 <dt id="sage.app.Apps.unload">
 <tt class="descname">unload</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/sage/app.html#Apps.unload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.app.Apps.unload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempt to remove a module from the namespace</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.app.Apps.valid">
+<tt class="descname">valid</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/sage/app.html#Apps.valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.app.Apps.valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is a string the name of a valid app</p>
 </dd></dl>
 
 </dd></dl>
@@ -466,11 +472,11 @@ both are identical. The only difference is where they occur in execution.</p>
 
 <dl class="class">
 <dt id="sage.matching.Group">
-<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">Group</tt><big>(</big><em>name</em>, <em>parent</em>, <em>enabled=True</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">sage.matching.</tt><tt class="descname">Group</tt><big>(</big><em>name</em>, <em>parent</em>, <em>app</em>, <em>enabled=True</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base matchable group</p>
 <dl class="method">
 <dt id="sage.matching.Group.create">
-<tt class="descname">create</tt><big>(</big><em>name</em>, <em>mtype</em>, <em>pattern</em>, <em>methods=</em><span class="optional">[</span><span class="optional">]</span>, <em>enabled=True</em>, <em>ignorecase=True</em>, <em>delay=None</em>, <em>disable_on_match=False</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.create" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">create</tt><big>(</big><em>name</em>, <em>mtype</em>, <em>pattern</em>, <em>methods=</em><span class="optional">[</span><span class="optional">]</span>, <em>enabled=True</em>, <em>ignorecase=True</em>, <em>delay=None</em>, <em>disable_on_match=False</em>, <em>app=None</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a trigger or alias (depending on the master group)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -478,7 +484,7 @@ both are identical. The only difference is where they occur in execution.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>name</strong> (<em>string</em>) &#8211; name of the matchable.</li>
-<li><strong>mtype</strong> (<em>string</em>) &#8211; &#8216;type&#8217; of matchable. Must be &#8216;exact&#8217;, &#8216;substring&#8217;,
+<li><strong>type</strong> (<em>string</em>) &#8211; &#8216;type&#8217; of matchable. Must be &#8216;exact&#8217;, &#8216;substring&#8217;,
 &#8216;regex&#8217;, &#8216;startswith&#8217;, or &#8216;endswith&#8217;.</li>
 <li><strong>pattern</strong> (<em>string</em>) &#8211; pattern to match against.</li>
 <li><strong>methods</strong> (<em>list</em>) &#8211; (optional) methods to bind to the matchable.</li>
@@ -488,8 +494,117 @@ both are identical. The only difference is where they occur in execution.</p>
 bound methods after a successful match.</li>
 <li><strong>disable_on_match</strong> (<em>bool</em>) &#8211; (optional) disable matchable after a
 successful match.</li>
+<li><strong>app</strong> (<em>string</em>) &#8211; (optional) name of app that owns this matchable</li>
 </ul>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Group.create_group">
+<tt class="descname">create_group</tt><big>(</big><em>name</em>, <em>app=None</em>, <em>enabled=True</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.create_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.create_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a child group</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> &#8211; name of group</li>
+<li><strong>app</strong> &#8211; name of app the group belongs to. If not set will be
+the group&#8217;s parent&#8217;s app.</li>
+<li><strong>enabled</strong> (<em>bool</em>) &#8211; (optional) if group is enabled</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Group.destroy">
+<tt class="descname">destroy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.destroy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.destroy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Destroys (deletes) the group</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Group.disable">
+<tt class="descname">disable</tt><big>(</big><em>name=None</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.disable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disable a group or matchable</p>
+<p>If called without a parameter, will disable the group being called.
+If name is provided, it will do a <a class="reference internal" href="#sage.matching.Group.get" title="sage.matching.Group.get"><tt class="xref py py-meth docutils literal"><span class="pre">get()</span></tt></a>
+lookup and call <a class="reference internal" href="#sage.matching.Group.disable" title="sage.matching.Group.disable"><tt class="xref py py-meth docutils literal"><span class="pre">disable()</span></tt></a> on that object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; (optional) matchable query string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Group.enable">
+<tt class="descname">enable</tt><big>(</big><em>name=None</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.enable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable a group or matchable</p>
+<p>If called without a parameter, will enable the group being called.
+If name is provided, it will do a <a class="reference internal" href="#sage.matching.Group.get" title="sage.matching.Group.get"><tt class="xref py py-meth docutils literal"><span class="pre">get()</span></tt></a>
+lookup and call <a class="reference internal" href="#sage.matching.Group.enable" title="sage.matching.Group.enable"><tt class="xref py py-meth docutils literal"><span class="pre">enable()</span></tt></a> on that object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; (optional) matchable query string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Group.get">
+<tt class="descname">get</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a group or matchable from a matchable query string</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; matchable query string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Group.names">
+<tt class="descname">names</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns names of all matchables</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Group.remove">
+<tt class="descname">remove</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a matchable by name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; name of matchable</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Group.remove_group">
+<tt class="descname">remove_group</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.remove_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.remove_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a child group by name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; name of group</td>
 </tr>
 </tbody>
 </table>
@@ -761,7 +876,7 @@ successful match.</li>
 
 <dl class="data">
 <dt id="sage.player.room">
-<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x11053b250&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x103c4b850&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
 <dd><p>Room data</p>
 </dd></dl>
 
@@ -828,8 +943,8 @@ successful match.</li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="quickstart.html"
-                        title="previous chapter">Quickstart</a></p>
+  <p class="topless"><a href="matchables.html"
+                        title="previous chapter">Matchables</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/api.txt"
@@ -849,7 +964,7 @@ successful match.</li>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="quickstart.html" title="Quickstart"
+          <a href="matchables.html" title="Matchables"
              >previous</a> |</li>
         <li><a href="index.html">sage 2.0.0 documentation</a> &raquo;</li> 
       </ul>

@@ -96,7 +96,7 @@ First, we need to break up the exits into a
         # exits now is ['north', 'east', 'south', 'west', 'up (open door)', 'down', 'out']
 
 Notice that the `trigger` object already had the regular expression groups for
-you. Now lets reformat this information in a better way with some color. Add
+you. Now let's reformat this information in a better way with some color. Add
 :py:mod:`~sage.ansi` to your imports: ::
 
     from sage import echo, triggers, ansi
@@ -159,14 +159,22 @@ Now we have nice easy to read exits. Here's the app in its entirety so far: ::
 Get Organized
 ~~~~~~~~~~~~~
 
-It's probably not a good idea to just make triggers in the 'master' trigger
-group. Lets organize your trigger into its own :py:class:`~sage.matching.Group`.
-The app now changes to: ::
+It's not a good idea to just make triggers in the 'master' trigger group. Let's organize your trigger into its own :py:class:`~sage.matching.Group`. This is
+how you'll actually handle your matchables in your apps.
+
+.. note::
+    You have to tell Sage which app 'owns' a group by passing the name of the
+    the app in the ``app`` parameter for
+    :py:meth:`~sage.matching.Group.create_group`. Failing to do this will
+    raise :py:exc:`~sage.matching.OrphanedMatchableGroupError`. It's highly
+    recommended you read more about :ref:`matchables-ownership`.
+
+The code now changes to: ::
 
     from sage import triggers, ansi
 
-    # create a new group called 'room'
-    room_triggers = triggers.create_group('room')
+    # create a new group called 'room' owned by the app 'myapp'
+    room_triggers = triggers.create_group('room', app='myapp')
 
     # notice how the decorator changes to the group
     @room_triggers.trigger(
@@ -180,8 +188,6 @@ The app now changes to: ::
         trigger.line.output = "Exits: " + new_str
 
 
-
-
 Adding an Alias
 ~~~~~~~~~~~~~~~
 
@@ -193,8 +199,8 @@ need to make an alias. This works nearly identical to how triggers work: ::
 
     room_triggers = triggers.create_group('room')
 
-    # create a new aliases group
-    room_aliases = aliases.create_group('room')
+    # create a new aliases group (owned by 'myapp')
+    room_aliases = aliases.create_group('room', app='myapp')
 
 
     # We create an alias similar to how we create a trigger

@@ -88,24 +88,25 @@
 <span class="c">#: default configuration</span>
 <span class="n">config</span> <span class="o">=</span> <span class="n">defaults</span>
 
-<span class="kn">from</span> <span class="nn">.api</span> <span class="kn">import</span> <span class="n">echo</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">defer_to_prompt</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">error</span><span class="p">,</span> <span class="n">debug</span>
-<span class="kn">from</span> <span class="nn">.matching</span> <span class="kn">import</span> <span class="n">TriggerMasterGroup</span><span class="p">,</span> <span class="n">AliasMasterGroup</span>
 <span class="kn">from</span> <span class="nn">.app</span> <span class="kn">import</span> <span class="n">Apps</span>
-<span class="kn">from</span> <span class="nn">.inbound</span> <span class="kn">import</span> <span class="n">Buffer</span>
-
-<span class="c">#: Is sage connected</span>
-<span class="n">connected</span> <span class="o">=</span> <span class="bp">False</span>
 
 <span class="c">#: Loaded applications</span>
 <span class="n">apps</span> <span class="o">=</span> <span class="n">Apps</span><span class="p">()</span>
 
+<span class="c">#: Is sage connected</span>
+<span class="n">connected</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="kn">from</span> <span class="nn">.inbound</span> <span class="kn">import</span> <span class="n">Buffer</span>
+
 <span class="c">#: Input buffer of lines (:class:`sage.inbound.Buffer`)</span>
 <span class="nb">buffer</span> <span class="o">=</span> <span class="n">Buffer</span><span class="p">([])</span>
+
+<span class="kn">from</span> <span class="nn">.matching</span> <span class="kn">import</span> <span class="n">TriggerMasterGroup</span><span class="p">,</span> <span class="n">AliasMasterGroup</span>
 
 <span class="c">#: Master alias group (:class:`sage.matching.AliasMasterGroup`)</span>
 <span class="n">aliases</span> <span class="o">=</span> <span class="n">AliasMasterGroup</span><span class="p">()</span>
 
+<span class="c">#: Master trigger group (:class:`sage.matching.TriggerMasterGroup`)</span>
 <span class="n">triggers</span> <span class="o">=</span> <span class="n">TriggerMasterGroup</span><span class="p">()</span>
 
 <span class="c"># telnet write and echo internal methods</span>
@@ -114,6 +115,9 @@
 
 <span class="c"># methods defered to the prompt</span>
 <span class="n">_deferred</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+<span class="kn">from</span> <span class="nn">.api</span> <span class="kn">import</span> <span class="n">echo</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">defer_to_prompt</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">error</span><span class="p">,</span> <span class="n">debug</span>
 </pre></div>
 
           </div>
