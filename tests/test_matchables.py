@@ -1,6 +1,22 @@
 from twisted.trial import unittest
-from sage import triggers, aliases
+from sage import triggers, aliases, apps
 from random import choice
+
+
+def make_triggers(group, num=100, prefix='test_'):
+
+    for x in range(num):
+
+        mtype = choice(['exact', 'substring', 'regex', 'startswith',
+            'endswith'])
+
+        kwargs = {
+            'name': '%s%s' % (prefix, x),
+            'mtype': mtype,
+            'pattern': 'Test pattern'
+        }
+
+        group.create(**kwargs)
 
 
 class TestMatchables(unittest.TestCase):
@@ -18,14 +34,14 @@ class TestMatchables(unittest.TestCase):
     def test_create(self):
 
         group = triggers.create_group('test_create')
-        self._make_triggers(group)
+        make_triggers(group)
 
         self.assertEqual(100, len(group.matchables))
 
     def test_get_group(self):
 
         group = triggers.create_group('test_get')
-        self._make_triggers(group)
+        make_triggers(group)
 
         newgroup = triggers.get('test_get')
 
@@ -34,7 +50,7 @@ class TestMatchables(unittest.TestCase):
     def test_get_trigger(self):
 
         group = triggers.create_group('test_get')
-        self._make_triggers(group)
+        make_triggers(group)
 
         trigger = triggers.get('test_get/test_30')
 
@@ -56,7 +72,7 @@ class TestMatchables(unittest.TestCase):
 
         subgroup = group.create_group('test_get_subgroup')
 
-        self._make_triggers(subgroup)
+        make_triggers(subgroup)
 
         trigger = triggers.get('test_get/test_get_subgroup/test_42')
 
@@ -64,7 +80,7 @@ class TestMatchables(unittest.TestCase):
 
     def test_fail_get_trigger(self):
         group = triggers.create_group('test_get')
-        self._make_triggers(group)
+        make_triggers(group)
 
         trigger = triggers.get('test_get/fail_30')
 
@@ -84,7 +100,7 @@ class TestMatchables(unittest.TestCase):
 
         subgroup = group.create_group('test_get_subgroup')
 
-        self._make_triggers(subgroup)
+        make_triggers(subgroup)
 
         trigger = subgroup.get('test_42')
 
@@ -93,7 +109,7 @@ class TestMatchables(unittest.TestCase):
     def test_get_chaning(self):
         group = triggers.create_group('test_get')
 
-        self._make_triggers(group)
+        make_triggers(group)
 
         trigger = group.get('test_5')
 
@@ -104,7 +120,7 @@ class TestMatchables(unittest.TestCase):
     def test_group_disable(self):
         group = triggers.create_group('test')
 
-        self._make_triggers(group, 10, 'dis_')
+        make_triggers(group, 10, 'dis_')
 
         group.disable()
 
@@ -113,7 +129,7 @@ class TestMatchables(unittest.TestCase):
     def test_trigger_disable(self):
         group = triggers.create_group('test')
 
-        self._make_triggers(group, 10, 'dis_')
+        make_triggers(group, 10, 'dis_')
 
         group.disable('dis_2')
 
@@ -122,7 +138,7 @@ class TestMatchables(unittest.TestCase):
     def test_destroy(self):
         group = triggers.create_group('test')
 
-        self._make_triggers(group, 1)
+        make_triggers(group, 1)
 
         trigger = group['test_0']
 
@@ -134,7 +150,7 @@ class TestMatchables(unittest.TestCase):
 
         group = triggers.create_group('test')
 
-        self._make_triggers(group, 1)
+        make_triggers(group, 1)
 
         trigger = group['test_0']
 
@@ -143,6 +159,10 @@ class TestMatchables(unittest.TestCase):
         self.assertNotIn('test_0', group.matchables)
         self.assertNotIn(trigger, triggers.enabled)
 
+    def test_call_group_as_get(self):
+        group = triggers.create_group('test')
+        self.assertEqual(group, triggers('test'))
+
     def _trigger_in_enabled(self, trigger_name):
         for enabled in triggers.enabled:
             if enabled.name == trigger_name:
@@ -150,20 +170,36 @@ class TestMatchables(unittest.TestCase):
 
         return False
 
-    def _make_triggers(self, group, num=100, prefix='test_'):
 
-        for x in range(num):
+class TestApps(unittest.TestCase):
 
-            mtype = choice(['exact', 'substring', 'regex', 'startswith',
-                'endswith'])
+    def setUp(self):
+        apps.load('dummyapp')
 
-            kwargs = {
-                'name': '%s%s' % (prefix, x),
-                'mtype': mtype,
-                'pattern': 'Test pattern'
-            }
+    def tearDown(self):
+        apps.unload('dummyapp')
 
-            group.create(**kwargs)
+    def test_created_group(self):
+        self.assertIn('dummy', triggers.groups)
+        self.assertEqual('dummyapp', triggers.groups['dummy'].app)
+        self.assertIn('dummyapp', apps.groups)
+        group = triggers.groups['dummy']
+        self.assertIn(group, apps.groups['dummyapp'])
+
+    def test_subgroup_ownership(self):
+        group = triggers.get('dummy/subdummy')
+        self.assertEqual('dummyapp', group.app)
+
+    def test_parent_removal(self):
+        triggers.get('dummy').destroy()
+        self.assertNotIn('dummy', triggers.groups)
+        self.assertEqual(len(triggers.enabled), 0)
+        self.assertEqual(len(apps.groups['dummyapp']), 0)
+
+    def test_child_removal(self):
+        triggers.get('dummy/subdummy').destroy()
+        self.assertIn('dummy', triggers.groups)
+        self.assertEqual(len(apps.groups['dummyapp']), 1)
 
 if __name__ == '__main__':
     unittest.main()

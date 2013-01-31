@@ -348,6 +348,9 @@ class Group(object):
         for matchable in self.matchables.values():
             matchable.destroy()
 
+        for child_group in self.groups.values():
+            child_group.destroy()
+
         self.parent()._remove_group(self.name)
 
     def enable(self, name=None):
@@ -390,7 +393,7 @@ class Group(object):
         elif apps.valid(app) == False:
             raise AppNotFound("Unable to find app named '%s'" % app)
 
-        if self.__class__ == TriggerMasterGroup:
+        if self.__class__ in (TriggerMasterGroup, TriggerGroup):
             klass = TriggerGroup
         else:
             klass = AliasGroup
@@ -520,6 +523,9 @@ class Group(object):
 
     def __getitem__(self, *args, **kwargs):
         return self.matchables.__getitem__(*args, **kwargs)
+
+    def __call__(self, name):
+        return self.get(name)
 
 
 class TriggerGroup(Group):
