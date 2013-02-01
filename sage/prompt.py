@@ -4,6 +4,15 @@ from sage import ansi
 import sage.player as player
 
 
+class PromptRenderer(object):
+
+    def receive(self, raw):
+        self.raw = raw
+
+    def render(self):
+        return self.raw
+
+
 def receiver(raw):
     """ Receives the raw prompt text and parses """
 
@@ -38,4 +47,10 @@ def receiver(raw):
     k - kola
     """
 
-    return raw
+    renderer.receive(raw)
+
+    return renderer.render()
+
+
+#: :py:class:`PromptRenderer` instance for building prompts
+renderer = PromptRenderer()

@@ -44,7 +44,6 @@ class Matchable(object):
         methods = kwargs.pop('methods', None)
         self.delay = kwargs.pop('delay', None)
         self.disable_on_match = kwargs.pop('disable_on_match', False)
-        self.app = kwargs.pop('app')
         self.timer = None
 
         self.line = None
@@ -259,8 +258,7 @@ class Group(object):
         enabled=True,
         ignorecase=True,
         delay=None,
-        disable_on_match=False,
-        app=None):
+        disable_on_match=False):
         """ Create a trigger or alias (depending on the master group)
 
             :param name: name of the matchable.
@@ -282,8 +280,6 @@ class Group(object):
             :param disable_on_match: (optional) disable matchable after a
                 successful match.
             :type disable_on_match: bool
-            :param app: (optional) name of app that owns this matchable
-            :type app: string
         """
 
         kwargs = {
@@ -293,8 +289,7 @@ class Group(object):
             'enabled': enabled,
             'delay': delay,
             'disable_on_match': disable_on_match,
-            'parent': self,
-            'app': app
+            'parent': self
         }
 
         if mtype == 'exact':
@@ -394,7 +389,8 @@ class Group(object):
         if app is None:
             if self.app is None:
                 raise OrphanedMatchableGroupError(
-                "Top-level groups must have an app declared in create_group()")
+                "Top-level group '%s' must have an app declared in "
+                "create_group()" % name)
             app = self.app
         elif apps.valid(app) == False:
             raise AppNotFound("Unable to find app named '%s'" % app)
@@ -448,8 +444,29 @@ class Group(object):
                 return self.matchables[name]
             elif name in self.groups:
                 return self.groups[name]
-            else:
-                return None
+            return None
+
+    def get_group(self, name):
+        """ Returns a group from a matchable query string
+
+        :param name: matchable query string
+        """
+        if '/' in name:
+            parts = name.split('/')
+            group = self
+            for segment in parts:
+                if segment in group.groups:
+                    group = group.groups[segment]
+                    if group is None:
+                        return None
+                else:
+                    return None
+
+            return group
+        else:
+            if name in self.groups:
+                return self.groups[name]
+            return None
 
     def names(self):
         """ Returns names of all matchables """
@@ -479,7 +496,8 @@ class Group(object):
         group = self
 
         for segment in head:
-            group = group.groups[segment]
+            if segment in group.groups:
+                group = group.groups[segment]
 
         if tail in group.groups:
             return group.groups[tail]
