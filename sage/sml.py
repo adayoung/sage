@@ -12,6 +12,29 @@ class NoMatchablePattern(Exception):
     pass
 
 
+class InvalidSMLMethod(Exception):
+    pass
+
+
+class SMLMethods(dict):
+
+    reserved_names = ('exact', 'substring', 'regex', 'startswith', 'endswith',
+        'delay', 'enabled', 'ignorecase', 'disable_on_match')
+
+    def register(self, method, name=None):
+        if name is None:
+            name = method.__name__
+
+        if name in self.reserved_names:
+            raise InvalidSMLMethod('%s is considered a reserved name and '
+                'cannot be registered' % name)
+
+        if name in self:
+            raise InvalidSMLMethod('%s is already a registered name')
+
+        self[name] = method
+
+
 def load_file(f, parent):
     f = file(f, 'r')
     data = yaml.load(f)
@@ -79,7 +102,7 @@ def create_matchable(name, data, parent):
         'disable_on_match': False
     }
 
-    methods = {}
+    matchable_methods = {}
 
     for key, value in data.iteritems():
         if ':' in key:
@@ -93,7 +116,7 @@ def create_matchable(name, data, parent):
             params[key] = value
 
         else:
-            methods[key] = value
+            matchable_methods[key] = value
 
     if params['type'] is None:
         raise NoMatchableType("%s doesn't have a correct type defined" % name)
@@ -101,4 +124,14 @@ def create_matchable(name, data, parent):
     if params['pattern'] is None:
         raise NoMatchablePattern("%s doesn't have a pattern defined" % name)
 
-    parent.create(name, params.pop('type'), params.pop('pattern'), **params)
+    m = parent.create(name, params.pop('type'), params.pop('pattern'), **params)
+
+    for method, args in matchable_methods.iteritems():
+        if method in methods:
+            m.sml_bind(methods[method], args)
+        else:
+            raise InvalidSMLMethod('No registered method called %s available '
+                'for matchable %s' % (method, name))
+
+
+methods = SMLMethods()

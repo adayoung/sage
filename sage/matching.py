@@ -59,6 +59,8 @@ class Matchable(object):
             for method in methods:
                 self.bind(method)
 
+        self.sml_methods = []
+
     def enable(self):
         """ Enable the matchable """
         self.parent()._enable(self)
@@ -96,9 +98,20 @@ class Matchable(object):
 
         return True
 
+    def sml_bind(self, method, args):
+        self.sml_methods.append((
+            weakref.ref(method),
+            args
+        ))
+
     def call_methods(self):
         """ Send to all bound methods """
         self.methods.send(self)
+
+        for method, args in self.sml_methods:
+            method = method()
+            if method:
+                method(args)
 
 
 class CIMatchable(Matchable):
