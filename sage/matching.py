@@ -514,7 +514,6 @@ class Group(object):
         enabled = kwargs.pop('enabled', True)
         ignorecase = kwargs.pop('ignorecase', True)
         delay = kwargs.pop('delay', None)
-        app = kwargs.pop('app', None)
 
         def dec(func):
 
@@ -534,7 +533,7 @@ class Group(object):
                         % mname)
 
             m = self.create(mname, mtype, pattern, \
-                enabled=enabled, ignorecase=ignorecase, delay=delay, app=app)
+                enabled=enabled, ignorecase=ignorecase, delay=delay)
             m.methods.connect(func)
 
             return func
