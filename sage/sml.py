@@ -16,6 +16,10 @@ def load_file(f, parent):
     f = file(f, 'r')
     data = yaml.load(f)
 
+    load(data, parent)
+
+
+def load(data, parent):
     if '::parent' in data:
         parent = parent.get_group(data['::parent'])
         if parent is None:

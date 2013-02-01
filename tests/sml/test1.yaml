@@ -1,0 +1,14 @@
+# test case 1
+group:test_1:
+    app: sage
+
+    :trigger_1:
+        exact: Exact line trigger.
+        test_method_1: true
+
+group:test_2:
+    app: sage
+
+    :trigger_2:
+        substring: Substring trigger.
+        test_method_2: a string
