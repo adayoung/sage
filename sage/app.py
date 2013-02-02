@@ -47,6 +47,9 @@ class Apps(dict):
         return False
 
     def _preload(self, name):
+        if '/' in name:
+            name = name.split('/')[-1]
+
         if '.py' in name:
             name = name[:-3]
 
