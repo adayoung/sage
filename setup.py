@@ -17,7 +17,8 @@ requires = [
     'setproctitle',
     'pycrypto',
     'pyasn1',
-    'PyYAML'
+    'PyYAML',
+    'watchdog'
 ]
 
 entrypoints = {

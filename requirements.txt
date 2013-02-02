@@ -4,3 +4,4 @@ pyasn1==0.1.6
 pycrypto==2.6
 setproctitle==1.1.6
 zope.interface==4.0.2
+watchdog==0.6.0
