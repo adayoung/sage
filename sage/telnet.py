@@ -15,6 +15,7 @@ from sage.signals import telnet as signal
 from sage.signals import post_prompt, pre_prompt
 import re
 import zlib
+import sys
 
 
 """ TELNET VALUES """
@@ -361,6 +362,9 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     '''
 
     def applicationDataReceived(self, data):
+        for c in data:
+            self.transport.write("%s\n" % ord(c))
+
         if data == NL:
             self.client.transport.write(data)
 
