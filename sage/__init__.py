@@ -26,6 +26,7 @@ try:
 except ImportError:
     pass
 
+path = None
 
 from .defaults import defaults
 

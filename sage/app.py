@@ -3,6 +3,8 @@ import sys
 from twisted.python.rebuild import rebuild
 from sage.utils import imports
 import gc
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 
 
 class Apps(dict):
@@ -17,6 +19,22 @@ class Apps(dict):
 
         # names available before load is completed
         self._names = set(['sage'])
+
+        self.observer = Observer()
+        self.event_handler = FileSystemEventHandler()
+        self.event_handler.on_any_event = self.file_event
+
+    def file_event(self, event):
+        if event.event_type != 'modified':
+            return
+
+        if '.py' not in event.src_path:
+            return
+
+        name = event.src_path.split('/')[-1][:-3]
+
+        if name in self:
+            self.reload(name)
 
     def add_group(self, app, matchable):
         self.groups[app].add(matchable)

@@ -26,5 +26,6 @@ defaults = Configuration({
     'backdoor': True,
     'backdoor_user': 'sage',
     'backdoor_password': 'sage',
-    'backdoor_port': 5494
+    'backdoor_port': 5494,
+    'auto_reload': True
 })

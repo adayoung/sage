@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 import argparse
 import sage
-from sage.utils import imports
 import sys
+import os
+
 
 banner = """** WARNING: This is a pre-release version of sage and it WILL EAT YOUR CAT! **
    _________ _____ ____
@@ -15,6 +16,17 @@ banner = """** WARNING: This is a pre-release version of sage and it WILL EAT YO
 
 def main():
     args = parser.parse_args()
+
+    path = sys.argv[1]
+
+    if '/' in path:
+        path = '/'.join(path.split('/')[:-1]) + '/'
+        sys.path.append("%s/%s" % (os.getcwd(), path))
+    else:
+        path = '.'
+        sys.path.append(os.getcwd())
+
+    sage.path = path
 
     print(banner)
 
@@ -30,3 +42,4 @@ parser = argparse.ArgumentParser(
     description='Framework and proxy for IRE\'s Achaea')
 parser.add_argument('--version', action='version', version=sage.__version__)
 parser.add_argument('app')
+

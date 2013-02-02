@@ -27,6 +27,7 @@ You might enjoy Sage if:
 * An alternative syntax for making large numbers of triggers and aliases.
 * Extensibility through add-on 'sage apps'.
 * Interactive console allowing you to write live code in a running app.
+* Auto-reloading of your code as you change it.
 
 ## Requirements
 - Python 2.7+ (2.7.3 recommended) or PyPy 1.8+ (1.9 recommended). 3+ not yet supported.
