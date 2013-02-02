@@ -315,7 +315,6 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     def __init__(self):
         Telnet.__init__(self)
         self.client_factory = TelnetClientFactory()
-        self.client = None
 
         self.data_buffer = ''
 
@@ -364,7 +363,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     '''
 
     def applicationDataReceived(self, data):
-        if self.client is None:
+        if self.client.transport is None:
             self.data_buffer += data
             return
 
