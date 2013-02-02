@@ -321,6 +321,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     def connectionMade(self):
         """ Local client connected. Start client connection to server. """
         self.factory.transports.append(self.transport)
+        self.transport.write("SAGE - Connected to %s:%s\n" % (config.host, config.port))
         self.client = self.client_factory.client
         self.client.server = self
         sage._echo = self.write
@@ -333,8 +334,6 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
 
         if self.client.connected == False:
             reactor.connectTCP(config.host, config.port, self.client_factory)
-
-        self.transport.write("SAGE - Connected to %s:%s\n" % (config.host, config.port))
 
     def connectionLost(self, reason):
         self.connected = False
@@ -364,15 +363,14 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     '''
 
     def applicationDataReceived(self, data):
-        '''
         if self.client.transport is None:
             self.data_buffer += data
-            return
+        else:
+            self.applicationDataReceived = self._applicationDataReceived
+            self.applicationDataReceived(self.data_buffer + data)
+            self.data_buffer = ''
 
-        data = self.data_buffer + data
-        self.data_buffer = ''
-        '''
-
+    def _applicationDataReceived(self, data):
         if data == NL:
             self.client.transport.write(data)
 
