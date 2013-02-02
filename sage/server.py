@@ -6,7 +6,7 @@ from sage.signals import pre_start
 
 
 def run():
-    """ Start Twisted """
+    """ Start Sage Server """
 
     pre_start.send(sender=None)
 
