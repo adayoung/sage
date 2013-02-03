@@ -134,7 +134,7 @@ class TelnetClient(Telnet):
 
         output += prompt_output + '\r\n'
 
-        signal.inbound.send(sender=self, lines=sage.buffer, \
+        signal.inbound.send_robust(sender=self, lines=sage.buffer, \
             prompt=prompt_output)
 
         self.to_client(output)
@@ -144,12 +144,12 @@ class TelnetClient(Telnet):
             self.do(option)
 
         sage.connected = True
-        signal.connected.send(sender=self)
+        signal.connected.send_robust(sender=self)
         sage._send = self.transport.write
 
     def connectionLost(self, reason):
         sage.connected = False
-        signal.disconnected.send(sender=self)
+        signal.disconnected.send_robust(sender=self)
         if self.server is not None:
             self.server.transport.loseConnection()
             self.server = None

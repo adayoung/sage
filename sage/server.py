@@ -8,7 +8,7 @@ from sage.signals import pre_start
 def run():
     """ Start Sage Server """
 
-    pre_start.send(sender=None)
+    pre_start.send_robust(sender=None)
 
     if config.auto_reload:
         apps.observer.schedule(apps.event_handler, path, recursive=True)

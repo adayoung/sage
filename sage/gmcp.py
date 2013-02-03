@@ -192,7 +192,7 @@ class GMCPReceiver(object):
                 items[int(item['id'])] = item['name']
 
             player.room.items = items
-            gmcp_signals.room_items.send(self, items=player.room.items)
+            gmcp_signals.room_items.send_robust(self, items=player.room.items)
 
         elif d['location'] == 'inv':
             player.inv.clear()
@@ -238,7 +238,7 @@ class GMCPReceiver(object):
 
     # Core.Goodbye
     def goodbye(self, d):
-        gmcp_signals.goodbye.send(self)
+        gmcp_signals.goodbye.send_robust(self)
 
     # Core.Ping
     def ping(self):
@@ -247,7 +247,7 @@ class GMCPReceiver(object):
         latency = time() - self.ping_start
         self.pinging = False
 
-        gmcp_signals.ping.send(self, latency=latency)
+        gmcp_signals.ping.send_robust(self, latency=latency)
 
     # Comm.Channel.List
     def comm_channels(self, d):
