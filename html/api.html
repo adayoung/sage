@@ -125,7 +125,7 @@ important right here and provide links to the canonical documentation.</p>
 <h3>Main Containers<a class="headerlink" href="#main-containers" title="Permalink to this headline">¶</a></h3>
 <dl class="data">
 <dt id="sage.config">
-<tt class="descclassname">sage.</tt><tt class="descname">config</tt><em class="property"> = {'backdoor_port': 5494, 'proxy_port': 5493, 'host': 'achaea.com', 'backdoor': True, 'backdoor_user': 'sage', 'port': 2003, 'backdoor_password': 'sage'}</em><a class="headerlink" href="#sage.config" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.</tt><tt class="descname">config</tt><em class="property"> = {'backdoor_port': 5494, 'auto_reload': True, 'backdoor_user': 'sage', 'backdoor_password': 'sage', 'proxy_port': 5493, 'backdoor': True, 'host': 'achaea.com', 'port': 2003}</em><a class="headerlink" href="#sage.config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Container for sage configuration</p>
 </dd></dl>
 
@@ -141,7 +141,7 @@ important right here and provide links to the canonical documentation.</p>
 <dd><p>Dict-like container of loaded apps</p>
 <dl class="method">
 <dt id="sage.app.Apps.load">
-<tt class="descname">load</tt><big>(</big><em>names</em><big>)</big><a class="reference internal" href="_modules/sage/app.html#Apps.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.app.Apps.load" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">load</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/sage/app.html#Apps.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.app.Apps.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a module or package into the namespace</p>
 </dd></dl>
 
@@ -476,7 +476,7 @@ both are identical. The only difference is where they occur in execution.</p>
 <dd><p>Base matchable group</p>
 <dl class="method">
 <dt id="sage.matching.Group.create">
-<tt class="descname">create</tt><big>(</big><em>name</em>, <em>mtype</em>, <em>pattern</em>, <em>methods=</em><span class="optional">[</span><span class="optional">]</span>, <em>enabled=True</em>, <em>ignorecase=True</em>, <em>delay=None</em>, <em>disable_on_match=False</em>, <em>app=None</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.create" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">create</tt><big>(</big><em>name</em>, <em>mtype</em>, <em>pattern</em>, <em>methods=</em><span class="optional">[</span><span class="optional">]</span>, <em>enabled=True</em>, <em>ignorecase=True</em>, <em>delay=None</em>, <em>disable_on_match=False</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a trigger or alias (depending on the master group)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -494,7 +494,6 @@ both are identical. The only difference is where they occur in execution.</p>
 bound methods after a successful match.</li>
 <li><strong>disable_on_match</strong> (<em>bool</em>) &#8211; (optional) disable matchable after a
 successful match.</li>
-<li><strong>app</strong> (<em>string</em>) &#8211; (optional) name of app that owns this matchable</li>
 </ul>
 </td>
 </tr>
@@ -566,6 +565,20 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 <dt id="sage.matching.Group.get">
 <tt class="descname">get</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a group or matchable from a matchable query string</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; matchable query string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sage.matching.Group.get_group">
+<tt class="descname">get_group</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.get_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.get_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a group from a matchable query string</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -876,7 +889,7 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 
 <dl class="data">
 <dt id="sage.player.room">
-<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x103c4b850&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x1091a2b10&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
 <dd><p>Room data</p>
 </dd></dl>
 

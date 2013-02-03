@@ -61,10 +61,137 @@
             
   <div class="section" id="matchables">
 <span id="id1"></span><h1>Matchables<a class="headerlink" href="#matchables" title="Permalink to this headline">¶</a></h1>
-<p>Coming soon...</p>
-<div class="section" id="ownership">
-<span id="matchables-ownership"></span><h2>Ownership<a class="headerlink" href="#ownership" title="Permalink to this headline">¶</a></h2>
-<p>Coming soon...</p>
+<p>Sage comes with its own built-in triggers and aliases known collectively as
+&#8216;matchables&#8217;. Some features of Sage Matchables include:</p>
+<ul class="simple">
+<li>Optimized for high performance.</li>
+<li>Supports group hierarchies.</li>
+<li>Different types of matching (string methods, regex, etc).</li>
+<li>Bind Python methods to successful matches.</li>
+<li>An organized API for interacting with matchables and groups.</li>
+<li>A powerful alternative syntax for writing large numbers of matchables.</li>
+</ul>
+<p>Matchables are divided into two primary &#8216;master groups&#8217;:
+<a class="reference internal" href="api.html#sage.triggers" title="sage.triggers"><tt class="xref py py-obj docutils literal"><span class="pre">triggers</span></tt></a> and <a class="reference internal" href="api.html#sage.aliases" title="sage.aliases"><tt class="xref py py-obj docutils literal"><span class="pre">aliases</span></tt></a>. Triggers run on
+the lines coming in from Achaea. Aliases run on the input you enter into your
+client.</p>
+<div class="section" id="matchable-types">
+<h2>Matchable Types<a class="headerlink" href="#matchable-types" title="Permalink to this headline">¶</a></h2>
+<p>There are different types of matching allowing you to pick the best tool for
+the job. <em>A &#8216;line&#8217; in this reference means a line received from either the
+server or the client.</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>regex</td>
+<td>&#8216;Regular Expression&#8217;. Powerful matching capability through Python&#8217;s <cite>re</cite> module.</td>
+</tr>
+<tr class="row-odd"><td>exact</td>
+<td>Exact string matching. <tt class="samp docutils literal"><span class="pre">s</span> <span class="pre">==</span> <span class="pre">line</span></tt></td>
+</tr>
+<tr class="row-even"><td>substring</td>
+<td>A string that is part of a line. <tt class="samp docutils literal"><span class="pre">s</span> <span class="pre">in</span> <span class="pre">line</span></tt></td>
+</tr>
+<tr class="row-odd"><td>startswith</td>
+<td>A string that is the beginning of a line. <tt class="samp docutils literal"><span class="pre">line.startswith(s)</span></tt></td>
+</tr>
+<tr class="row-even"><td>endswith</td>
+<td>A string that is the end of a line. <tt class="samp docutils literal"><span class="pre">line.endswith(s)</span></tt></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="creating-matchables">
+<h2>Creating Matchables<a class="headerlink" href="#creating-matchables" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="groups">
+<h3>Groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h3>
+<p>All matchables belong to a group, and whenever you create one it will be
+relative to whatever group you want it to belong to. Therefor, you&#8217;ll need to
+create groups first. Sage supports full hierarchies of groups:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">aliases</span>  <span class="c"># `aliases` is the master group</span>
+
+<span class="n">group_1</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;group_1&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;thisapp&#39;</span><span class="p">)</span>
+
+<span class="n">group_2</span> <span class="o">=</span> <span class="n">group_1</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;group_2&#39;</span><span class="p">)</span>
+
+<span class="c"># top-level groups must be owned by an app</span>
+<span class="n">group_3</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;group_3&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;thisapp&#39;</span><span class="p">)</span>
+
+<span class="n">group_4</span> <span class="o">=</span> <span class="n">group_2</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;group_4&#39;</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Will create the following structure:</p>
+<div class="highlight-python"><pre>+-group_1
+|  +-group_2
+|    +-group_4  (this group is disabled)
++-group_3</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">While Sage has parent-child relationships between groups, there is no
+actual order of execution with matchables. Matchables belonging to a
+parent group are not guaranteed to execute before a child group&#8217;s
+matchables. While this might seem like a loss if you&#8217;re used to writing for
+other clients, experience has proven depending on order-of-execution
+is a poor design. With Sage, worrying the order of your matchables is
+unnecessary. Use groups to keep your code organized - not to actually
+create the logic of your application.</p>
+</div>
+<div class="section" id="group-ownership">
+<span id="matchables-ownership"></span><h4>Group Ownership<a class="headerlink" href="#group-ownership" title="Permalink to this headline">¶</a></h4>
+<p>Sage requires any top-level group to be assigned to an app. This is necessary
+for reloading and unloading of apps. Any child group will assume ownership of
+its parent, but can be overridden during group creation. Ownership is declared
+by passing the string name of an app as the <tt class="docutils literal"><span class="pre">app</span></tt> parameter to
+<a class="reference internal" href="api.html#sage.matching.Group.create_group" title="sage.matching.Group.create_group"><tt class="xref py py-meth docutils literal"><span class="pre">create_group()</span></tt></a></p>
+</div>
+</div>
+<div class="section" id="creating-and-binding">
+<h3>Creating and Binding<a class="headerlink" href="#creating-and-binding" title="Permalink to this headline">¶</a></h3>
+<p>When you write a matchable, you will want to bind methods to it that will be
+called if there is a successful match. Sage has multiple ways of creating
+matchables and binding methods to them.</p>
+<div class="section" id="with-group-create">
+<h4>With <cite>&lt;group&gt;.create()</cite><a class="headerlink" href="#with-group-create" title="Permalink to this headline">¶</a></h4>
+<p>Matchables can be created from a group with
+<a class="reference internal" href="api.html#sage.matching.Group.create" title="sage.matching.Group.create"><tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt></a>. Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># This will be run if the &#39;eq_recovered&#39; trigger matches</span>
+<span class="k">def</span> <span class="nf">eq_recovered</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
+    <span class="k">pass</span>  <span class="c"># do stuff when equilibrium is recovered</span>
+
+<span class="n">group</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="s">&quot;eq_recovered&quot;</span><span class="p">,</span>  <span class="c"># name of the matchable</span>
+    <span class="s">&quot;exact&quot;</span><span class="p">,</span>  <span class="c"># type of matchable</span>
+    <span class="s">&quot;You have recovered equilibrium.&quot;</span><span class="p">,</span>  <span class="c"># pattern</span>
+    <span class="p">[</span><span class="n">eq_recovered</span><span class="p">]</span>  <span class="c"># list of methods bound to matchable</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="with-a-decorator">
+<h4>With a decorator<a class="headerlink" href="#with-a-decorator" title="Permalink to this headline">¶</a></h4>
+<p>Using a
+<a class="reference external" href="http://docs.python.org/2/reference/compound_stmts.html#function">decorator</a>
+is a convenient way to create a matchable and bind it to a method at the same
+time.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@group.trigger</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;You have recovered equilibrium.&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">eq_recovered</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
+    <span class="k">pass</span>  <span class="c"># do stuff when equilibrium is recovered</span>
+</pre></div>
+</div>
+<p>The decorator mimics the parameters of <a class="reference internal" href="api.html#sage.matching.Group.create" title="sage.matching.Group.create"><tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt></a>.
+In absence of <tt class="docutils literal"><span class="pre">name</span></tt> being passed in the decorator, the matchable will have
+the same name as the method bound to it.</p>
+</div>
+</div>
 </div>
 </div>
 
@@ -77,7 +204,19 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Matchables</a><ul>
-<li><a class="reference internal" href="#ownership">Ownership</a></li>
+<li><a class="reference internal" href="#matchable-types">Matchable Types</a></li>
+<li><a class="reference internal" href="#creating-matchables">Creating Matchables</a><ul>
+<li><a class="reference internal" href="#groups">Groups</a><ul>
+<li><a class="reference internal" href="#group-ownership">Group Ownership</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creating-and-binding">Creating and Binding</a><ul>
+<li><a class="reference internal" href="#with-group-create">With <cite>&lt;group&gt;.create()</cite></a></li>
+<li><a class="reference internal" href="#with-a-decorator">With a decorator</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
