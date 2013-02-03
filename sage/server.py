@@ -27,10 +27,12 @@ def run():
         imports = {
             'sage': sage,
             'player': player,
-            'gmcp': gmcp
+            'gmcp': gmcp,
+            'apps': sage.apps
         }
 
-        reactor.listenTCP(config.backdoor_port, get_manhole_factory(imports))
+        reactor.listenTCP(config.backdoor_port, get_manhole_factory(imports),
+            interface='127.0.0.1')
         print("Backdoor port: %s" % config.backdoor_port)
 
     # Add shutdown events

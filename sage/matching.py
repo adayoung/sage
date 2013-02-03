@@ -38,20 +38,46 @@ class Matchable(object):
     """ Base class for a trigger or alias """
 
     def __init__(self, **kwargs):
+        #: name of the matchable.
         self.name = kwargs.pop('name', None)
+
+        #: pattern matched against.
         self.pattern = kwargs.pop('pattern', None)
+
+        #: enabled.
         self.enabled = kwargs.pop('enabled', None)
+
+        #: methods bound to the matchable.
         methods = kwargs.pop('methods', None)
+
+        #: seconds execution is delayed by after match. None to disable.
         self.delay = kwargs.pop('delay', None)
+
+        #: disable the matchable on a successful match
         self.disable_on_match = kwargs.pop('disable_on_match', False)
+
         self.timer = None
 
+        #: matched line
         self.line = None
+
+        #: time match occurred
         self.time = None
+
+        #: text before matching pattern (substring and endswith only)
         self.prefix = None
+
+        #: text after matching mattern (substring and startswith only)
         self.suffix = None
+
+        #: parent group
         self.parent = weakref.ref(kwargs.pop('parent'))
+
+        #: re.MatchObject (regex only)
         self.matchobj = None
+
+        #: re.MatchObject.groups() - regex groups as a list (regex only)
+        self.groups = None
 
         self.methods = Hook()
 
