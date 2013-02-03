@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from sage import log
 import sys
 from twisted.python.rebuild import rebuild
 from sage.utils import imports
@@ -58,11 +59,15 @@ class Apps(dict):
             app = imports.import_file(name)
             self[app.__name__] = app
 
+            if '.py' in name:
+                name = name[:-3]
+
+            log.msg("Loaded app '%s'" % name)
             return True
 
         del(self.groups[name])
         self._names.discard(name)
-        return False
+        log.msg("Failed to load app '%s'" % name)
 
     def _preload(self, name):
         if '/' in name:
@@ -82,7 +87,11 @@ class Apps(dict):
         if name not in self:
             return False
 
-        self[name] = rebuild(self[name])
+        try:
+            self[name] = rebuild(self[name])
+        except:
+            log.msg("Error reloading '%s'" % name)
+            log.err()
         return True
 
     def unload(self, name):
