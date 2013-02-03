@@ -328,6 +328,8 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
         self.connected = False
         self.factory.transports.remove(self.transport)
 
+    '''
+
     def unhandledCommand(self, command, argument):
         print "Unhandled Command"
         print ord(command)
@@ -346,6 +348,8 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
 
     def disableLocal(self, option):
         self.transport.write("You asked me to disable %r\r\n" % (option,))
+
+    '''
 
     def applicationDataReceived(self, data):
         if data == NL:
