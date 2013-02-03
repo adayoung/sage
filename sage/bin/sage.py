@@ -21,10 +21,11 @@ def main():
 
     if '/' in path:
         path = '/'.join(path.split('/')[:-1]) + '/'
-        sys.path.append("%s/%s" % (os.getcwd(), path))
+        path = "%s/%s" % (os.getcwd(), path)
     else:
-        path = '.'
-        sys.path.append(os.getcwd())
+        path = os.getcwd()
+
+    sys.path.append(path)
 
     sage.path = path
 
