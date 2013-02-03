@@ -87,11 +87,17 @@ class Apps(dict):
         if name not in self:
             return False
 
+        for obj in list(self.groups['myapp']):
+            obj.destroy()
+
         try:
             self[name] = rebuild(self[name])
         except:
             log.msg("Error reloading '%s'" % name)
             log.err()
+            return False
+
+        gc.collect()
         return True
 
     def unload(self, name):
