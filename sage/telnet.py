@@ -6,7 +6,7 @@ Local Client <--> TelnetServer() <--> TelnetClient() <--> Remote Server
 """
 from __future__ import absolute_import
 from twisted.conch.telnet import Telnet, StatefulTelnetProtocol
-from twisted.internet.protocol import ClientFactory, Factory
+from twisted.internet.protocol import ClientFactory, ServerFactory
 from twisted.internet import reactor
 import sage
 from sage.utils import error
@@ -297,6 +297,10 @@ class TelnetClientFactory(ClientFactory):
         self.client.transport.loseConnection()
 
 
+class TelnetServerFactory(ServerFactory):
+    pass
+
+
 class TelnetServer(Telnet, StatefulTelnetProtocol):
     """
     Local client connects to TelnetServer().
@@ -375,7 +379,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
 def build_factory():
     """ Setup Twisted factory """
 
-    factory = Factory()
+    factory = TelnetServerFactory()
     factory.protocol = TelnetServer
     factory.transports = []
     return factory

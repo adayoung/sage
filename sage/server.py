@@ -16,7 +16,7 @@ def run():
 
     # Setup reactor to listen
     reactor.listenTCP(config.proxy_port, telnet.build_factory())
-    print("Proxy: %s" % config.proxy_port)
+    print("Proxy port: %s" % config.proxy_port)
 
     # setup the backdoor
     if config.backdoor:
@@ -31,7 +31,7 @@ def run():
         }
 
         reactor.listenTCP(config.backdoor_port, get_manhole_factory(imports))
-        print("Backdoor: %s" % config.backdoor_port)
+        print("Backdoor port: %s" % config.backdoor_port)
 
     # Add shutdown events
     reactor.addSystemEventTrigger('before', 'shutdown', pre_shutdown)

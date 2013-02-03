@@ -26,6 +26,8 @@ try:
 except ImportError:
     pass
 
+from twisted.python import log
+
 path = None
 
 from .defaults import defaults

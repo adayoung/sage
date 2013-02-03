@@ -30,6 +30,8 @@ def main():
 
     print(banner)
 
+    sage.log.startLogging(sys.stdout)
+
     app = args.app
 
     sage.apps.load(app)
