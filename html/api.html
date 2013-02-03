@@ -641,6 +641,12 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 <dd><p>Send to all bound methods</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="sage.matching.Matchable.delay">
+<tt class="descname">delay</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.delay" title="Permalink to this definition">¶</a></dt>
+<dd><p>seconds execution is delayed by after match. None to disable.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="sage.matching.Matchable.destroy">
 <tt class="descname">destroy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Matchable.destroy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Matchable.destroy" title="Permalink to this definition">¶</a></dt>
@@ -653,16 +659,88 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 <dd><p>Disable the matchable</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="sage.matching.Matchable.disable_on_match">
+<tt class="descname">disable_on_match</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.disable_on_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>disable the matchable on a successful match</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="sage.matching.Matchable.enable">
 <tt class="descname">enable</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Matchable.enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Matchable.enable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enable the matchable</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="sage.matching.Matchable.enabled">
+<tt class="descname">enabled</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>enabled.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sage.matching.Matchable.groups">
+<tt class="descname">groups</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>re.MatchObject.groups() - regex groups as a list (regex only)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sage.matching.Matchable.line">
+<tt class="descname">line</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.line" title="Permalink to this definition">¶</a></dt>
+<dd><p>matched line</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sage.matching.Matchable.matchobj">
+<tt class="descname">matchobj</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.matchobj" title="Permalink to this definition">¶</a></dt>
+<dd><p>re.MatchObject (regex only)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sage.matching.Matchable.methods">
+<tt class="descname">methods</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>methods bound to the matchable.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sage.matching.Matchable.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>name of the matchable.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sage.matching.Matchable.parent">
+<tt class="descname">parent</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>parent group</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sage.matching.Matchable.pattern">
+<tt class="descname">pattern</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>pattern matched against.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sage.matching.Matchable.prefix">
+<tt class="descname">prefix</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>text before matching pattern (substring and endswith only)</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="sage.matching.Matchable.successful_match">
 <tt class="descname">successful_match</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Matchable.successful_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Matchable.successful_match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Called when the matchable successfully matches</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sage.matching.Matchable.suffix">
+<tt class="descname">suffix</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.suffix" title="Permalink to this definition">¶</a></dt>
+<dd><p>text after matching mattern (substring and startswith only)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sage.matching.Matchable.time">
+<tt class="descname">time</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>time match occurred</p>
 </dd></dl>
 
 <dl class="method">
@@ -889,7 +967,7 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 
 <dl class="data">
 <dt id="sage.player.room">
-<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x1091a2b10&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x1081a7a90&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
 <dd><p>Room data</p>
 </dd></dl>
 
