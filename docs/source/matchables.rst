@@ -289,3 +289,25 @@ When `trigger_1` gets matched, it will enable trigger_2: ::
     @group_1.trigger(pattern="Something is coming!", type="exact")
     def trigger_1(trigger):
         trigger.parent.parent('group_2/trigger_2').enable()
+
+SML - Sage Matchable Language
+-----------------------------
+
+When you have many matchables with similar behavior, writing through the API
+can become cumbersome. To alleviate this, Sage provides the 'Sage Matchable
+Language' (SML). SML provides an easy and brief syntax for writing matchables
+and groups. Here's an example of SML written in
+`YAML <http://www.yaml.org/>`_: ::
+
+    group:my_app:
+        app: my_app
+
+        group:group_1:
+            :trigger_1:
+                exact: An exact line that will be matched.
+                some_method: true
+
+        group:group_2:
+            :trigger_2:
+                regex: ^Regular expressions are (cool|confusing)\.$
+                another_method: [A, List, of, Strings]
