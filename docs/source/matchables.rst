@@ -132,6 +132,14 @@ For alias groups the decorator will be `@<group>.alias()` and for trigger
 groups `@<group>.trigger()`. This will make it easier in your code to recall
 what type of matchable is being used.
 
+Binding Methods to Existing Matchables
+``````````````````````````````````````
+
+You can bind a method to an existing matchable by using the matchable's
+:py:meth:`~sage.matching.Matchable.bind` method. Similarly, you can
+:py:meth:`~sage.matching.Matchable.unbind` as well. Matchables can have
+multiple methods bound to them.
+
 Delaying
 ````````
 
