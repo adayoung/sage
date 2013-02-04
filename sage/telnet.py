@@ -12,6 +12,7 @@ import sage
 from sage.utils import error
 from sage import inbound, outbound, gmcp, prompt, config
 from sage.signals import telnet as signal
+from sage.signals import post_prompt, pre_prompt
 import re
 import zlib
 
@@ -115,6 +116,8 @@ class TelnetClient(Telnet):
 
         data = data.split('\n')
 
+        pre_prompt.send_robust(sender=None, raw_data=data)
+
         # lines recieved
         lines = data[:-1]
 
@@ -127,6 +130,8 @@ class TelnetClient(Telnet):
         # send lines to inbound receiver
         lines = inbound.receiver(lines)
 
+        post_prompt.send_robust(sender=None)
+
         output = ''
 
         if len(lines):
@@ -134,7 +139,7 @@ class TelnetClient(Telnet):
 
         output += prompt_output + '\r\n'
 
-        signal.inbound.send_robust(sender=self, lines=sage.buffer, \
+        signal.pre_outbound.send_robust(sender=self, lines=sage.buffer, \
             prompt=prompt_output)
 
         self.to_client(output)

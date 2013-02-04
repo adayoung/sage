@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
+from itertools import imap
 from sage.ansi import filter_ansi
 import sage
 
@@ -55,11 +56,15 @@ class Buffer(list):
 def receiver(lines):
     """ Receives lines since the last prompt """
 
-    sage.buffer = Buffer(lines)
+    sage.buffer = buf = Buffer(lines)
+    trigs = sage.triggers.enabled
 
     # run trigger matching over lines
-    for trigger in sage.triggers.enabled:
-        map(trigger.match, sage.buffer)
+    for line in buf:
+        for trigger in trigs:
+            trigger.match(line)
+
+        sage.triggers.flush_set()
 
     # since the prompt has already run, we execute deferred methods here
     for ref, args in sage._deferred:

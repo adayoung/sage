@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 import sage
 import weakref
+from twisted.internet import reactor
 
 
 def echo(msg):
@@ -40,3 +41,7 @@ def defer_to_prompt(method, *args):
     """
 
     sage._deferred.append((weakref.ref(method), args))
+
+
+def delay(seconds, method, *args, **kwargs):
+    return reactor.callLater(seconds, method, *args, **kwargs)

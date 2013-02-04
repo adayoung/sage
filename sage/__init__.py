@@ -63,5 +63,5 @@ _echo = None
 # methods defered to the prompt
 _deferred = list()
 
-from .api import echo, send, defer_to_prompt
+from .api import echo, send, defer_to_prompt, delay
 from .utils import error, debug

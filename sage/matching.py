@@ -606,20 +606,29 @@ class MasterGroup(Group):
 
     def __init__(self):
 
-        self.enabled = weakref.WeakSet()
+        self.enabled = set()
         self.parent = self
         self.app = None
         self.groups = {}
         self.matchables = {}
 
+        self._to_add = set()
+        self._to_remove = set()
+
     def _disable(self, instance):
-        self.enabled.discard(instance)
+        self._to_remove.add(instance)
 
     def _enable(self, instance):
-        self.enabled.add(instance)
+        self._to_add.add(instance)
 
     def _remove(self, instance):
-        self.enabled.discard(instance)
+        self._to_remove.add(instance)
+
+    def flush_set(self):
+        self.enabled.difference_update(self._to_remove)
+        self.enabled.update(self._to_add)
+        self._to_add.clear()
+        self._to_remove.clear()
 
     def __repr__(self):
         return "%s (%s groups, %s objects)" % (self.__class__, \

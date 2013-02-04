@@ -7,5 +7,5 @@ connected = Signal()
 # Disconnected from Achaea
 disconnected = Signal()
 
-# Lines from the server
-inbound = Signal(providing_args=['lines', 'prompt'])
+# Processed lines about to go out to the client
+pre_outbound = Signal(providing_args=['lines', 'prompt'])
