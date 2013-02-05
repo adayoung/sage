@@ -15,9 +15,12 @@ class Balance(object):
         self.balance = True
         self.last_on = 0
         self.last_off = 0
+        self.waiting = False
 
     def on(self):
         """ Set to on balance """
+
+        self.waiting = False
 
         if self.balance == False:
             self.balance = True
@@ -34,6 +37,8 @@ class Balance(object):
     def off(self):
         """ Set to off balance """
 
+        self.waiting = False
+
         if self.balance == True:
             self.balance = False
             self.last_off = time()
@@ -46,10 +51,15 @@ class Balance(object):
 
         return time() - self.last_off
 
+    def wait(self):
+        self.waiting = True
+
     def __repr__(self):
         return str(self.balance)
 
     def __eq__(self, other):
+        if self.waiting:
+            return False
         return self.balance == other
 
 
