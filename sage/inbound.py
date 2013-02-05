@@ -59,12 +59,16 @@ def receiver(lines):
     sage.buffer = buf = Buffer(lines)
     trigs = sage.triggers.enabled
 
+    sage.triggers.in_loop = True
     # run trigger matching over lines
     for line in buf:
         for trigger in trigs:
-            trigger.match(line)
+            if trigger.enabled:
+                trigger.match(line)
 
         sage.triggers.flush_set()
+
+    sage.triggers.in_loop = False
 
     # since the prompt has already run, we execute deferred methods here
     for ref, args in sage._deferred:

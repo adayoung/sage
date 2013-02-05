@@ -615,14 +615,25 @@ class MasterGroup(Group):
         self._to_add = set()
         self._to_remove = set()
 
+        self.in_loop = False
+
     def _disable(self, instance):
-        self._to_remove.add(instance)
+        if self.in_loop:
+            self._to_remove.add(instance)
+        else:
+            self.enabled.discard(instance)
 
     def _enable(self, instance):
-        self._to_add.add(instance)
+        if self.in_loop:
+            self._to_add.add(instance)
+        else:
+            self.enabled.add(instance)
 
     def _remove(self, instance):
-        self._to_remove.add(instance)
+        if self.in_loop:
+            self._to_remove.add(instance)
+        else:
+            self.enabled.discard(instance)
 
     def flush_set(self):
         self.enabled.difference_update(self._to_remove)

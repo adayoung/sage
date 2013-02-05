@@ -130,3 +130,6 @@ class Apps(dict):
 
     def __repr__(self):
         return str(self.__class__)
+
+    def __getattr__(self, item):
+        return self.__getitem__(item)
