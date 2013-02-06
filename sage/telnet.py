@@ -346,28 +346,6 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
         self.connected = False
         self.factory.transports.remove(self.transport)
 
-
-"""
-    def unhandledCommand(self, command, argument):
-        print "Unhandled Command"
-        print ord(command)
-        print ord(argument)
-
-    def enableRemote(self, option):
-        print("You tried to enable %r (I rejected it)\r\n" % (option,))
-        return False
-
-    def disableRemote(self, option):
-        print("You disabled %r\r\n" % (option,))
-
-    def enableLocal(self, option):
-        print("You tried to make me enable %r (I rejected it)\r\n" % (option,))
-        return False
-
-    def disableLocal(self, option):
-        print("You asked me to disable %r\r\n" % (option,))
-"""
-
     def applicationDataReceived(self, data):
         if self.client.transport is None:
             self.data_buffer += data
