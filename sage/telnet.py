@@ -149,6 +149,7 @@ class TelnetClient(Telnet):
             self.do(option)
 
         sage.connected = True
+        self.server.ready()
         signal.connected.send_robust(sender=self)
         sage._send = self.transport.write
 
@@ -318,6 +319,12 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
 
         self.data_buffer = ''
 
+    def ready(self):
+        """ Gets called when the client successfully connects """
+        self.applicationDataReceived = self._applicationDataReceived
+        self.applicationDataReceived(self.data_buffer)
+        self.data_buffer = ''
+
     def connectionMade(self):
         """ Local client connected. Start client connection to server. """
         self.factory.transports.append(self.transport)
@@ -365,10 +372,6 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     def applicationDataReceived(self, data):
         if self.client.transport is None:
             self.data_buffer += data
-        else:
-            self.applicationDataReceived = self._applicationDataReceived
-            self.applicationDataReceived(self.data_buffer + data)
-            self.data_buffer = ''
 
     def _applicationDataReceived(self, data):
         if data == NL:
