@@ -30,7 +30,7 @@ You might enjoy Sage if:
 * Auto-reloading of your code as you change it.
 
 ## Requirements
-- Python 2.7+ (2.7.3 recommended) or PyPy 1.8+ (1.9 recommended). 3+ not yet supported.
+- Python 2.7+ (2.7.3 recommended). 3+ not yet supported.
 - Unix-like operating system (OS X, Linux, BSD, etc...)
 _If you'd like to be the Windows maintainer for sage, please get in touch with me._
 
