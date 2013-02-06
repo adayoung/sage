@@ -13,7 +13,7 @@ def receiver(line):
         if alias.match(line):
             return None
 
-    sage.alaises.flush_set()
+    sage.aliases.flush_set()
     sage.aliases.in_loop = False
 
     return line
