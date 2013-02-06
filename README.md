@@ -32,7 +32,6 @@ You might enjoy Sage if:
 ## Requirements
 - Python 2.7+ (2.7.3 recommended). 3+ not yet supported.
 - Unix-like operating system (OS X, Linux, BSD, etc...)
-_If you'd like to be the Windows maintainer for sage, please get in touch with me._
 
 ## Documentation
 Go to http://astralinae.github.com/sage for a prebuilt version of the current documentation. Otherwise build them yourself from the sphinx sources in the docs folder.
