@@ -197,6 +197,13 @@ groups <cite>&#64;&lt;group&gt;.trigger()</cite>. This will make it easier in yo
 what type of matchable is being used.</p>
 </div>
 </div>
+<div class="section" id="binding-methods-to-existing-matchables">
+<h3>Binding Methods to Existing Matchables<a class="headerlink" href="#binding-methods-to-existing-matchables" title="Permalink to this headline">¶</a></h3>
+<p>You can bind a method to an existing matchable by using the matchable&#8217;s
+<a class="reference internal" href="api.html#sage.matching.Matchable.bind" title="sage.matching.Matchable.bind"><tt class="xref py py-meth docutils literal"><span class="pre">bind()</span></tt></a> method. Similarly, you can
+<a class="reference internal" href="api.html#sage.matching.Matchable.unbind" title="sage.matching.Matchable.unbind"><tt class="xref py py-meth docutils literal"><span class="pre">unbind()</span></tt></a> as well. Matchables can have
+multiple methods bound to them.</p>
+</div>
 <div class="section" id="delaying">
 <h3>Delaying<a class="headerlink" href="#delaying" title="Permalink to this headline">¶</a></h3>
 <p>Sometimes you&#8217;ll not want to take action at the immediate time a line is
@@ -231,13 +238,13 @@ behaviors depending on which matchable type it is.</p>
     <span class="n">trigger</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
 
     <span class="c"># matchable&#39;s group or &#39;parent&#39;</span>
-    <span class="n">trigger</span><span class="o">.</span><span class="n">parent</span>
+    <span class="n">trigger</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
 
     <span class="c"># delete the matchable</span>
     <span class="n">trigger</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
 
     <span class="c"># example of how you might disable the matchable&#39;s group</span>
-    <span class="n">trigger</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
+    <span class="n">trigger</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
 </pre></div>
 </div>
 <p><strong>regex</strong></p>
@@ -338,8 +345,29 @@ method. Assume the following structure:</p>
 <p>When <cite>trigger_1</cite> gets matched, it will enable trigger_2:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="nd">@group_1.trigger</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;Something is coming!&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">trigger_1</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
-    <span class="n">trigger</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="s">&#39;group_2/trigger_2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+    <span class="n">trigger</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;group_2/trigger_2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="sml-sage-matchable-language">
+<h2>SML - Sage Matchable Language<a class="headerlink" href="#sml-sage-matchable-language" title="Permalink to this headline">¶</a></h2>
+<p>When you have many matchables with similar behavior, writing through the API
+can become cumbersome. To alleviate this, Sage provides the &#8216;Sage Matchable
+Language&#8217; (SML). SML provides an easy and brief syntax for writing matchables
+and groups. Here&#8217;s an example of SML written in
+<a class="reference external" href="http://www.yaml.org/">YAML</a>:</p>
+<div class="highlight-python"><pre>group:my_app:
+    app: my_app
+
+    group:group_1:
+        :trigger_1:
+            exact: An exact line that will be matched.
+            some_method: true
+
+    group:group_2:
+        :trigger_2:
+            regex: ^Regular expressions are (cool|confusing)\.$
+            another_method: [A, List, of, Strings]</pre>
 </div>
 </div>
 </div>
@@ -364,11 +392,13 @@ method. Assume the following structure:</p>
 <li><a class="reference internal" href="#with-a-decorator">With a decorator</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#binding-methods-to-existing-matchables">Binding Methods to Existing Matchables</a></li>
 <li><a class="reference internal" href="#delaying">Delaying</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#bound-methods">Bound Methods</a></li>
 <li><a class="reference internal" href="#selecting-matchables">Selecting Matchables</a></li>
+<li><a class="reference internal" href="#sml-sage-matchable-language">SML - Sage Matchable Language</a></li>
 </ul>
 </li>
 </ul>
