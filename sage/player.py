@@ -55,12 +55,20 @@ class Balance(object):
         self.waiting = True
 
     def __repr__(self):
+        if self.waiting:
+            return str(False)
         return str(self.balance)
 
     def __eq__(self, other):
         if self.waiting:
             return False
         return self.balance == other
+
+    def __nonzero__(self):
+        if self.waiting:
+            return False
+        return self.balance
+
 
 
 class Room(object):
