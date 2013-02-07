@@ -18,3 +18,5 @@ pre_start = Signal()
 pre_prompt = Signal(providing_args=['raw_data'])
 
 post_prompt = Signal()
+
+player_connected = Signal()

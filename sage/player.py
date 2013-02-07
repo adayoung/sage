@@ -70,7 +70,6 @@ class Balance(object):
         return self.balance
 
 
-
 class Room(object):
     """ Container for room information """
 
@@ -122,6 +121,8 @@ class Vital(MutableInt):
 
         self.percentage = int(round(self.value / self.max * 100))
 
+#: player is logged in and GMCP data received
+connected = False
 
 #: name of the player
 name = None

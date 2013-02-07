@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from twisted.internet import reactor
-from sage import telnet, config, apps, path
-from sage.signals import pre_start
+from sage import telnet, config, apps, path, triggers, player, log
+from sage.signals import pre_start, player_connected
 
 
 def run():
     """ Start Sage Server """
 
     pre_start.send_robust(sender=None)
+
+    setup_system()
 
     if config.auto_reload:
         apps.observer.schedule(apps.event_handler, path, recursive=True)
@@ -21,14 +23,13 @@ def run():
     # setup the backdoor
     if config.backdoor:
         import sage
-        import sage.player as player
         import sage.gmcp as gmcp
 
         imports = {
             'sage': sage,
             'player': player,
             'gmcp': gmcp,
-            'apps': sage.apps
+            'apps': apps
         }
 
         reactor.listenTCP(config.backdoor_port, get_manhole_factory(imports),
@@ -84,3 +85,22 @@ def get_manhole_factory(namespace):
 
     factory = manhole_ssh.ConchFactory(p)
     return factory
+
+
+def setup_system():
+    """ Creates system triggers """
+
+    sage_group = triggers.create_group('sage', app='sage')
+
+    sage_group.create(
+        'connect',
+        'exact',
+        'Password correct. Welcome to Achaea.',
+        [connect])
+
+
+def connect(trigger):
+    """ Successful login """
+    player.connected = True
+    player_connected.send_robust(sender=None)
+    trigger.destroy()
