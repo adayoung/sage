@@ -177,13 +177,13 @@ behaviors depending on which matchable type it is.
         trigger.enable()
 
         # matchable's group or 'parent'
-        trigger.parent
+        trigger.parent()
 
         # delete the matchable
         trigger.destroy()
 
         # example of how you might disable the matchable's group
-        trigger.parent.disable()
+        trigger.parent().disable()
 
 
 **regex** ::
@@ -288,7 +288,7 @@ When `trigger_1` gets matched, it will enable trigger_2: ::
 
     @group_1.trigger(pattern="Something is coming!", type="exact")
     def trigger_1(trigger):
-        trigger.parent.parent('group_2/trigger_2').enable()
+        trigger.parent().parent().get('group_2/trigger_2').enable()
 
 SML - Sage Matchable Language
 -----------------------------
