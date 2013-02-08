@@ -219,11 +219,11 @@ recommended you read more about <a class="reference internal" href="matchables.h
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">ansi</span>
 
 <span class="c"># create a new group called &#39;room&#39; owned by the app &#39;myapp&#39;</span>
-<span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;myapp&#39;</span><span class="p">)</span>
-
+<span class="hll"><span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;myapp&#39;</span><span class="p">)</span>
+</span>
 <span class="c"># notice how the decorator changes to the group</span>
-<span class="nd">@room_triggers.trigger</span><span class="p">(</span>
-    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
+<span class="hll"><span class="nd">@room_triggers.trigger</span><span class="p">(</span>
+</span>    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
     <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="n">exit_str</span> <span class="o">=</span> <span class="n">trigger</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -239,20 +239,20 @@ recommended you read more about <a class="reference internal" href="matchables.h
 <p>Leaving our exits trigger enabled would be perfectly acceptable, but lets
 say you only want it on when you &#8216;ql&#8217; (quick-look in Achaea). To do this, you
 need to make an alias. This works nearly identical to how triggers work:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">aliases</span><span class="p">,</span> <span class="n">ansi</span><span class="p">,</span> <span class="n">send</span>  <span class="c"># notice we add send</span>
-
+<div class="highlight-python"><div class="highlight"><pre><span class="hll"><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">aliases</span><span class="p">,</span> <span class="n">ansi</span><span class="p">,</span> <span class="n">send</span>  <span class="c"># notice we add send</span>
+</span>
 <span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">)</span>
 
 <span class="c"># create a new aliases group (owned by &#39;myapp&#39;)</span>
-<span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;myapp&#39;</span><span class="p">)</span>
-
+<span class="hll"><span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;myapp&#39;</span><span class="p">)</span>
+</span>
 
 <span class="c"># We create an alias similar to how we create a trigger</span>
-<span class="nd">@room_aliases.alias</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;ql&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">ql</span><span class="p">(</span><span class="n">alias</span><span class="p">):</span>
-    <span class="c"># send to Achaea</span>
-    <span class="n">send</span><span class="p">(</span><span class="s">&#39;ql&#39;</span><span class="p">)</span>
-
+<span class="hll"><span class="nd">@room_aliases.alias</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;ql&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">)</span>
+</span><span class="hll"><span class="k">def</span> <span class="nf">ql</span><span class="p">(</span><span class="n">alias</span><span class="p">):</span>
+</span><span class="hll">    <span class="c"># send to Achaea</span>
+</span><span class="hll">    <span class="n">send</span><span class="p">(</span><span class="s">&#39;ql&#39;</span><span class="p">)</span>
+</span>
 
 <span class="nd">@room_triggers.trigger</span><span class="p">(</span>
     <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
@@ -265,6 +265,43 @@ need to make an alias. This works nearly identical to how triggers work:</p>
     <span class="n">trigger</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="s">&quot;Exits: &quot;</span> <span class="o">+</span> <span class="n">new_str</span>
 </pre></div>
 </div>
+<p>Now modify your alias to enable the exits trigger, and change the exits trigger
+to be disabled by default:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">aliases</span><span class="p">,</span> <span class="n">ansi</span><span class="p">,</span> <span class="n">send</span>
+
+<span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">)</span>
+
+<span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;myapp&#39;</span><span class="p">)</span>
+
+<span class="nd">@room_aliases.alias</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;ql&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">ql</span><span class="p">(</span><span class="n">alias</span><span class="p">):</span>
+
+    <span class="c"># enable the exits trigger</span>
+<span class="hll">    <span class="n">room_triggers</span><span class="p">(</span><span class="s">&#39;exits&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+</span>
+    <span class="c"># send to Achaea</span>
+    <span class="n">send</span><span class="p">(</span><span class="s">&#39;ql&#39;</span><span class="p">)</span>
+
+
+<span class="nd">@room_triggers.trigger</span><span class="p">(</span>
+    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">,</span>
+<span class="hll">    <span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>  <span class="c"># notice this is now disabled</span>
+</span><span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
+    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">trigger</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;and&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">exits</span> <span class="o">=</span> <span class="p">[</span><span class="n">ansi</span><span class="o">.</span><span class="n">bold_white</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)]</span>
+    <span class="n">new_str</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exits</span><span class="p">)</span>
+    <span class="n">trigger</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="s">&quot;Exits: &quot;</span> <span class="o">+</span> <span class="n">new_str</span>
+
+    <span class="c"># now disable this trigger</span>
+<span class="hll">    <span class="n">trigger</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
+</span></pre></div>
+</div>
+<p>Congratulations! Now the alias will enable the <cite>exits</cite> trigger whenever you
+send &#8220;ql&#8221;, and <cite>exits</cite> will disable itself after it runs. This is just a tiny
+example of the things you can make with Sage. Continue reading the user guide
+and try writing your own apps!</p>
 </div>
 </div>
 </div>
