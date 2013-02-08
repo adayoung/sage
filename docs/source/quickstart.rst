@@ -169,7 +169,10 @@ how you'll actually handle your matchables in your apps.
     raise :py:exc:`~sage.matching.OrphanedMatchableGroupError`. It's highly
     recommended you read more about :ref:`matchables-ownership`.
 
-The code now changes to: ::
+The code now changes to:
+
+.. code-block:: python
+    :emphasize-lines: 4,7
 
     from sage import triggers, ansi
 
@@ -193,7 +196,10 @@ Adding an Alias
 
 Leaving our exits trigger enabled would be perfectly acceptable, but lets
 say you only want it on when you 'ql' (quick-look in Achaea). To do this, you
-need to make an alias. This works nearly identical to how triggers work: ::
+need to make an alias. This works nearly identical to how triggers work:
+
+.. code-block:: python
+    :emphasize-lines: 1,6,10-13
 
     from sage import triggers, aliases, ansi, send  # notice we add send
 
@@ -220,4 +226,43 @@ need to make an alias. This works nearly identical to how triggers work: ::
         new_str = ', '.join(exits)
         trigger.line.output = "Exits: " + new_str
 
+Now modify your alias to enable the exits trigger, and change the exits trigger
+to be disabled by default:
 
+.. code-block:: python
+    :emphasize-lines: 11,20,29
+
+    from sage import triggers, aliases, ansi, send
+
+    room_triggers = triggers.create_group('room')
+
+    room_aliases = aliases.create_group('room', app='myapp')
+
+    @room_aliases.alias(pattern="ql", type="exact")
+    def ql(alias):
+
+        # enable the exits trigger
+        room_triggers('exits').enable()
+
+        # send to Achaea
+        send('ql')
+
+
+    @room_triggers.trigger(
+        pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
+        type="regex",
+        enabled=False)  # notice this is now disabled
+    def exits(trigger):
+        exit_str = trigger.groups[1]
+        exit_str = exit_str.replace('and', '')
+        exits = [ansi.bold_white(e.strip()) for e in exit_str.split(',')]
+        new_str = ', '.join(exits)
+        trigger.line.output = "Exits: " + new_str
+
+        # now disable this trigger
+        trigger.disable()
+
+Congratulations! Now the alias will enable the `exits` trigger whenever you
+send "ql", and `exits` will disable itself after it runs. This is just a tiny
+example of the things you can make with Sage. Continue reading the user guide
+and try writing your own apps!
