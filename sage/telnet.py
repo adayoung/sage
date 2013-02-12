@@ -294,14 +294,6 @@ class TelnetClientFactory(ClientFactory):
     def buildProtocol(self, addr):
         return self.client
 
-    def clientConnectionLost(self, connector, reason):
-        pass
-
-    def clientConnectionFailed(self, connector, reason):
-        error("sage.telnet.TelnetClientFactory::clientConnectionFailed - \
-            connection failed. Reason: %s" % reason)
-        self.client.transport.loseConnection()
-
 
 class TelnetServerFactory(ServerFactory):
     pass
@@ -319,6 +311,9 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
 
         self.data_buffer = ''
 
+        if self.client_factory.client.connected:
+            self.ready()
+
     def ready(self):
         """ Gets called when the client successfully connects """
         self.applicationDataReceived = self._applicationDataReceived
@@ -328,15 +323,15 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     def connectionMade(self):
         """ Local client connected. Start client connection to server. """
         self.factory.transports.append(self.transport)
-        self.transport.write("SAGE - Connected to %s:%s\n" % (config.host, config.port))
+        self.transport.write("Connected to Sage\n")
         self.client = self.client_factory.client
         self.client.server = self
         sage._echo = self.write
 
         if len(self.client.buffer) > 0:
-            self.transport.write(">>> Data in buffer >>>\n")
-            self.transport.write(self.client.buffer)
-            self.transport.write("<<< End of buffer <<<\n")
+            self.write(">>> Data in buffer >>>\n")
+            self.write(self.client.buffer)
+            self.write("<<< End of buffer <<<\n")
             self.client.buffer = ''
 
         if self.client.connected == False:
