@@ -53,7 +53,8 @@ def import_file(fpath):
 
     Returns the imported module.
 
-    NOTE: if import_file is called twice with the same module, the module is reloaded.
+    NOTE: if import_file is called twice with the same module, the module
+    is reloaded.
     '''
 
     try:
@@ -83,6 +84,7 @@ def import_file(fpath):
 
     _os.chdir(dst_path)
     fhandle = None
+
     try:
         tup = _imp.find_module(mod_name, ['.'])
         module = _imp.load_module(mod_name, *tup)
