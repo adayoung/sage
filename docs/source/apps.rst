@@ -50,3 +50,28 @@ loaded. It must be the same name as the directory of your app.
 While this structure is recommended, it is not enforced. If it doesn't make
 sense for your application then do what you think is best. *You* are the
 developer!
+
+Sub-Apps
+--------
+
+Sage apps can include other applications. This is great for collaboration with
+other developers. To include other apps they need to either be in your `apps`
+directory or available on your `PYTHONPATH` (like an installed Python package).
+
+To include other apps you must have a tuple in your entry point called
+`INSTALLED_APPS`. Here's an example: ::
+
+    INSTALLED_APPS = (
+        'awesome_curing',
+        'name_highlighter',
+        'sailing',
+        'bass_pro_fisher',
+        'best_who_ever'
+    )
+
+Sage will load the apps it can find with those names.
+
+.. note::
+
+    Having an app in `INSTALLED_APPS` doesn't import that app into the local
+    namespace.
