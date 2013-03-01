@@ -68,6 +68,7 @@ class TelnetClient(Telnet):
 
         self.gmcp = gmcp.GMCP(self)
         sage.gmcp = self.gmcp  # make easily accessible
+        self.gmcp_passthrough = False  # send GMCP to client
 
         # Hold over incomplete app data until the next packet
         self.data_buffer = ''
@@ -273,6 +274,9 @@ class TelnetClient(Telnet):
         data = ''.join(data)
         self.gmcp.call(data)
 
+        if self.gmcp_passthrough:
+            self.server.write(IAC + SB + GMCP + data + IAC + SE)
+
     def to_client(self, data):
         """ Send to connected client """
 
@@ -337,6 +341,8 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
         if self.client.connected == False:
             reactor.connectTCP(config.host, config.port, self.client_factory)
 
+        self.will(GMCP)
+
     def connectionLost(self, reason):
         self.connected = False
         self.factory.transports.remove(self.transport)
@@ -364,6 +370,13 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     def write(self, data):
         for transport in self.factory.transports:
             transport.write(data)
+
+    def enableLocal(self, option):
+        if option == GMCP:
+            self.client.gmcp_passthrough = True
+            return True
+
+        return False
 
 
 def build_factory():
