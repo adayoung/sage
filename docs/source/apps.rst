@@ -107,3 +107,24 @@ A basic entry point could look like the following: ::
 
     def cleanup():
         """ Called when an app is unloaded (or reloaded). """
+
+sage.apps
+---------
+
+If you wanted to access another loaded app, you can address it through
+:py:mod:`sage.apps`. For example, if there was an app called "demo", you could
+access it in another app with `sage.apps.demo` as if you were referencing the
+module itself.
+
+Auto-Reloading
+--------------
+
+Sage monitors your app's files and reloads them when a change is detected.
+Any errors will be displayed in the console.
+
+.. warning::
+
+    Auto-reloading is a new and fairly untested feature. Reloading live code
+    in Python is unfortunately a difficult task. It's likely some aspects of
+    your app will not reload as gracefully as intended. Please report whatever
+    issues you have so they can be addressed and this feature improved.
