@@ -1,0 +1,230 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+
+    <title>Apps &mdash; sage 2.0.0.r1 documentation</title>
+
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+
+
+    
+    <link rel="stylesheet" href="_static/rtd.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.0.0.r1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/searchtools.js"></script>
+    <link rel="top" title="sage 2.0.0.r1 documentation" href="index.html" />
+    <link rel="next" title="API" href="api.html" />
+    <link rel="prev" title="Matchables" href="matchables.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="matchables.html" title="Matchables"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">sage 2.0.0.r1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="apps">
+<h1>Apps<a class="headerlink" href="#apps" title="Permalink to this headline">¶</a></h1>
+<p>Everything you write using Sage is considered an &#8220;app&#8221;. They can be quite simple
+such as a sipper or a highlighter or incredibly complex such as a curing
+system. Perhaps the most powerful feature is multiple apps can be combined
+together.</p>
+<div class="section" id="structure-of-a-sage-application">
+<h2>Structure of a Sage Application<a class="headerlink" href="#structure-of-a-sage-application" title="Permalink to this headline">¶</a></h2>
+<p>While a Sage app can be a single Python file, typically you&#8217;ll want to structure
+your application as follows:</p>
+<div class="highlight-python"><pre>/my_application
+ ├── __init__.py
+ ├── /apps
+ ├── /aliases
+ ├── /triggers
+ ├── meta.py
+ ├── my_application.py</pre>
+</div>
+<p><strong>Parent directory (/my_application)</strong></p>
+<p>Put your app in a directory with the same name as your entry-point file.</p>
+<p><strong>__init__.py</strong></p>
+<p>This makes your app a Python Package.</p>
+<p><strong>/apps</strong></p>
+<p>This directory will contain other apps that your app requires.</p>
+<p><strong>/aliases</strong></p>
+<p>Your SML and Python files for aliases could go here.</p>
+<p><strong>/triggers</strong></p>
+<p>Your SML and Python files for triggers could go here.</p>
+<p><strong>meta.py</strong></p>
+<p>Contains extra (meta) information and settings for your app.</p>
+<p><strong>Entry point (my_application.py)</strong></p>
+<p>This is the starting point for your app. It must be the same name as the
+directory of your app.</p>
+</div>
+<div class="section" id="meta-py">
+<h2>meta.py<a class="headerlink" href="#meta-py" title="Permalink to this headline">¶</a></h2>
+<p><cite>meta.py</cite> is an optional file containing metadata about your app.</p>
+<div class="section" id="installed-apps">
+<h3>Installed Apps<a class="headerlink" href="#installed-apps" title="Permalink to this headline">¶</a></h3>
+<p>Sage apps can include other applications. This is great for collaboration with
+other developers. To include other apps they need to either be in your <cite>apps</cite>
+directory or available on your <cite>PYTHONPATH</cite> (like an installed Python package).</p>
+<p>To include other apps you must have a tuple in <cite>meta.py</cite> called
+<cite>installed_apps</cite>. Sage will load the apps it can find with those names.
+Here&#8217;s an example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">installed_apps</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">&#39;awesome_curing&#39;</span><span class="p">,</span>
+    <span class="s">&#39;name_highlighter&#39;</span><span class="p">,</span>
+    <span class="s">&#39;sailing&#39;</span><span class="p">,</span>
+    <span class="s">&#39;bass_pro_fisher&#39;</span><span class="p">,</span>
+    <span class="s">&#39;best_who_ever&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="other-attributes">
+<h3>Other Attributes<a class="headerlink" href="#other-attributes" title="Permalink to this headline">¶</a></h3>
+<p><strong>name</strong></p>
+<p>A more descriptive name for the app.</p>
+<p><strong>description</strong></p>
+<p>A short description of what the app does.</p>
+<p><strong>version</strong></p>
+<p>A tuple representing the app&#8217;s version. Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">version</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># Major version 1, release 2 (1.0.2)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="entry-point">
+<h2>Entry Point<a class="headerlink" href="#entry-point" title="Permalink to this headline">¶</a></h2>
+<p>The entry point for your app (a python file with the same name as your app)
+has an optional interface with two basic methods: <cite>init</cite> and <cite>cleanup</cite>.
+A basic entry point could look like the following:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; This method will be called when the app is loaded (after it is</span>
+<span class="sd">    imported). Any apps in meta.py&#39;s `installed_apps` will have already been</span>
+<span class="sd">    loaded before this is called. &quot;&quot;&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Called when an app is unloaded (or reloaded). &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sage-apps">
+<h2>sage.apps<a class="headerlink" href="#sage-apps" title="Permalink to this headline">¶</a></h2>
+<p>If you wanted to access another loaded app, you can address it through
+<a class="reference internal" href="api.html#sage.apps" title="sage.apps"><tt class="xref py py-mod docutils literal"><span class="pre">sage.apps</span></tt></a>. For example, if there was an app called &#8220;demo&#8221;, you could
+access it in another app with <cite>sage.apps.demo</cite> as if you were referencing the
+module itself.</p>
+</div>
+<div class="section" id="auto-reloading">
+<h2>Auto-Reloading<a class="headerlink" href="#auto-reloading" title="Permalink to this headline">¶</a></h2>
+<p>Sage monitors your app&#8217;s files and reloads them when a change is detected.
+Any errors will be displayed in the console.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Auto-reloading is a new and fairly untested feature. Reloading live code
+in Python is unfortunately a difficult task. It&#8217;s likely some aspects of
+your app will not reload as gracefully as intended. Please report whatever
+issues you have so they can be addressed and this feature improved.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Apps</a><ul>
+<li><a class="reference internal" href="#structure-of-a-sage-application">Structure of a Sage Application</a></li>
+<li><a class="reference internal" href="#meta-py">meta.py</a><ul>
+<li><a class="reference internal" href="#installed-apps">Installed Apps</a></li>
+<li><a class="reference internal" href="#other-attributes">Other Attributes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entry-point">Entry Point</a></li>
+<li><a class="reference internal" href="#sage-apps">sage.apps</a></li>
+<li><a class="reference internal" href="#auto-reloading">Auto-Reloading</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="matchables.html"
+                        title="previous chapter">Matchables</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="next chapter">API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/apps.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="matchables.html" title="Matchables"
+             >previous</a> |</li>
+        <li><a href="index.html">sage 2.0.0.r1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+<div class="footer">
+</div>
+
+
+
+
+
+  </body>
+</html>
