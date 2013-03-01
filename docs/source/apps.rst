@@ -15,7 +15,6 @@ While a Sage app can be a single Python file, typically you'll want to structure
 your application as follows: ::
 
     /my_application
-    ├── __init__.py
     ├── /apps
     ├── /aliases
     ├── /triggers
@@ -24,11 +23,6 @@ your application as follows: ::
 **Parent directory (/my_application)**
 
 Put your app in a directory with the same name as your entry-point file.
-
-**__init__.py**
-
-This makes your app a Python Package. This will be useful to other apps that
-might use yours.
 
 **/apps**
 
