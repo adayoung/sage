@@ -6,10 +6,10 @@ User's Guide
 
    installation
    quickstart
+   apps
    matchables
    buffer
    signals
-   apps
    backdoor
 
 API Reference
