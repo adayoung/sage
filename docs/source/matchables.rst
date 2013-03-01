@@ -268,7 +268,7 @@ attempt to find a group with the name you provided: ::
 If you're specifically looking for a group you can also use
 :py:meth:`~sage.matching.Group.get_group`: ::
 
-    group_3 = group_1_get_group('group_2/group_3')
+    group_3 = group_1.get_group('group_2/group_3')
 
 You can do method chaining with :py:meth:`~sage.matching.Group.get`: ::
 
