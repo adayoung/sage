@@ -6,7 +6,7 @@ Apps
 Everything you write using Sage is considered an "app". They can be quite simple
 such as a sipper or a highlighter or incredibly complex such as a curing
 system. Perhaps the most powerful feature is multiple apps can be combined
-together (called sub-apps).
+together.
 
 Structure of a Sage Application
 -------------------------------
@@ -15,18 +15,24 @@ While a Sage app can be a single Python file, typically you'll want to structure
 your application as follows: ::
 
     /my_application
-    ├── /apps
-    ├── /aliases
-    ├── /triggers
-    ├── my_application.py
+     ├── __init__.py
+     ├── /apps
+     ├── /aliases
+     ├── /triggers
+     ├── meta.py
+     ├── my_application.py
 
 **Parent directory (/my_application)**
 
 Put your app in a directory with the same name as your entry-point file.
 
+**__init__.py**
+
+This makes your app a Python Package.
+
 **/apps**
 
-This directory will contain sub-apps that your app requires.
+This directory will contain other apps that your app requires.
 
 **/aliases**
 
@@ -36,26 +42,32 @@ Your SML and Python files for aliases could go here.
 
 Your SML and Python files for triggers could go here.
 
+**meta.py**
+
+Contains extra (meta) information and settings for your app.
+
 **Entry point (my_application.py)**
 
-This is the starting point for your app and is the file Sage imports when it is
-loaded. It must be the same name as the directory of your app.
+This is the starting point for your app. It must be the same name as the
+directory of your app.
 
-While this structure is recommended, it is not enforced. If it doesn't make
-sense for your application then do what you think is best. *You* are the
-developer!
+meta.py
+-------
 
-Sub-Apps
---------
+`meta.py` is an optional file containing metadata about your app.
+
+Installed Apps
+~~~~~~~~~~~~~~
 
 Sage apps can include other applications. This is great for collaboration with
 other developers. To include other apps they need to either be in your `apps`
 directory or available on your `PYTHONPATH` (like an installed Python package).
 
-To include other apps you must have a tuple in your entry point called
-`INSTALLED_APPS`. Here's an example: ::
+To include other apps you must have a tuple in `meta.py` called
+`installed_apps`. Sage will load the apps it can find with those names.
+Here's an example: ::
 
-    INSTALLED_APPS = (
+    installed_apps = (
         'awesome_curing',
         'name_highlighter',
         'sailing',
@@ -63,9 +75,35 @@ To include other apps you must have a tuple in your entry point called
         'best_who_ever'
     )
 
-Sage will load the apps it can find with those names.
+Other Attributes
+~~~~~~~~~~~~~~~~
 
-.. note::
+**name**
 
-    Having an app in `INSTALLED_APPS` doesn't import that app into the local
-    namespace.
+A more descriptive name for the app.
+
+**description**
+
+A short description of what the app does.
+
+**version**
+
+A tuple representing the app's version. Example: ::
+
+    version = (1, 0, 2)  # Major version 1, release 2 (1.0.2)
+
+Entry Point
+-----------
+
+The entry point for your app (a python file with the same name as your app)
+has an optional interface with two basic methods: `init` and `cleanup`.
+A basic entry point could look like the following: ::
+
+    def init():
+        """ This method will be called when the app is loaded (after it is
+        imported). Any apps in meta.py's `installed_apps` will have already been
+        loaded before this is called. """
+
+
+    def cleanup():
+        """ Called when an app is unloaded (or reloaded). """
