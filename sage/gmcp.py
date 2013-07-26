@@ -50,11 +50,16 @@ class GMCPReceiver(object):
             'Comm.Channel.Start': self.comm_channel_start,
             'Comm.Channel.End': self.comm_channel_end,
             'Room.Info': self.room,
+            'Room.Players': self.room_players,
+            'Room.AddPlayer': self.room_addplayer,
+            'Room.RemovePlayer': self.room_removeplayer,
             'Char.Items.List': self.items,
             'Char.Items.Add': self.add_item,
             'Char.Items.Remove': self.remove_item,
-            #'Char.Items.Update': self.update_item,
-            'Room.WrongDir': self.wrong_dir
+            'Char.Items.Update': self.update_item,
+            'Room.WrongDir': self.wrong_dir,
+            'IRE.Rift.List': self.rift_list,
+            'IRE.Rift.Change': self.rift_change
         }
 
         # time when ping started
@@ -75,7 +80,7 @@ class GMCPReceiver(object):
             self.command_map[cmd]()
 
     def unhandled_command(self, cmd, args):
-        #pass
+
         print "GMCP - Unhandled Command: %s %s" % (cmd, args)
 
     # Char.Name
@@ -85,6 +90,8 @@ class GMCPReceiver(object):
 
         player.name = d['name']
         player.fullname = d['fullname']
+
+        self.out.send_inits()  # treating this like a login
 
     # Char.Vitals
     def vitals(self, d):
@@ -182,16 +189,34 @@ class GMCPReceiver(object):
         player.room.details = d['details']
         player.room.map = d['map']
 
+    # Room.Players
+    def room_players(self, d):
+        player.room.players.clear()
+
+        for p in d:
+            if p['name'] != player.name:
+                player.room.players.add(p['name'])
+
+    # Room.AddPlayer
+    def room_addplayer(self, d):
+
+        player.room.players.add(d['name'])
+
+    # Room.RemovePlayer
+    def room_removeplayer(self, d):
+
+        player.room.players.remove(d)
+
     # Char.Items.List
     def items(self, d):
 
-        items = {}
-
         if d['location'] == 'room':
-            for item in d['items']:
-                items[int(item['id'])] = item['name']
+            player.room.items.clear()
 
-            player.room.items = items
+            for item in d['items']:
+                attrib = item['attrib'] if 'attrib' in item else None
+                player.room.items.add(int(item['id']), item['name'], attrib)
+
             gmcp_signals.room_items.send_robust(self, items=player.room.items)
 
         elif d['location'] == 'inv':
@@ -214,7 +239,7 @@ class GMCPReceiver(object):
             attrib = d['item']['attrib']
 
         if d['location'] == 'room':
-            player.room.items[num] = name
+            player.room.items.add(num, name, attrib)
 
         elif d['location'] == 'inv':
             player.inv.add(num, name, attrib)
@@ -225,7 +250,7 @@ class GMCPReceiver(object):
     # Char.Items.Remove
     def remove_item(self, d):
 
-        item = int(d['item'])  # just be sure...
+        item = int(d['item']['id'])
 
         if d['location'] == 'room':
             if item in player.room.items:
@@ -234,7 +259,24 @@ class GMCPReceiver(object):
             if item in player.room.items:
                 del(player.inv[item])
         else:
-            print "Char.Items.Remove %s" % d
+            print "Char.Items.Remove - Unknown location: %s" % d
+
+    # 'Char.Items.Update'
+    def update_item(self, d):
+
+        print "Update Item: %s" % d
+
+    # IRE.Rift.List
+    def rift_list(self, d):
+
+        player.rift.clear()
+
+        for i in d:
+            player.rift[i['name']] = int(i['amount'])
+
+    # IRE.Rift.Change
+    def rift_change(self, d):
+        player.rift[d['name']] = int(d['amount'])
 
     # Core.Goodbye
     def goodbye(self, d):
@@ -357,7 +399,7 @@ class GMCP(object):
 
     def _start_pinging(self):
         """ Start regular pinging """
-        if self.options['ping'] == False:
+        if self.options['ping'] is False:
             return
 
         self.ping_task.start(self.options['ping_frequency'])
@@ -405,3 +447,9 @@ class GMCP(object):
             options = self.options['modules']
 
         self.cmd('Core.Supports.Set', options)
+
+    def send_inits(self):
+        """ Send messages when GMCP initiates """
+
+        self.inv()
+        self.rift()

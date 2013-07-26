@@ -54,7 +54,7 @@ def onprompt(sender, **kwargs):
         sip('mana')
 
 # connect to sage.signals.post_prompt
-post_prompt.connect(onprompt)
+#post_prompt.connect(onprompt)
 
 
 """ --- Triggers --- """

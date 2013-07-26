@@ -82,7 +82,8 @@ class Room(object):
         self.coords = None
         self.details = None
         self.map = None
-        self.items = {}
+        self.items = Inventory()
+        self.players = set()
 
 
 class Rift(dict):
