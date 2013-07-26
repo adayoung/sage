@@ -56,6 +56,9 @@ class Matchable(object):
         #: disable the matchable on a successful match
         self.disable_on_match = kwargs.pop('disable_on_match', False)
 
+        #: paramenter that gets passed with the matchable to methods
+        self.param = kwargs.pop('param', False)
+
         self.timer = None
 
         #: matched line
@@ -84,8 +87,6 @@ class Matchable(object):
         if methods:
             for method in methods:
                 self.bind(method)
-
-        self.sml_methods = []
 
     def enable(self):
         """ Enable the matchable """
@@ -124,20 +125,9 @@ class Matchable(object):
 
         return True
 
-    def sml_bind(self, method, args):
-        self.sml_methods.append((
-            weakref.ref(method),
-            args
-        ))
-
     def call_methods(self):
         """ Send to all bound methods """
         self.methods.send(self)
-
-        for method, args in self.sml_methods:
-            method = method()
-            if method:
-                method(args)
 
 
 class CIMatchable(Matchable):
