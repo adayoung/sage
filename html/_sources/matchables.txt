@@ -112,6 +112,19 @@ Example: ::
         [eq_recovered]  # list of methods bound to matchable
     )
 
+Here's an example of a matchable with a parameter: ::
+
+    # The 'affliction' trigger method will receive a parameter
+    def affliction(trigger, affliction):
+        player.afflictions.add(affliction)
+
+    group.create(
+        "paralysis",  # name of the matchable
+        "exact",  # type of matchable
+        "You feel your limbs stiffen and lock up in response to an unseen power.",  # pattern
+        [affliction, "paralysis"]  # method and parameter to be passed
+    )
+
 With a decorator
 ~~~~~~~~~~~~~~~~
 
@@ -139,6 +152,12 @@ You can bind a method to an existing matchable by using the matchable's
 :py:meth:`~sage.matching.Matchable.bind` method. Similarly, you can
 :py:meth:`~sage.matching.Matchable.unbind` as well. Matchables can have
 multiple methods bound to them.
+
+Parameters
+``````````
+
+An optional single parameter can be passed to each matchable method when you
+bind them. This is helpful if you are using one method for many matchables.
 
 Delaying
 ````````

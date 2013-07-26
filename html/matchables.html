@@ -176,6 +176,19 @@ Example:</p>
 <span class="p">)</span>
 </pre></div>
 </div>
+<p>Here&#8217;s an example of a matchable with a parameter:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># The &#39;affliction&#39; trigger method will receive a parameter</span>
+<span class="k">def</span> <span class="nf">affliction</span><span class="p">(</span><span class="n">trigger</span><span class="p">,</span> <span class="n">affliction</span><span class="p">):</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">afflictions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">affliction</span><span class="p">)</span>
+
+<span class="n">group</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="s">&quot;paralysis&quot;</span><span class="p">,</span>  <span class="c"># name of the matchable</span>
+    <span class="s">&quot;exact&quot;</span><span class="p">,</span>  <span class="c"># type of matchable</span>
+    <span class="s">&quot;You feel your limbs stiffen and lock up in response to an unseen power.&quot;</span><span class="p">,</span>  <span class="c"># pattern</span>
+    <span class="p">[</span><span class="n">affliction</span><span class="p">,</span> <span class="s">&quot;paralysis&quot;</span><span class="p">]</span>  <span class="c"># method and parameter to be passed</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="with-a-decorator">
 <h4>With a decorator<a class="headerlink" href="#with-a-decorator" title="Permalink to this headline">¶</a></h4>
@@ -202,6 +215,11 @@ what type of matchable is being used.</p>
 <a class="reference internal" href="api.html#sage.matching.Matchable.bind" title="sage.matching.Matchable.bind"><tt class="xref py py-meth docutils literal"><span class="pre">bind()</span></tt></a> method. Similarly, you can
 <a class="reference internal" href="api.html#sage.matching.Matchable.unbind" title="sage.matching.Matchable.unbind"><tt class="xref py py-meth docutils literal"><span class="pre">unbind()</span></tt></a> as well. Matchables can have
 multiple methods bound to them.</p>
+</div>
+<div class="section" id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<p>An optional single parameter can be passed to each matchable method when you
+bind them. This is helpful if you are using one method for many matchables.</p>
 </div>
 <div class="section" id="delaying">
 <h3>Delaying<a class="headerlink" href="#delaying" title="Permalink to this headline">¶</a></h3>
@@ -392,6 +410,7 @@ and groups. Here&#8217;s an example of SML written in
 </ul>
 </li>
 <li><a class="reference internal" href="#binding-methods-to-existing-matchables">Binding Methods to Existing Matchables</a></li>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
 <li><a class="reference internal" href="#delaying">Delaying</a></li>
 </ul>
 </li>
