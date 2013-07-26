@@ -19,7 +19,6 @@ You might enjoy Sage if:
 
 ## Features
 
-* Easiest way to write a system for Achaea.
 * Twisted-based telnet proxy allowing you to connect a client of your choice.
 * Full GMCP support.
 * Extensive 'signal' or 'pub/sub' system for easy handling of asynchronous events.

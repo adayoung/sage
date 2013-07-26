@@ -15,12 +15,12 @@ While a Sage app can be a single Python file, typically you'll want to structure
 your application as follows: ::
 
     /my_application
-     ├── __init__.py
-     ├── /apps
-     ├── /aliases
-     ├── /triggers
-     ├── meta.py
-     ├── my_application.py
+      ├── __init__.py
+      ├── /apps
+      ├── /aliases
+      ├── /triggers
+      ├── meta.py
+      ├── my_application.py
 
 **Parent directory (/my_application)**
 
