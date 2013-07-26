@@ -128,7 +128,7 @@ def create_matchable(name, data, parent):
 
     for method, args in matchable_methods.iteritems():
         if method in methods:
-            m.sml_bind(methods[method], args)
+            m.bind(methods[method], args)
         else:
             raise InvalidSMLMethod('No registered method called %s available '
                 'for matchable %s' % (method, name))

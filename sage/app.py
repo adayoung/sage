@@ -16,6 +16,8 @@ class NoAppsDirectory(Exception):
 class Apps(dict):
     """ Dict-like container of loaded apps """
 
+    __bases__ = [dict]  # or unittests don't work
+
     def __init__(self):
         super(Apps, self).__init__(self)
 

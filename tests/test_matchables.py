@@ -137,6 +137,34 @@ class TestMatchables(unittest.TestCase):
         return False
 
 
+class TestHooks(unittest.TestCase):
+
+    def setUp(self):
+        group = triggers.create_group('test_hooks', app='sage')
+        make_triggers(group, 1)
+
+    def tearDown(self):
+        triggers('test_hooks').destroy()
+
+    def test_hookbind_noparam(self):
+        trigger = triggers.get('test_hooks/test_0')
+
+        def test_callback(matchable):
+            pass
+
+        trigger.bind(test_callback)
+        trigger.call_methods()
+
+    def test_hookbind_param(self):
+        trigger = triggers.get('test_hooks/test_0')
+
+        def test_callback(matchable, param):
+            self.assertEqual(True, param['test'])
+
+        trigger.bind(test_callback, {'test': True})
+        trigger.call_methods()
+
+
 class TestApps(unittest.TestCase):
 
     def setUp(self):

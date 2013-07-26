@@ -226,6 +226,66 @@ class Signal(object):
 
 class Hook(Signal):
 
+    def connect(self, *args, **kwargs):
+        """Connect receiver to sender for signal.
+
+        :param receiver: A function or an instance method which is to
+            receive signals. Receivers must be hashable objects.
+
+            if weak is :const:`True`, then receiver must be weak-referencable
+            (more precisely :func:`saferef.safe_ref()` must be able to create a
+            reference to the receiver).
+
+            Receivers must be able to accept keyword arguments.
+
+            If receivers have a `dispatch_uid` attribute, the receiver will
+            not be added if another receiver already exists with that
+            `dispatch_uid`.
+
+        :keyword sender: The sender to which the receiver should respond.
+            Must either be of type :class:`Signal`, or :const:`None` to receive
+            events from any sender.
+
+        :keyword weak: Whether to use weak references to the receiver.
+            By default, the module will attempt to use weak references to the
+            receiver objects. If this parameter is false, then strong
+            references will be used.
+
+        :keyword dispatch_uid: An identifier used to uniquely identify a
+            particular instance of a receiver. This will usually be a
+            string, though it may be anything hashable.
+
+        :keyword param: Parameter to be passed to a specific receiver
+
+        """
+        def _handle_options(sender=None, weak=True, dispatch_uid=None, param=None):
+
+            def _connect_signal(fun):
+                receiver = fun
+
+                if dispatch_uid:
+                    lookup_key = (dispatch_uid, _make_id(sender))
+                else:
+                    lookup_key = (_make_id(receiver), _make_id(sender))
+
+                if weak:
+                    receiver = saferef.safe_ref(receiver,
+                                    on_delete=self._remove_receiver)
+
+                for r_key, _ in self.receivers:
+                    if r_key == lookup_key:
+                        break
+                else:
+                    self.receivers.append((lookup_key, receiver, param))
+
+                return fun
+
+            return _connect_signal
+
+        if args and isinstance(args[0], Callable):
+            return _handle_options(*args[1:], **kwargs)(args[0])
+        return _handle_options(*args, **kwargs)
+
     def send(self, sender, **named):
         """ Only used for Matchable object methods """
 
@@ -233,11 +293,48 @@ class Hook(Signal):
         if not self.receivers:
             return responses
 
-        for receiver in self._live_receivers(_make_id(sender)):
+        for receiver, param in self._live_receivers(_make_id(sender)):
             try:
-                response = receiver(sender)
-            except:
+                if param:
+                    response = receiver(sender, param, **named)
+                else:
+                    response = receiver(sender, **named)
+            except Exception as err:
                 log.err()
+                responses.append((receiver, err))
             else:
                 responses.append((receiver, response))
         return responses
+
+    def _live_receivers(self, senderkey):
+        """Filter sequence of receivers to get resolved, live receivers.
+
+        This checks for weak references and resolves them, then returning only
+        live receivers.
+
+        """
+        none_senderkey = _make_id(None)
+        receivers = []
+
+        for (receiverkey, r_senderkey), receiver, param in self.receivers:
+            if r_senderkey == none_senderkey or r_senderkey == senderkey:
+                if isinstance(receiver, WEAKREF_TYPES):
+                    # Dereference the weak reference.
+                    receiver = receiver()
+                    if receiver is not None:
+                        receivers.append((receiver, param))
+                else:
+                    receivers.append((receiver, param))
+        return receivers
+
+    def _remove_receiver(self, receiver):
+        """Remove dead receivers from connections."""
+
+        to_remove = []
+        for key, connected_receiver, param in self.receivers:
+            if connected_receiver == receiver:
+                to_remove.append(key)
+        for key in to_remove:
+            for idx, (r_key, _, param) in enumerate(self.receivers):
+                if r_key == key:
+                    del self.receivers[idx]

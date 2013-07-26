@@ -56,9 +56,6 @@ class Matchable(object):
         #: disable the matchable on a successful match
         self.disable_on_match = kwargs.pop('disable_on_match', False)
 
-        #: paramenter that gets passed with the matchable to methods
-        self.param = kwargs.pop('param', False)
-
         self.timer = None
 
         #: matched line
@@ -82,11 +79,14 @@ class Matchable(object):
         #: re.MatchObject.groups() - regex groups as a list (regex only)
         self.groups = None
 
-        self.methods = Hook()
+        self.methods = Hook(providing_args=['param'])
 
         if methods:
             for method in methods:
-                self.bind(method)
+                if type(method) is tuple:
+                    self.bind(method[0], method[1])
+                else:
+                    self.bind(method)
 
     def enable(self):
         """ Enable the matchable """
@@ -102,9 +102,9 @@ class Matchable(object):
         """ Destroys (deletes) the matchable """
         self.parent()._remove_child(self)
 
-    def bind(self, method):
+    def bind(self, method, param=None):
         """ Add a method to a matchable """
-        self.methods.connect(method)
+        self.methods.connect(method, param=param)
 
     def unbind(self, method):
         """ Remove a method from a matchable """
