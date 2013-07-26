@@ -223,7 +223,8 @@ class GMCPReceiver(object):
     # Room.RemovePlayer
     def room_removeplayer(self, d):
 
-        player.room.players.remove(d)
+        if d in player.room.players:
+            player.room.players.remove(d)
         gmcp_signals.room_remove_player.send_robust(self, player=d)
 
     # Char.Items.List

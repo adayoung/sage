@@ -543,6 +543,7 @@ class Group(object):
         enabled = kwargs.pop('enabled', True)
         ignorecase = kwargs.pop('ignorecase', True)
         delay = kwargs.pop('delay', None)
+        param = kwargs.pop('param', None)
 
         def dec(func):
 
@@ -555,7 +556,7 @@ class Group(object):
                 # we are appending to an existing matchable?
                 if name in self:
                     m = self[name]
-                    m.methods.connect(func)
+                    m.bind(func, param)
                     return func
                 else:
                     raise MatchableCreationError('No pattern defined for %s' \
@@ -563,7 +564,7 @@ class Group(object):
 
             m = self.create(mname, mtype, pattern, \
                 enabled=enabled, ignorecase=ignorecase, delay=delay)
-            m.methods.connect(func)
+            m.bind(func, param)
 
             return func
 
