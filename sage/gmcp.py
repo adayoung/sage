@@ -81,7 +81,7 @@ class GMCPReceiver(object):
 
     def unhandled_command(self, cmd, args):
 
-        print "GMCP - Unhandled Command: %s %s" % (cmd, args)
+        print("GMCP - Unhandled Command: %s %s" % (cmd, args))
 
     # Char.Name
     def name(self, d):
@@ -100,6 +100,19 @@ class GMCPReceiver(object):
         player.endurance.update(d['ep'], d['maxep'])
         player.willpower.update(d['wp'], d['maxwp'])
         player.xp = float(d['nl'])
+
+        gmcp_signals.vitals.send_robust(
+            self,
+            health=player.health,
+            max_health=player.health.max,
+            mana=player.mana,
+            max_mana=player.mana.max,
+            endurance=player.endurance,
+            max_endurance=player.endurance.max,
+            willpower=player.willpower,
+            max_willpower=player.willpower.max,
+            xp=player.xp
+        )
 
     # Char.Status
     def status(self, d):
@@ -189,6 +202,8 @@ class GMCPReceiver(object):
         player.room.details = d['details']
         player.room.map = d['map']
 
+        gmcp_signals.room.send_robust(self, room=player.room)
+
     # Room.Players
     def room_players(self, d):
         player.room.players.clear()
@@ -197,15 +212,19 @@ class GMCPReceiver(object):
             if p['name'] != player.name:
                 player.room.players.add(p['name'])
 
+        gmcp_signals.room_players.send_robust(self, players=player.room.players)
+
     # Room.AddPlayer
     def room_addplayer(self, d):
 
         player.room.players.add(d['name'])
+        gmcp_signals.room_add_player.send_robust(self, player=d['name'])
 
     # Room.RemovePlayer
     def room_removeplayer(self, d):
 
         player.room.players.remove(d)
+        gmcp_signals.room_remove_player.send_robust(self, player=d)
 
     # Char.Items.List
     def items(self, d):
@@ -225,8 +244,10 @@ class GMCPReceiver(object):
                 attrib = item['attrib'] if 'attrib' in item else None
                 player.inv.add(int(item['id']), item['name'], attrib)
 
+            gmcp_signals.inv_items.send_robust(self, items=player.inv.items)
+
         else:
-            print "Char.Items.List %s" % d
+            print("Char.Items.List %s" % d)
 
     # Char.Items.Add
     def add_item(self, d):
@@ -239,13 +260,15 @@ class GMCPReceiver(object):
             attrib = d['item']['attrib']
 
         if d['location'] == 'room':
-            player.room.items.add(num, name, attrib)
+            item = player.room.items.add(num, name, attrib)
+            gmcp_signals.room_add_item.send_robust(self, item=item)
 
         elif d['location'] == 'inv':
-            player.inv.add(num, name, attrib)
+            item = player.inv.add(num, name, attrib)
+            gmcp_signals.inv_add_item.send_robust(self, item=item)
 
         else:
-            print "Char.Items.Add %s" % d
+            print("Char.Items.Add %s" % d)
 
     # Char.Items.Remove
     def remove_item(self, d):
@@ -255,16 +278,18 @@ class GMCPReceiver(object):
         if d['location'] == 'room':
             if item in player.room.items:
                 del(player.room.items[item])
+            gmcp_signals.room_remove_item.send_robust(self, item=item)
         elif d['location'] == 'inv':
             if item in player.room.items:
                 del(player.inv[item])
+            gmcp_signals.inv_remove_item.send_robust(self, item=item)
         else:
-            print "Char.Items.Remove - Unknown location: %s" % d
+            print("Char.Items.Remove - Unknown location: %s" % d)
 
     # 'Char.Items.Update'
     def update_item(self, d):
 
-        print "Update Item: %s" % d
+        print("Update Item: %s" % d)
 
     # IRE.Rift.List
     def rift_list(self, d):
@@ -274,9 +299,13 @@ class GMCPReceiver(object):
         for i in d:
             player.rift[i['name']] = int(i['amount'])
 
+        gmcp_signals.rift.send_robust(self, rift=player.rift)
+
     # IRE.Rift.Change
     def rift_change(self, d):
         player.rift[d['name']] = int(d['amount'])
+
+        gmcp_signals.rift_change.send_robust(self, name=d['name'], amount=int(d['amount']))
 
     # Core.Goodbye
     def goodbye(self, d):

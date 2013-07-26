@@ -41,6 +41,7 @@ class Inventory(dict):
     """ Container for the inventory """
 
     def add(self, num, name, attrib=None):
+        """ Add an item to the inventory """
 
         worn = False
         wearable = False
@@ -89,6 +90,8 @@ class Inventory(dict):
             dead=dead,
             container=container
         )
+
+        return self[num]
 
     def find(self, query):
         """ Search for an item by name """
