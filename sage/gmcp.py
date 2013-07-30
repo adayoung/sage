@@ -285,7 +285,9 @@ class GMCPReceiver(object):
                 del(player.inv[item])
             gmcp_signals.inv_remove_item.send_robust(self, item=item)
         else:
-            print("Char.Items.Remove - Unknown location: %s" % d)
+            pass
+            # probably a container
+            # print("Char.Items.Remove - Unknown location: %s" % d)
 
     # 'Char.Items.Update'
     def update_item(self, d):
@@ -385,6 +387,12 @@ class GMCP(object):
         """ Get the list of items located inside another item """
 
         self.cmd('Char.Items.Contents', container)
+
+    # Comm.Channel.Players
+    def comm_channel_players(self):
+        """ Request a list of players in channels """
+
+        self.cmd('Comm.Channel.Players')
 
     # Char.Skills.Get
     def get_skills(self, group=None, name=None):
