@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from twisted.internet import reactor
-from sage import telnet, config, apps, path, triggers, player, log
+from sage import telnet, config, apps, path, triggers, player
 from sage.signals import pre_start, player_connected
 
 
@@ -84,6 +84,7 @@ def get_manhole_factory(namespace):
     p.registerChecker(checker)
 
     factory = manhole_ssh.ConchFactory(p)
+
     return factory
 
 
