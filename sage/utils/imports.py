@@ -85,13 +85,15 @@ def import_file(fpath):
     _os.chdir(dst_path)
     fhandle = None
 
-    try:
-        tup = _imp.find_module(mod_name, ['.'])
-        module = _imp.load_module(mod_name, *tup)
-        fhandle = tup[0]
-    finally:
-        _os.chdir(original_path)
-        if fhandle is not None:
-            fhandle.close()
+    if _os.path.isdir(mod_name):
+        _os.chdir(mod_name)
+
+    tup = _imp.find_module(mod_name, ['.'])
+    module = _imp.load_module(mod_name, *tup)
+    fhandle = tup[0]
+
+    _os.chdir(original_path)
+    if fhandle is not None:
+        fhandle.close()
 
     return module
