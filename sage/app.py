@@ -7,10 +7,9 @@ import gc
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import os
-
-
-class NoAppsDirectory(Exception):
-    pass
+import importlib
+from collections import OrderedDict
+import inspect
 
 
 class Apps(dict):
@@ -24,6 +23,8 @@ class Apps(dict):
         self.groups = {
             'sage': set()
         }
+
+        self.meta = OrderedDict()
 
         # names available before load is completed
         self._names = set(['sage'])
@@ -56,24 +57,33 @@ class Apps(dict):
         self._preload(name)
 
         with imports.cwd_in_path():
-            app = imports.import_file(name)
+            try:
+                ns = imports.import_file(name)
+            except ImportError:
+                sage.log.err("Error: Unable to import app '%s'" % name)
 
-            if hasattr(app, 'INSTALLED_APPS'):
-                if os.path.exists(sage.path + '/apps') == False \
-                or os.path.isdir(sage.path + '/apps') == False:
-                    raise NoAppsDirectory("No apps directory for "
-                        "'INSTALLED_APPS'")
+            path = os.path.dirname(inspect.getabsfile(ns))
 
-                for subapp in app.INSTALLED_APPS:
-                    sys.path.append(sage.path + '/apps/' + subapp)
-                    self.load("%s/apps/%s/%s" % (sage.path, subapp, subapp))
+            #app = importlib.import_module('%s.%s' % (ns.__name__, name))
+            meta = importlib.import_module('%s.meta' % name)
 
-            self[app.__name__] = app
+            meta.path = path
+            meta.name = ns.__name__
 
-            if '.py' in name:
-                name = name[:-3]
+            if hasattr(meta, 'INSTALLED_APPS'):
+                if os.path.exists(path + '/apps') or os.path.isdir(path + '/apps'):
+                    sys.path.append(path + '/apps')
 
-            sage.log.msg("Loaded app '%s'" % app.__name__)
+                for subapp in meta.INSTALLED_APPS:
+                    self.load(subapp)
+
+            self.meta[meta.name] = meta
+
+            print self.meta
+
+           #self[app.__name__] = app
+
+            sage.log.msg("Loaded app '%s'" % ns.__name__)
             return True
 
         del(self.groups[name])
