@@ -64,7 +64,6 @@ class Apps(dict):
 
             path = os.path.dirname(inspect.getabsfile(ns))
 
-            #app = importlib.import_module('%s.%s' % (ns.__name__, name))
             meta = importlib.import_module('%s.meta' % name)
 
             meta.path = path
@@ -79,9 +78,11 @@ class Apps(dict):
 
             self.meta[meta.name] = meta
 
-            print self.meta
+            app = importlib.import_module('%s.%s' % (ns.__name__, name))
+            self[app.__name__] = app
 
-           #self[app.__name__] = app
+            if hasattr(app, 'init'):
+                app.init()
 
             sage.log.msg("Loaded app '%s'" % ns.__name__)
             return True
