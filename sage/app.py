@@ -69,7 +69,7 @@ class Apps(dict):
             meta.path = path
             meta.name = ns.__name__
 
-            if hasattr(meta, 'INSTALLED_APPS'):
+            if hasattr(meta, 'installed_apps'):
                 if os.path.exists(path + '/apps') or os.path.isdir(path + '/apps'):
                     sys.path.append(path + '/apps')
 

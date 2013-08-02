@@ -21,7 +21,7 @@ def sip(vial):
     """ Takes a sip of health or mana """
 
     # Don't try to sip if we are off sip balance
-    if player.sip == False:
+    if player.sip is False:
         return
 
     # turn on the sip group
@@ -38,7 +38,7 @@ def onprompt(sender, **kwargs):
     """ runs every prompt """
 
     # we haven't gotten vital data yet
-    if player.connected == False:
+    if player.connected is False:
         return
 
     if player.health.percentage > 85 and player.mana.percentage > 85:
@@ -64,8 +64,7 @@ sip_group = ss.create_group('sips', enabled=False)
 
 
 # Health sip taken
-@sip_group.trigger(name='sip_health',
-    pattern='The elixir heals and soothes you.')
+@sip_group.trigger(name='sip_health', pattern='The elixir heals and soothes you.')
 def sip_trigger(trigger):
     # set sip balance to off
     player.sip.off()
@@ -85,8 +84,7 @@ sip_group.create(
 
 
 # Sip balance restored
-@ss.trigger(pattern='You may drink another health or mana elixir or tonic.',
-    enabled=False)
+@ss.trigger(pattern='You may drink another health or mana elixir or tonic.', enabled=False)
 def restored_balance(trigger):
     # set sip balance to on
     player.sip.on()

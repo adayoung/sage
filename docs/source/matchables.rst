@@ -167,9 +167,7 @@ matched. For this, Sage allows you to delay a matchable running its bound
 methods. ::
 
     @group.trigger(
-        pattern="Something horrible will happen in 5 seconds.",
-        type="exact",
-        delay=5)
+        pattern="Something horrible will happen in 5 seconds.", type="exact", delay=5)
     def delay_example(trigger):
         pass  # this will run 5 seconds after being matched
 
