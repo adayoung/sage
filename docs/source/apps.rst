@@ -11,8 +11,7 @@ together.
 Structure of a Sage Application
 -------------------------------
 
-While a Sage app can be a single Python file, typically you'll want to structure
-your application as follows: ::
+Sage applications are typically structured as follows: ::
 
     /my_application
       ├── __init__.py
@@ -54,14 +53,15 @@ directory of your app.
 meta.py
 -------
 
-`meta.py` is an optional file containing metadata about your app.
+`meta.py` contains information about your app.
 
 Installed Apps
 ~~~~~~~~~~~~~~
 
 Sage apps can include other applications. This is great for collaboration with
-other developers. To include other apps they need to either be in your `apps`
-directory or available on your `PYTHONPATH` (like an installed Python package).
+other developers or separating responsibilities in your apps. To include other
+apps they need to either be in your `apps` directory or available on your
+`PYTHONPATH` (like an installed Python package).
 
 To include other apps you must have a tuple in `meta.py` called
 `installed_apps`. Sage will load the apps it can find with those names.
@@ -105,7 +105,7 @@ A basic entry point could look like the following: ::
         loaded before this is called. """
 
 
-    def cleanup():
+    def unload():
         """ Called when an app is unloaded (or reloaded). """
 
 sage.apps
