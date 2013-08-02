@@ -129,6 +129,9 @@ class Apps(dict):
         if name not in self:
             return False
 
+        if hasattr(self[name], 'unload'):
+            self[name].unload()
+
         while len(self.groups[name]) > 0:
             self.groups[name].pop().destroy()
 
