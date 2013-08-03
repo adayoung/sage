@@ -10,17 +10,21 @@ assumes you already have Sage installed.  If you do not, head over to the
 A Minimal Application
 -----------------------------
 
-Lets make your first Sage app. Create a file called `myapp.py`:
+Lets make your first Sage app. Sage has a built-in utility to help get you
+started by using `sage mkapp`:
 
 .. code-block:: console
 
-    $ touch myapp.py
+    $ sage mkapp myapp
+
+Sage will ask you some basic questions like what the name of the app is,
+its version, etc. Just accept the defaults for now (press enter).
 
 Now run it with Sage:
 
 .. code-block:: console
 
-    $ sage myapp.py
+    $ sage run myapp
 
 Sage is now running your app and gives you some port numbers for the proxy and
 the ':ref:`backdoor`' (which we'll cover later). You can now connect your MUD client
@@ -32,7 +36,7 @@ writing a single line of code!
     You can stop Sage by doing `Ctrl+C` (also known as `SIGINT <http://en.wikipedia.org/wiki/SIGINT_(POSIX)#SIGINT>`_)
 
 Cool as that is, it's not terribly useful. Now lets make a trigger for the
-'exits' line you'd see in every room in Achaea. In `myapp.py`: ::
+'exits' line you'd see in every room in Achaea. In `myapp/myapp.py`: ::
 
     from sage import echo, triggers
 
