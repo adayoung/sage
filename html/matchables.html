@@ -227,9 +227,7 @@ bind them. This is helpful if you are using one method for many matchables.</p>
 matched. For this, Sage allows you to delay a matchable running its bound
 methods.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="nd">@group.trigger</span><span class="p">(</span>
-    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;Something horrible will happen in 5 seconds.&quot;</span><span class="p">,</span>
-    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">,</span>
-    <span class="n">delay</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;Something horrible will happen in 5 seconds.&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">delay_example</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="k">pass</span>  <span class="c"># this will run 5 seconds after being matched</span>
 </pre></div>

@@ -65,12 +65,15 @@ assumes you already have Sage installed.  If you do not, head over to the
 <a class="reference internal" href="installation.html#installation"><em>Installation</em></a> section. Lets go!</p>
 <div class="section" id="a-minimal-application">
 <h2>A Minimal Application<a class="headerlink" href="#a-minimal-application" title="Permalink to this headline">¶</a></h2>
-<p>Lets make your first Sage app. Create a file called <cite>myapp.py</cite>:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> touch myapp.py
+<p>Lets make your first Sage app. Sage has a built-in utility to help get you
+started by using <cite>sage mkapp</cite>:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> sage mkapp quickstart
 </pre></div>
 </div>
+<p>Sage will ask you some basic questions like what the name of the app is,
+its version, etc. Just accept the defaults for now (press enter).</p>
 <p>Now run it with Sage:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> sage myapp.py
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> sage run quickstart
 </pre></div>
 </div>
 <p>Sage is now running your app and gives you some port numbers for the proxy and
@@ -82,7 +85,7 @@ writing a single line of code!</p>
 <p class="last">You can stop Sage by doing <cite>Ctrl+C</cite> (also known as <a class="reference external" href="http://en.wikipedia.org/wiki/SIGINT_(POSIX)#SIGINT">SIGINT</a>)</p>
 </div>
 <p>Cool as that is, it&#8217;s not terribly useful. Now lets make a trigger for the
-&#8216;exits&#8217; line you&#8217;d see in every room in Achaea. In <cite>myapp.py</cite>:</p>
+&#8216;exits&#8217; line you&#8217;d see in every room in Achaea. In <cite>quickstart/quickstart.py</cite>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">echo</span><span class="p">,</span> <span class="n">triggers</span>
 
 <span class="nd">@triggers.trigger</span><span class="p">(</span>
@@ -217,8 +220,8 @@ recommended you read more about <a class="reference internal" href="matchables.h
 <p>The code now changes to:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">ansi</span>
 
-<span class="c"># create a new group called &#39;room&#39; owned by the app &#39;myapp&#39;</span>
-<span class="hll"><span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;myapp&#39;</span><span class="p">)</span>
+<span class="c"># create a new group called &#39;room&#39; owned by the app &#39;quickstart&#39;</span>
+<span class="hll"><span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;quickstart&#39;</span><span class="p">)</span>
 </span>
 <span class="c"># notice how the decorator changes to the group</span>
 <span class="hll"><span class="nd">@room_triggers.trigger</span><span class="p">(</span>
@@ -242,8 +245,8 @@ need to make an alias. This works nearly identical to how triggers work:</p>
 </span>
 <span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">)</span>
 
-<span class="c"># create a new aliases group (owned by &#39;myapp&#39;)</span>
-<span class="hll"><span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;myapp&#39;</span><span class="p">)</span>
+<span class="c"># create a new aliases group (owned by &#39;quickstart&#39;)</span>
+<span class="hll"><span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;quickstart&#39;</span><span class="p">)</span>
 </span>
 
 <span class="c"># We create an alias similar to how we create a trigger</span>
@@ -270,7 +273,7 @@ to be disabled by default:</p>
 
 <span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">)</span>
 
-<span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;myapp&#39;</span><span class="p">)</span>
+<span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;quickstart&#39;</span><span class="p">)</span>
 
 <span class="nd">@room_aliases.alias</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;ql&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">ql</span><span class="p">(</span><span class="n">alias</span><span class="p">):</span>

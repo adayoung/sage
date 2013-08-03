@@ -66,8 +66,7 @@ system. Perhaps the most powerful feature is multiple apps can be combined
 together.</p>
 <div class="section" id="structure-of-a-sage-application">
 <h2>Structure of a Sage Application<a class="headerlink" href="#structure-of-a-sage-application" title="Permalink to this headline">¶</a></h2>
-<p>While a Sage app can be a single Python file, typically you&#8217;ll want to structure
-your application as follows:</p>
+<p>Sage applications are typically structured as follows:</p>
 <div class="highlight-python"><pre>/my_application
   ├── __init__.py
   ├── /apps
@@ -94,12 +93,13 @@ directory of your app.</p>
 </div>
 <div class="section" id="meta-py">
 <h2>meta.py<a class="headerlink" href="#meta-py" title="Permalink to this headline">¶</a></h2>
-<p><cite>meta.py</cite> is an optional file containing metadata about your app.</p>
+<p><cite>meta.py</cite> contains information about your app.</p>
 <div class="section" id="installed-apps">
 <h3>Installed Apps<a class="headerlink" href="#installed-apps" title="Permalink to this headline">¶</a></h3>
 <p>Sage apps can include other applications. This is great for collaboration with
-other developers. To include other apps they need to either be in your <cite>apps</cite>
-directory or available on your <cite>PYTHONPATH</cite> (like an installed Python package).</p>
+other developers or separating responsibilities in your apps. To include other
+apps they need to either be in your <cite>apps</cite> directory or available on your
+<cite>PYTHONPATH</cite> (like an installed Python package).</p>
 <p>To include other apps you must have a tuple in <cite>meta.py</cite> called
 <cite>installed_apps</cite>. Sage will load the apps it can find with those names.
 Here&#8217;s an example:</p>
@@ -137,7 +137,7 @@ A basic entry point could look like the following:</p>
 <span class="sd">    loaded before this is called. &quot;&quot;&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">unload</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; Called when an app is unloaded (or reloaded). &quot;&quot;&quot;</span>
 </pre></div>
 </div>
