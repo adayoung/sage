@@ -15,7 +15,7 @@ started by using `sage mkapp`:
 
 .. code-block:: console
 
-    $ sage mkapp myapp
+    $ sage mkapp quickstart
 
 Sage will ask you some basic questions like what the name of the app is,
 its version, etc. Just accept the defaults for now (press enter).
@@ -24,7 +24,7 @@ Now run it with Sage:
 
 .. code-block:: console
 
-    $ sage run myapp
+    $ sage run quickstart
 
 Sage is now running your app and gives you some port numbers for the proxy and
 the ':ref:`backdoor`' (which we'll cover later). You can now connect your MUD client
@@ -36,7 +36,7 @@ writing a single line of code!
     You can stop Sage by doing `Ctrl+C` (also known as `SIGINT <http://en.wikipedia.org/wiki/SIGINT_(POSIX)#SIGINT>`_)
 
 Cool as that is, it's not terribly useful. Now lets make a trigger for the
-'exits' line you'd see in every room in Achaea. In `myapp/myapp.py`: ::
+'exits' line you'd see in every room in Achaea. In `quickstart/quickstart.py`: ::
 
     from sage import echo, triggers
 
@@ -180,8 +180,8 @@ The code now changes to:
 
     from sage import triggers, ansi
 
-    # create a new group called 'room' owned by the app 'myapp'
-    room_triggers = triggers.create_group('room', app='myapp')
+    # create a new group called 'room' owned by the app 'quickstart'
+    room_triggers = triggers.create_group('room', app='quickstart')
 
     # notice how the decorator changes to the group
     @room_triggers.trigger(
@@ -209,8 +209,8 @@ need to make an alias. This works nearly identical to how triggers work:
 
     room_triggers = triggers.create_group('room')
 
-    # create a new aliases group (owned by 'myapp')
-    room_aliases = aliases.create_group('room', app='myapp')
+    # create a new aliases group (owned by 'quickstart')
+    room_aliases = aliases.create_group('room', app='quickstart')
 
 
     # We create an alias similar to how we create a trigger
@@ -240,7 +240,7 @@ to be disabled by default:
 
     room_triggers = triggers.create_group('room')
 
-    room_aliases = aliases.create_group('room', app='myapp')
+    room_aliases = aliases.create_group('room', app='quickstart')
 
     @room_aliases.alias(pattern="ql", type="exact")
     def ql(alias):
