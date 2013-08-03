@@ -15,7 +15,9 @@ started by using `sage mkapp`:
 
 .. code-block:: console
 
-    $ sage mkapp quickstart
+    $ sage mkapp -m quickstart
+
+The `-m` flag tells Sage to make this a basic app.
 
 Sage will ask you some basic questions like what the name of the app is,
 its version, etc. Just accept the defaults for now (press enter).
