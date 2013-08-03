@@ -54,7 +54,7 @@ class Apps(dict):
     def load(self, name):
         """ Load a module or package into the namespace """
 
-        self._preload(name)
+        name = self._preload(name)
 
         with imports.cwd_in_path():
             try:
@@ -67,16 +67,16 @@ class Apps(dict):
             meta = importlib.import_module('%s.meta' % name)
 
             meta.path = path
-            meta.name = ns.__name__
+            meta.__name__ = ns.__name__
 
             if hasattr(meta, 'installed_apps'):
                 if os.path.exists(path + '/apps') or os.path.isdir(path + '/apps'):
                     sys.path.append(path + '/apps')
 
-                for subapp in meta.INSTALLED_APPS:
+                for subapp in meta.installed_apps:
                     self.load(subapp)
 
-            self.meta[meta.name] = meta
+            self.meta[meta.__name__] = meta
 
             app = importlib.import_module('%s.%s' % (ns.__name__, name))
             self[app.__name__] = app
@@ -84,7 +84,17 @@ class Apps(dict):
             if hasattr(app, 'init'):
                 app.init()
 
-            sage.log.msg("Loaded app '%s'" % ns.__name__)
+            fullname = ns.__name__
+            if hasattr(meta, 'name'):
+                fullname = meta.name
+
+            if hasattr(meta, 'version'):
+                if type(meta.version) is tuple:
+                    fullname = "%s %s" % (fullname, '.'.join(str(x) for x in meta.version))
+                else:
+                    fullname = '%s %s' % (fullname, meta.version)
+
+            sage.log.msg("Loaded app '%s'" % fullname)
             return True
 
         del(self.groups[name])
@@ -92,16 +102,21 @@ class Apps(dict):
         sage.log.msg("Failed to load app '%s'" % name)
 
     def _preload(self, name):
+
+        if name[-1] == '/':
+            name = name[0:-1]
+
         if '/' in name:
-            name = name.split('/')[-1]
+            shortname = name = name.split('/')[-1]
+        else:
+            shortname = name
 
-        if '.py' in name:
-            name = name[:-3]
-
-        self._names.add(name)
+        self._names.add(shortname)
 
         if name not in self.groups:
-            self.groups[name] = set()
+            self.groups[shortname] = set()
+
+        return name
 
     def reload(self, name):
         """ Try to fully rebuild an app """

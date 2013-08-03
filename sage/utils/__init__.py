@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 import json
+import os
 
 debug_mode = True
 
@@ -60,6 +61,13 @@ def _decode_dict(data):
             value = _decode_dict(value)
         rv[key] = value
     return rv
+
+
+def touch(fname, times=None):
+    """ Implementation of unix touch """
+
+    with file(fname, 'a'):
+        os.utime(fname, times)
 
 
 class MutableInt(object):

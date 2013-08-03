@@ -5,7 +5,7 @@ from sage import telnet, config, apps, path, triggers, player
 from sage.signals import pre_start, player_connected
 
 
-def run():
+def run(backdoor=True):
     """ Start Sage Server """
 
     pre_start.send_robust(sender=None)
