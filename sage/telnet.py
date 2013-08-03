@@ -10,7 +10,7 @@ from twisted.internet.protocol import ClientFactory, ServerFactory
 from twisted.internet import reactor
 import sage
 from sage.utils import error
-from sage import inbound, outbound, gmcp, prompt, config
+from sage import inbound, outbound, gmcp, prompt, config, log
 from sage.signals import telnet as signal
 from sage.signals import post_prompt, pre_prompt
 import re
@@ -346,6 +346,8 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     def connectionLost(self, reason):
         self.connected = False
         self.factory.transports.remove(self.transport)
+        if self.client.connected:
+            log.msg('Client disconnected. Sage is still connected to Achaea.')
 
     def applicationDataReceived(self, data):
         if self.client.transport is None:
