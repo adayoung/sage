@@ -209,7 +209,7 @@ need to make an alias. This works nearly identical to how triggers work:
 
     from sage import triggers, aliases, ansi, send  # notice we add send
 
-    room_triggers = triggers.create_group('room')
+    room_triggers = triggers.create_group('room', app='quickstart')
 
     # create a new aliases group (owned by 'quickstart')
     room_aliases = aliases.create_group('room', app='quickstart')
@@ -240,7 +240,7 @@ to be disabled by default:
 
     from sage import triggers, aliases, ansi, send
 
-    room_triggers = triggers.create_group('room')
+    room_triggers = triggers.create_group('room', app='quickstart')
 
     room_aliases = aliases.create_group('room', app='quickstart')
 
