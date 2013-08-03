@@ -79,7 +79,8 @@ class Apps(dict):
             self.meta[meta.__name__] = meta
 
             app = importlib.import_module('%s.%s' % (ns.__name__, name))
-            self[app.__name__] = app
+
+            self[meta.__name__] = app
 
             if hasattr(app, 'init'):
                 app.init()
@@ -151,6 +152,7 @@ class Apps(dict):
             self.groups[name].pop().destroy()
 
         del(self[name])
+        del(self.meta[name])
         del(sys.modules[name])
         gc.collect()
         return True
