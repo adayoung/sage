@@ -346,7 +346,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     def connectionLost(self, reason):
         self.connected = False
         self.factory.transports.remove(self.transport)
-        if self.client.connected:
+        if sage.connected:
             log.msg('Client disconnected. Sage is still connected to Achaea.')
 
     def applicationDataReceived(self, data):
