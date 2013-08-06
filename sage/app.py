@@ -25,6 +25,7 @@ class Apps(dict):
         }
 
         self.meta = OrderedDict()
+        self.paths = dict()
 
         # names available before load is completed
         self._names = set(['sage'])
@@ -40,10 +41,9 @@ class Apps(dict):
         if '.py' not in event.src_path:
             return
 
-        name = event.src_path.split('/')[-1][:-3]
-
-        if name in self:
-            self.reload(name)
+        for app, path in self.paths.items():
+            if path in event.src_path:
+                self.reload(app)
 
     def add_group(self, app, matchable):
         self.groups[app].add(matchable)
@@ -95,12 +95,21 @@ class Apps(dict):
                 else:
                     fullname = '%s %s' % (fullname, meta.version)
 
+            if meta.__name__ not in self.paths:
+                self._generate_paths()
+
             sage.log.msg("Loaded app '%s'" % fullname)
             return True
 
         del(self.groups[name])
         self._names.discard(name)
         sage.log.msg("Failed to load app '%s'" % name)
+
+    def _generate_paths(self):
+        self.paths = dict()
+
+        for name, meta in self.meta.items():
+            self.paths[name] = meta.path
 
     def _preload(self, name):
 
@@ -151,6 +160,7 @@ class Apps(dict):
         while len(self.groups[name]) > 0:
             self.groups[name].pop().destroy()
 
+        del(self.paths[name])
         del(self[name])
         del(self.meta[name])
         del(sys.modules[name])
