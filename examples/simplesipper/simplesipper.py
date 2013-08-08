@@ -8,7 +8,6 @@ This is a rudimentary health and mana sipper only intended to be an example.
 from __future__ import division
 import sage
 from sage import player, triggers
-from sage.signals import post_prompt
 
 # create a new balance called player.sip
 player.sip = player.Balance()
@@ -84,7 +83,7 @@ sip_group.create(
 
 
 # Sip balance restored
-@ss.exact(pattern='You may drink another health or mana elixir or tonic.', enabled=False)
+@ss.exact('You may drink another health or mana elixir or tonic.', enabled=False)
 def restored_balance(trigger):
     # set sip balance to on
     player.sip.on()
