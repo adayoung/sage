@@ -4,15 +4,6 @@ import json
 import os
 import inspect
 
-debug_mode = True
-
-
-def debug(line):
-    """ Debug output """
-
-    if debug_mode:
-        print("[%s]: %s\n" % (timestamp(), line))
-
 
 def error(line):
     """ STDOUT for non-blocking errors"""

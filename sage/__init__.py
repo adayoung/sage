@@ -64,4 +64,4 @@ _echo = None
 _deferred = list()
 
 from .api import echo, send, defer_to_prompt, delay, log
-from .utils import error, debug
+from .utils import error
