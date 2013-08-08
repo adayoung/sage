@@ -9,7 +9,7 @@ room_triggers = triggers.create_group('room', app='quickstart')
 room_aliases = aliases.create_group('room', app='quickstart')
 
 
-@room_aliases.alias(pattern="ql", type="exact")
+@room_aliases.exact(pattern="ql")
 def ql(alias):
 
     # enable the exits trigger
@@ -19,9 +19,8 @@ def ql(alias):
     send('ql')
 
 
-@room_triggers.trigger(
+@room_triggers.regex(
     pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
-    type="regex",
     enabled=False)  # notice this is now disabled
 def exits(trigger):
     exit_str = trigger.groups[1]
