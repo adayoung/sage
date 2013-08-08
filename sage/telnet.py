@@ -280,7 +280,7 @@ class TelnetClient(Telnet):
     def to_client(self, data):
         """ Send to connected client """
 
-        if self.server.connected == False:
+        if self.server.connected is False:
             self.buffer += data
             return
 
@@ -338,7 +338,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
             self.write("<<< End of buffer <<<\n")
             self.client.buffer = ''
 
-        if self.client.connected == False:
+        if bool(self.client.connected) is False:
             reactor.connectTCP(config.host, config.port, self.client_factory)
 
         self.will(GMCP)
