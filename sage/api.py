@@ -3,6 +3,8 @@ from __future__ import absolute_import
 import sage
 import weakref
 from twisted.internet import reactor
+import inspect
+from .utils import caller_name
 
 
 def echo(msg):
@@ -44,4 +46,28 @@ def defer_to_prompt(method, *args):
 
 
 def delay(seconds, method, *args, **kwargs):
+    """ Delay a method call in the reactor
+
+    :param seconds: seconds to delay by.
+    :type seconds: int
+    :param method: method to be called.
+    :param \*args: optional arguments to be passed to the provided method.
+    :param \*\*kwargs: optional keyword arguments.
+    """
+
     return reactor.callLater(seconds, method, *args, **kwargs)
+
+
+def log(msg, inspection=True):
+    """ Write to the system log
+
+    :param msg: Message to log.
+    :type msg: string
+    :param inspection: Show caller module and method.
+    :type inspection: boolean
+    """
+
+    if inspection:
+        sage._log.msg(msg, system=caller_name())
+    else:
+        sage._log.msg(msg)

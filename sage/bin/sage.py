@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 import argparse
 import sage
-from sage import config
 from sage.utils import touch
 import sys
 import os
@@ -87,7 +86,7 @@ def run(args):
 
     print(banner)
 
-    observer = sage.log.startLogging(sys.stdout)
+    observer = sage._log.startLogging(sys.stdout)
 
     observer.timeFormat = "%Y-%m-%d %H:%M:%S:%f"
 
@@ -96,7 +95,7 @@ def run(args):
     sage.apps.load(app)
 
     if args.no_backdoor:
-        config.backdoor = False
+        sage.config.backdoor = False
 
     from sage.server import run
 
