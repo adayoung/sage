@@ -64,7 +64,7 @@ sip_group = ss.create_group('sips', enabled=False)
 
 
 # Health sip taken
-@sip_group.trigger(name='sip_health', pattern='The elixir heals and soothes you.')
+@sip_group.exact(name='sip_health', pattern='The elixir heals and soothes you.')
 def sip_trigger(trigger):
     # set sip balance to off
     player.sip.off()
@@ -84,7 +84,7 @@ sip_group.create(
 
 
 # Sip balance restored
-@ss.trigger(pattern='You may drink another health or mana elixir or tonic.', enabled=False)
+@ss.exact(pattern='You may drink another health or mana elixir or tonic.', enabled=False)
 def restored_balance(trigger):
     # set sip balance to on
     player.sip.on()
