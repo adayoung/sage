@@ -87,7 +87,9 @@ def run(args):
 
     print(banner)
 
-    sage.log.startLogging(sys.stdout)
+    observer = sage.log.startLogging(sys.stdout)
+
+    observer.timeFormat = "%Y-%m-%d %H:%M:%S:%f"
 
     app = args.app
 
