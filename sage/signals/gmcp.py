@@ -55,3 +55,6 @@ rift = Signal(providing_args=['rift'])
 
 # Changed rift item
 rift_change = Signal(providing_args=['name', 'amount'])
+
+# IRE Time update
+iretime = Signal(providing_args=['time'])
