@@ -209,6 +209,9 @@ inv = Inventory()
 #: Rift data
 rift = Rift()
 
+#: Achaea time data
+iretime = dict()
+
 #: 'balance' balance
 balance = Balance()
 

@@ -59,7 +59,9 @@ class GMCPReceiver(object):
             'Char.Items.Update': self.update_item,
             'Room.WrongDir': self.wrong_dir,
             'IRE.Rift.List': self.rift_list,
-            'IRE.Rift.Change': self.rift_change
+            'IRE.Rift.Change': self.rift_change,
+            'IRE.Time.Update': self.time_update,
+            'IRE.Time.List': self.time_update
         }
 
         # time when ping started
@@ -339,6 +341,11 @@ class GMCPReceiver(object):
     def wrong_dir(self, d):
         pass
 
+    # IRE.Time.Update & IRE.Time.List
+    def time_update(self, d):
+        player.iretime = d
+        gmcp_signals.iretime.send_robust(self, time=d)
+
 
 class GMCP(object):
 
@@ -466,6 +473,12 @@ class GMCP(object):
 
         self.write('IRE.Rift.Request')
 
+    # IRE.Time.Request
+    def iretime(self):
+        """ Ask for an update on current game time """
+
+        self.write('IRE.Time.Request')
+
     # Core.Supports.Add
     def add_support(self, options):
         """ Add enabled modules in the same format of Core.Supports.Set """
@@ -492,3 +505,4 @@ class GMCP(object):
 
         self.inv()
         self.rift()
+        self.iretime()
