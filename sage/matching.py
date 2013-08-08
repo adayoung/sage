@@ -274,7 +274,7 @@ class Group(object):
         self.groups = {}
         self.matchables = {}
 
-        if apps.valid(app) == False:
+        if apps.valid(app) is False:
             raise AppNotFound("Unable to find app named '%s'" % app)
 
         apps.add_group(app, self)
@@ -322,19 +322,19 @@ class Group(object):
         }
 
         if mtype == 'exact':
-            m = CIExact(**kwargs) if ignorecase == False \
+            m = CIExact(**kwargs) if ignorecase is False \
                 else Exact(**kwargs)
         elif mtype == 'substring':
-            m = CISubstring(**kwargs) if ignorecase == False  \
+            m = CISubstring(**kwargs) if ignorecase is False  \
                 else Substring(**kwargs)
         elif mtype == 'regex':
             kwargs['ignorecase'] = ignorecase
             m = Regex(**kwargs)
         elif mtype == 'startswith':
-            m = CIStartswith(**kwargs) if ignorecase == False \
+            m = CIStartswith(**kwargs) if ignorecase is False \
                 else Startswith(**kwargs)
         elif mtype == 'endswith':
-            m = CIEndswith(**kwargs) if ignorecase == False \
+            m = CIEndswith(**kwargs) if ignorecase is False \
                 else Endswith(**kwargs)
         else:
             raise InvalidMatchableType('Unsupported matchable type: %s' % mtype)
@@ -421,7 +421,7 @@ class Group(object):
                 "Top-level group '%s' must have an app declared in "
                 "create_group()" % name)
             app = self.app
-        elif apps.valid(app) == False:
+        elif apps.valid(app) is False:
             raise AppNotFound("Unable to find app named '%s'" % app)
 
         if self.__class__ in (TriggerMasterGroup, TriggerGroup):
@@ -559,10 +559,10 @@ class Group(object):
                     m.bind(func, param)
                     return func
                 else:
-                    raise MatchableCreationError('No pattern defined for %s' \
+                    raise MatchableCreationError('No pattern defined for %s'
                         % mname)
 
-            m = self.create(mname, mtype, pattern, \
+            m = self.create(mname, mtype, pattern,
                 enabled=enabled, ignorecase=ignorecase, delay=delay)
             m.bind(func, param)
 
@@ -570,8 +570,28 @@ class Group(object):
 
         return dec
 
+    def exact(self, **kwargs):
+        kwargs['type'] = 'exact'
+        return self._decorator(**kwargs)
+
+    def startswith(self, **kwargs):
+        kwargs['type'] = 'startswith'
+        return self._decorator(**kwargs)
+
+    def endswith(self, **kwargs):
+        kwargs['type'] = 'endswith'
+        return self._decorator(**kwargs)
+
+    def substring(self, **kwargs):
+        kwargs['type'] = 'substring'
+        return self._decorator(**kwargs)
+
+    def regex(self, **kwargs):
+        kwargs['type'] = 'regex'
+        return self._decorator(**kwargs)
+
     def __repr__(self):
-        return "%s '%s' (%s groups, %s objects)" % (self.__class__, \
+        return "%s '%s' (%s groups, %s objects)" % (self.__class__,
             self.name, len(self.groups), len(self.matchables))
 
     def __getitem__(self, *args, **kwargs):
@@ -583,12 +603,14 @@ class Group(object):
 
 class TriggerGroup(Group):
 
+    #: deprecated
     def trigger(self, **kwargs):
         return self._decorator(**kwargs)
 
 
 class AliasGroup(Group):
 
+    #: deprecated
     def alias(self, **kwargs):
         return self._decorator(**kwargs)
 
@@ -633,7 +655,7 @@ class MasterGroup(Group):
         self._to_remove.clear()
 
     def __repr__(self):
-        return "%s (%s groups, %s objects)" % (self.__class__, \
+        return "%s (%s groups, %s objects)" % (self.__class__,
             len(self.groups), len(self.matchables))
 
 

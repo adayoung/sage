@@ -140,7 +140,7 @@ class TelnetClient(Telnet):
 
         output += prompt_output + '\r\n'
 
-        signal.pre_outbound.send_robust(sender=self, lines=sage.buffer, \
+        signal.pre_outbound.send_robust(sender=self, lines=sage.buffer,
             prompt=prompt_output)
 
         self.to_client(output)
