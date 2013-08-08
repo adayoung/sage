@@ -60,7 +60,7 @@ class Apps(dict):
             try:
                 ns = imports.import_file(name)
             except ImportError:
-                sage.log.err("Error: Unable to import app '%s'" % name)
+                sage._log.err("Error: Unable to import app '%s'" % name)
 
             path = os.path.dirname(inspect.getabsfile(ns))
 
@@ -98,12 +98,12 @@ class Apps(dict):
             if meta.__name__ not in self.paths:
                 self._generate_paths()
 
-            sage.log.msg("Loaded app '%s'" % fullname)
+            sage._log.msg("Loaded app '%s'" % fullname)
             return True
 
         del(self.groups[name])
         self._names.discard(name)
-        sage.log.msg("Failed to load app '%s'" % name)
+        sage._log.msg("Failed to load app '%s'" % name)
 
     def _generate_paths(self):
         self.paths = dict()
@@ -139,10 +139,10 @@ class Apps(dict):
 
         try:
             self[name] = rebuild(self[name], False)
-            sage.log.msg("Reloaded app '%s'" % name)
+            sage._log.msg("Reloaded app '%s'" % name)
         except:
-            sage.log.msg("Error reloading '%s'" % name)
-            sage.log.err()
+            sage._log.msg("Error reloading '%s'" % name)
+            sage._log.err()
             return False
 
         gc.collect()

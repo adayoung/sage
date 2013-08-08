@@ -5,7 +5,7 @@ from __future__ import absolute_import
 import weakref
 from collections import Callable
 from . import saferef
-from sage import log
+from sage import _log
 
 WEAKREF_TYPES = (weakref.ReferenceType, saferef.BoundMethodWeakref)
 
@@ -179,7 +179,7 @@ class Signal(object):
             try:
                 response = receiver(signal=self, sender=sender, **named)
             except Exception as err:
-                log.err()
+                _log.err()
                 responses.append((receiver, err))
             else:
                 responses.append((receiver, response))
@@ -300,7 +300,7 @@ class Hook(Signal):
                 else:
                     response = receiver(sender, **named)
             except Exception as err:
-                log.err()
+                _log.err()
                 responses.append((receiver, err))
             else:
                 responses.append((receiver, response))

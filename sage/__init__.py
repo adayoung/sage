@@ -26,7 +26,7 @@ try:
 except ImportError:
     pass
 
-from twisted.python import log
+from twisted.python import log as _log
 
 path = None
 
@@ -63,5 +63,5 @@ _echo = None
 # methods defered to the prompt
 _deferred = list()
 
-from .api import echo, send, defer_to_prompt, delay
+from .api import echo, send, defer_to_prompt, delay, log
 from .utils import error, debug
