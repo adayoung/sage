@@ -570,23 +570,33 @@ class Group(object):
 
         return dec
 
-    def exact(self, **kwargs):
+    def exact(self, *args, **kwargs):
+        if len(args) == 1:
+            kwargs['pattern'] = args[0]
         kwargs['type'] = 'exact'
         return self._decorator(**kwargs)
 
-    def startswith(self, **kwargs):
+    def startswith(self, *args, **kwargs):
+        if len(args) == 1:
+            kwargs['pattern'] = args[0]
         kwargs['type'] = 'startswith'
         return self._decorator(**kwargs)
 
-    def endswith(self, **kwargs):
+    def endswith(self, *args, **kwargs):
+        if len(args) == 1:
+            kwargs['pattern'] = args[0]
         kwargs['type'] = 'endswith'
         return self._decorator(**kwargs)
 
-    def substring(self, **kwargs):
+    def substring(self, *args, **kwargs):
+        if len(args) == 1:
+            kwargs['pattern'] = args[0]
         kwargs['type'] = 'substring'
         return self._decorator(**kwargs)
 
-    def regex(self, **kwargs):
+    def regex(self, *args, **kwargs):
+        if len(args) == 1:
+            kwargs['pattern'] = args[0]
         kwargs['type'] = 'regex'
         return self._decorator(**kwargs)
 
