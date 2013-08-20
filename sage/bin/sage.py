@@ -99,7 +99,13 @@ def run(args):
 
     from sage.server import run
 
-    run()
+    if args.profile:
+        from cProfile import Profile
+        profile = Profile()
+        profile.runcall(run)
+        profile.dump_stats(args.profile)
+    else:
+        run()
 
 
 def version():
@@ -120,6 +126,7 @@ subparsers = parser.add_subparsers(dest='command')
 
 runparser = subparsers.add_parser('run', parents=[parent])
 runparser.add_argument('-b', '--no-backdoor', action='store_true', help='Disable the SSH backdoor')
+runparser.add_argument('-p', '--profile', help='Run cProfile and save the stats to file')
 runparser.add_argument('app')
 
 mkappparser = subparsers.add_parser('mkapp', parents=[parent])
