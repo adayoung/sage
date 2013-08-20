@@ -1,7 +1,12 @@
 from autobahn.websocket import listenWS
 from autobahn.wamp import WampServerFactory, WampServerProtocol
+from twisted.web.static import File
+from twisted.web.server import Site
+from twisted.internet import reactor
+import sage
 
-class MyServerProtocol(WampServerProtocol):
+
+class SAGEProtoServerProtocol(WampServerProtocol):
 
     def onSessionOpen(self):
 
@@ -16,4 +21,12 @@ class MyServerProtocol(WampServerProtocol):
 
 
 def init():
-    print "SHIT RAN WOOHOO"
+    path = sage.apps.get_path('sageprotocol')
+    factory = WampServerFactory("ws://localhost:9000", debugWamp=True)
+    factory.protocol = SAGEProtoServerProtocol
+    factory.setProtocolOptions(allowHixie76=True)
+    listenWS(factory)
+
+    webdir = File(path + '/web')
+    web = Site(webdir)
+    reactor.listenTCP(8080, web)
