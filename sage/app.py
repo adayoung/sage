@@ -128,6 +128,9 @@ class Apps(dict):
 
         return name
 
+    def getpath(self, name):
+        return self.meta[name].path
+
     def reload(self, name):
         """ Try to fully rebuild an app """
 
