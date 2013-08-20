@@ -11,10 +11,10 @@ class SAGEProtoServerProtocol(WampServerProtocol):
     def onSessionOpen(self):
 
         ## register a single, fixed URI as PubSub topic
-        self.registerForPubSub("http://example.com/simple")
+        self.registerForPubSub("http://sage/simple")
 
         ## register a URI and all URIs having the string as prefix as PubSub topic
-        self.registerForPubSub("http://example.com/event#", True)
+        self.registerForPubSub("http://sage/event#", True)
 
         ## register any URI (string) as topic
         #self.registerForPubSub("", True)

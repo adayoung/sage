@@ -35,9 +35,9 @@
                   sess = session;
                   console.log("Connected!");
 
-                  sess.subscribe("http://example.com/simple", onEvent);
+                  sess.subscribe("http://sage/simple", onEvent);
 
-                  sess.prefix("event", "http://example.com/event#");
+                  sess.prefix("event", "http://sage/event#");
                   sess.subscribe("event:myevent1", onEvent);
                   sess.subscribe("event:myevent2", onEvent);
                },
@@ -81,9 +81,9 @@
          <p>
             Publish a simple event containing to data. Open a 2nd browser window/tab and you see events being received.
          </p>
-         <button onclick="sess.subscribe('http://example.com/simple', onEvent);">Subscribe</button>
-         <button onclick="sess.unsubscribe('http://example.com/simple');">Unsubscribe</button>
-         <button onclick="sess.publish('http://example.com/simple', null);">Publish</button>
+         <button onclick="sess.subscribe('http://sage/simple', onEvent);">Subscribe</button>
+         <button onclick="sess.unsubscribe('http://sage/simple');">Unsubscribe</button>
+         <button onclick="sess.publish('http://sage/simple', null);">Publish</button>
       </div>
 
       <div class="block">
@@ -109,7 +109,7 @@
             Publish to a Topic URI which was never registered for PubSub on server side. Events published to
             such topics are transmitted to server, but silently ignored and never dispatched.
          </p>
-         <button onclick="sess.publish('http://example.com/unregistered_topic', null);">Publish to unregistered Topic</button>
+         <button onclick="sess.publish('http://sage/unregistered_topic', null);">Publish to unregistered Topic</button>
       </div>
    </body>
  </html>
