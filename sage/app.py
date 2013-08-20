@@ -128,7 +128,7 @@ class Apps(dict):
 
         return name
 
-    def getpath(self, name):
+    def get_path(self, name):
         return self.meta[name].path
 
     def reload(self, name):
