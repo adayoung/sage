@@ -1,32 +1,24 @@
 from autobahn.websocket import listenWS
 from autobahn.wamp import WampServerFactory, WampServerProtocol
-from twisted.web.static import File
-from twisted.web.server import Site
-from twisted.internet import reactor
-import sage
+from sage.signals.telnet import pre_outbound as outbound_signal
+
+
+factory = WampServerFactory("ws://localhost:9000", debugWamp=True)
 
 
 class SAGEProtoServerProtocol(WampServerProtocol):
 
     def onSessionOpen(self):
-
-        ## register a single, fixed URI as PubSub topic
-        self.registerForPubSub("http://sage/simple")
-
-        ## register a URI and all URIs having the string as prefix as PubSub topic
         self.registerForPubSub("http://sage/event#", True)
 
-        ## register any URI (string) as topic
-        #self.registerForPubSub("", True)
+
+def instream(**kwargs):
+    lines = [line.output for line in kwargs['lines'] if line.output is not None]
+    factory.dispatch('http://sage/event#instream', {'lines': lines, 'prompt': kwargs['prompt']})
 
 
 def init():
-    path = sage.apps.get_path('sageprotocol')
-    factory = WampServerFactory("ws://localhost:9000", debugWamp=True)
+    outbound_signal.connect(instream)
     factory.protocol = SAGEProtoServerProtocol
     factory.setProtocolOptions(allowHixie76=True)
     listenWS(factory)
-
-    webdir = File(path + '/web')
-    web = Site(webdir)
-    reactor.listenTCP(8080, web)
