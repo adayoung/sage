@@ -1,6 +1,7 @@
 from autobahn.websocket import listenWS
 from autobahn.wamp import WampServerFactory, WampServerProtocol
 from sage.signals.telnet import pre_outbound as outbound_signal
+from sage import send
 
 
 factory = WampServerFactory("ws://localhost:9000", debugWamp=True)
@@ -10,6 +11,10 @@ class SAGEProtoServerProtocol(WampServerProtocol):
 
     def onSessionOpen(self):
         self.registerForPubSub("http://sage/event#", True)
+        self.registerMethodForRpc('http://sage/input', self, SAGEProtoServerProtocol.input)
+
+    def input(self, msg):
+        send(msg.encode('us-ascii'))
 
 
 def instream(**kwargs):

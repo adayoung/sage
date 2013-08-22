@@ -1,0 +1,66 @@
+// WAMP session object
+var sess;
+var wsuri;
+var swindow;
+
+window.onload = function() {
+
+   if (window.location.protocol === "file:") {
+      wsuri = "ws://localhost:9000";
+   } else {
+      wsuri = "ws://" + window.location.hostname + ":9000";
+   }
+
+   // connect to WAMP server
+   ab.connect(wsuri,
+
+      // WAMP session was established
+      function (session) {
+         sess = session;
+         console.log("Connected to Sage");
+
+         sess.prefix("event", "http://sage/event#");
+         sess.subscribe("event:instream", instream);
+      },
+
+      // WAMP session is gone
+      function (code, reason) {
+         sess = null;
+         console.log('Disconnected from Sage');
+      }
+   );
+
+   swindow = $('#stream-window');
+
+   swindow.height(window.height - 70);
+
+   var input = document.getElementById('main-input');
+   input.focus();
+   input.select();
+
+   $('#main-input-form').submit(function(e) {
+      sess.call("http://sage/input", input.value).then(
+         function (res) {
+            //console.log("RPC result: " + res);
+         },
+         function (error) {
+            //console.log("RPC error: " + error.desc);
+         }
+      );
+      input.select();
+      e.preventDefault();
+      return false;
+   });
+};
+
+function instream(topicUri, event) {
+   Object.keys(event.lines).forEach(function (key) {
+      swindow.append('<div class="line">' + ansi_up.ansi_to_html(event.lines[key]) + '</div>');
+   });
+   swindow.append('<div class="prompt">' + ansi_up.ansi_to_html(event.prompt) + '</div>');
+   swindow.scrollTop(swindow[0].scrollHeight);
+}
+
+$(window).resize(function() {
+    swindow.height($(this).height() - 70);
+});
