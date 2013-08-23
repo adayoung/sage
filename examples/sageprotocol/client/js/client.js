@@ -44,14 +44,7 @@ window.onload = function() {
    input.select();
 
    $('#main-input-form').submit(function(e) {
-      sess.call("http://sage/input", input.value).then(
-         function (res) {
-            //console.log("RPC result: " + res);
-         },
-         function (error) {
-            //console.log("RPC error: " + error.desc);
-         }
-      );
+      sess.call("http://sage/input", input.value);
       input.select();
       e.preventDefault();
       return false;
