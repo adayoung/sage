@@ -2,6 +2,7 @@
 var sess;
 var wsuri;
 var swindow;
+var achaea_connected = false;
 
 window.onload = function() {
 
@@ -21,6 +22,9 @@ window.onload = function() {
 
          sess.prefix("event", "http://sage/event#");
          sess.subscribe("event:instream", instream);
+         sess.subscribe("event:connected", connected);
+
+         sess.call('http://sage/is_connected');
       },
 
       // WAMP session is gone
@@ -33,6 +37,7 @@ window.onload = function() {
    swindow = $('#stream-window');
 
    swindow.height(window.height - 70);
+   $(window).resize();
 
    var input = document.getElementById('main-input');
    input.focus();
@@ -59,6 +64,14 @@ function instream(topicUri, event) {
    });
    swindow.append('<div class="prompt">' + ansi_up.ansi_to_html(event.prompt) + '</div>');
    swindow.scrollTop(swindow[0].scrollHeight);
+}
+
+function connected(topicUri, event) {
+   if (event === false) {
+      $('#main-input').prop('disabled', true);
+   } else {
+      $('#main-input').prop('disabled', false);
+   }
 }
 
 $(window).resize(function() {

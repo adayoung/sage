@@ -24,6 +24,7 @@ body {
 
 #stream-window div {
   white-space: pre-wrap;
+  color: #ddd;
 }
 
 #footer {
@@ -34,5 +35,6 @@ body {
 
 .container {
   width: auto;
+  max-width: 100%;
   padding: 0 15px;
 }
