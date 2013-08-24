@@ -17,7 +17,7 @@ def run(backdoor=True):
         apps.observer.start()
 
     # Setup reactor to listen
-    reactor.listenTCP(config.proxy_port, net.build_factory())
+    reactor.listenTCP(config.proxy_port, net.build_telnet_factory())
     print("Proxy port: %s" % config.proxy_port)
 
     # setup the backdoor

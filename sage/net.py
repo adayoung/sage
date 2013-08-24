@@ -8,6 +8,8 @@ from __future__ import absolute_import
 from twisted.conch.telnet import Telnet, StatefulTelnetProtocol
 from twisted.internet.protocol import ClientFactory, ServerFactory
 from twisted.internet import reactor
+from autobahn.websocket import listenWS
+from autobahn.wamp import WampServerFactory, WampServerProtocol
 import sage
 from sage.utils import error
 from sage import inbound, outbound, gmcp, prompt, config, _log
@@ -381,10 +383,33 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
         return False
 
 
-def build_factory():
+class SAGEProtoServerProtocol(WampServerProtocol):
+
+    def onSessionOpen(self):
+        self.registerForPubSub("http://sage/event#", True)
+        self.registerMethodForRpc('http://sage/input', self, SAGEProtoServerProtocol.input)
+        self.registerMethodForRpc('http://sage/is_connected', self, SAGEProtoServerProtocol.is_connected)
+
+    def input(self, msg):
+        sage.send(msg.encode('us-ascii'))
+
+    def is_connected(self):
+        self.dispatch('http://sage/event#connected', sage.connected)
+
+
+def build_telnet_factory():
     """ Setup Twisted factory """
 
     factory = TelnetServerFactory()
     factory.protocol = TelnetServer
     factory.transports = []
     return factory
+
+
+def build_ws_factory():
+    """ Setup Websocket factory """
+
+    factory = WampServerFactory("ws://%s:%s" % (config.ws_host, config.ws_port), debugWamp=config.ws_debug)
+    factory.protocol = SAGEProtoServerProtocol
+    factory.setProtocolOptions(allowHixie76=True)
+    listenWS(factory)
