@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from twisted.internet import reactor
-from sage import telnet, config, apps, path, triggers, player
+from sage import net, config, apps, path, triggers, player
 from sage.signals import pre_start, player_connected
 
 
@@ -17,7 +17,7 @@ def run(backdoor=True):
         apps.observer.start()
 
     # Setup reactor to listen
-    reactor.listenTCP(config.proxy_port, telnet.build_factory())
+    reactor.listenTCP(config.proxy_port, net.build_factory())
     print("Proxy port: %s" % config.proxy_port)
 
     # setup the backdoor

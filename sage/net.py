@@ -11,7 +11,7 @@ from twisted.internet import reactor
 import sage
 from sage.utils import error
 from sage import inbound, outbound, gmcp, prompt, config, _log
-from sage.signals import telnet as signal
+from sage.signals import net as signal
 from sage.signals import post_prompt, pre_prompt
 import re
 import zlib
