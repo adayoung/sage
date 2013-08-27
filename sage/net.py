@@ -403,6 +403,7 @@ def build_telnet_factory():
     factory = TelnetServerFactory()
     factory.protocol = TelnetServer
     factory.transports = []
+    reactor.listenTCP(config.telnet_port, factory)
     return factory
 
 
@@ -413,3 +414,4 @@ def build_ws_factory():
     factory.protocol = SAGEProtoServerProtocol
     factory.setProtocolOptions(allowHixie76=True)
     listenWS(factory)
+    return factory
