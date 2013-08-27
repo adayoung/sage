@@ -33,7 +33,9 @@ def run():
         print("Backdoor port: %s" % config.backdoor_port)
 
     if config.telnet_proxy:
-        net.build_telnet_factory()
+        factory = net.build_telnet_factory()
+        import sage
+        sage.factory = factory
         print("Telnet proxy port: %s" % config.telnet_port)
 
     if config.ws_server:
