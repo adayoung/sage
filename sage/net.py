@@ -58,11 +58,32 @@ DONT = chr(254)     # Indicates the demand that the other party stop performing,
 IAC = chr(255)      # Interpret as a command
 
 
+class ISageProxy(object):
+
+    def __init__(self):
+        self.connected = False
+
+    def ready(self):
+        pass
+
+    def write(self, data):
+        pass
+
+
+class ISageWSProxy(ISageProxy):
+
+    def instream(self, lines, prompt):
+        pass
+
+
 class TelnetClient(Telnet):
     """ Connects to the remote server. """
 
     def __init__(self):
         Telnet.__init__(self)
+
+        self.ws_server = ISageWSProxy()
+        self.telnet_server = ISageProxy()
 
         self.compress = False
         self.decompressobj = zlib.decompressobj()
@@ -88,15 +109,11 @@ class TelnetClient(Telnet):
 
         self.options_disabled = ()
 
-        self.buffer = ''  # Buffer of recieved data
-
         # Used to identify a line that is only a color code
         self.color_prefix = chr(27) + '[1;'
 
         # Achaea will sometimes give us a line that is just a color code...
         self.color_newline = re.compile('^' + ESC + '\[[0-9;]*[m]' + NL)
-
-        #self.write_server = self.server.transport.write
 
     def applicationDataReceived(self, data):
         """ Gather data until we get EOR or GA (prompt) """
@@ -145,29 +162,31 @@ class TelnetClient(Telnet):
         signal.pre_outbound.send_robust(sender=self, lines=sage.buffer,
             prompt=prompt_output)
 
-        self.to_client(output)
+        self.ws_server.instream(lines, prompt_output)
+        self.telnet_server.write(output)
 
     def connectionMade(self):
         for option in self.options_enabled:
             self.do(option)
 
         sage.connected = True
-        self.server.ready()
+        self.telnet_server.ready()
+        self.ws_server.ready()
         signal.connected.send_robust(sender=self)
         sage._send = self.transport.write
 
     def connectionLost(self, reason):
         sage.connected = False
         signal.disconnected.send_robust(sender=self)
-        if self.server is not None:
+        '''if self.telnet_server is not None:
             self.server.transport.loseConnection()
-            self.server = None
+            self.server = None'''
 
     def dataReceived(self, data):
         """ Recieves and processes raw data from the server """
 
-        if self.compress:
-            data = self.decompressobj.decompress(data)
+        #if self.compress:  # disabled until it works with GMCP
+            #data = self.decompressobj.decompress(data)
 
         appDataBuffer = []
 
@@ -277,16 +296,8 @@ class TelnetClient(Telnet):
         self.gmcp.call(data)
 
         if self.gmcp_passthrough:
-            self.server.write(IAC + SB + GMCP + data + IAC + SE)
+            self.telnet_server.write(IAC + SB + GMCP + data + IAC + SE)
 
-    def to_client(self, data):
-        """ Send to connected client """
-
-        if self.server.connected is False:
-            self.buffer += data
-            return
-
-        self.server.write(data)
 
 # client instance
 client = TelnetClient()
@@ -331,14 +342,8 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
         self.factory.transports.append(self.transport)
         self.transport.write("Connected to Sage\n")
         self.client = self.client_factory.client
-        self.client.server = self
+        self.client.telnet_server = self
         sage._echo = self.write
-
-        if len(self.client.buffer) > 0:
-            self.write(">>> Data in buffer >>>\n")
-            self.write(self.client.buffer)
-            self.write("<<< End of buffer <<<\n")
-            self.client.buffer = ''
 
         if bool(self.client.connected) is False:
             reactor.connectTCP(config.host, config.port, self.client_factory)
@@ -386,6 +391,8 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
 class SAGEProtoServerProtocol(WampServerProtocol):
 
     def onSessionOpen(self):
+        self.client = client
+        self.client.ws_server = self
         self.registerForPubSub("http://sage/event#", True)
         self.registerMethodForRpc('http://sage/input', self, SAGEProtoServerProtocol.input)
         self.registerMethodForRpc('http://sage/is_connected', self, SAGEProtoServerProtocol.is_connected)
@@ -395,6 +402,12 @@ class SAGEProtoServerProtocol(WampServerProtocol):
 
     def is_connected(self):
         self.dispatch('http://sage/event#connected', sage.connected)
+
+    def instream(self, lines, p):
+        self.dispatch('http://sage/event#instream', {'lines': lines, 'prompt': p})
+
+    def ready(self):
+        pass
 
 
 def build_telnet_factory():
@@ -411,6 +424,7 @@ def build_ws_factory():
     """ Setup Websocket factory """
 
     factory = WampServerFactory("ws://%s:%s" % (config.ws_host, config.ws_port), debugWamp=config.ws_debug)
+    SAGEProtoServerProtocol.client = client
     factory.protocol = SAGEProtoServerProtocol
     factory.setProtocolOptions(allowHixie76=True)
     listenWS(factory)
