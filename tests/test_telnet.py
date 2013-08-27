@@ -3,7 +3,7 @@ from twisted.test import proto_helpers
 
 import sys
 sys.path.append('../')
-from sage.telnet import TelnetClient
+from sage.net import TelnetClient
 from sage import player
 import json
 
