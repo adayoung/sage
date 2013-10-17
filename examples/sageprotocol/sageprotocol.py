@@ -1,6 +1,6 @@
 from autobahn.websocket import listenWS
 from autobahn.wamp import WampServerFactory, WampServerProtocol
-from sage.signals.telnet import pre_outbound as outbound_signal, connected as connected_signal
+from sage.signals.net import pre_outbound as outbound_signal, connected as connected_signal
 import sage
 
 
