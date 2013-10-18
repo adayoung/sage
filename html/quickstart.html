@@ -67,9 +67,10 @@ assumes you already have Sage installed.  If you do not, head over to the
 <h2>A Minimal Application<a class="headerlink" href="#a-minimal-application" title="Permalink to this headline">¶</a></h2>
 <p>Lets make your first Sage app. Sage has a built-in utility to help get you
 started by using <cite>sage mkapp</cite>:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> sage mkapp quickstart
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> sage mkapp -m quickstart
 </pre></div>
 </div>
+<p>The <cite>-m</cite> flag tells Sage to make this a basic app.</p>
 <p>Sage will ask you some basic questions like what the name of the app is,
 its version, etc. Just accept the defaults for now (press enter).</p>
 <p>Now run it with Sage:</p>
@@ -243,7 +244,7 @@ say you only want it on when you &#8216;ql&#8217; (quick-look in Achaea). To do 
 need to make an alias. This works nearly identical to how triggers work:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="hll"><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">aliases</span><span class="p">,</span> <span class="n">ansi</span><span class="p">,</span> <span class="n">send</span>  <span class="c"># notice we add send</span>
 </span>
-<span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">)</span>
+<span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;quickstart&#39;</span><span class="p">)</span>
 
 <span class="c"># create a new aliases group (owned by &#39;quickstart&#39;)</span>
 <span class="hll"><span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;quickstart&#39;</span><span class="p">)</span>
@@ -271,7 +272,7 @@ need to make an alias. This works nearly identical to how triggers work:</p>
 to be disabled by default:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">aliases</span><span class="p">,</span> <span class="n">ansi</span><span class="p">,</span> <span class="n">send</span>
 
-<span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">)</span>
+<span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;quickstart&#39;</span><span class="p">)</span>
 
 <span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;quickstart&#39;</span><span class="p">)</span>
 

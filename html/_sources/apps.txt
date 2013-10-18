@@ -92,11 +92,24 @@ A tuple representing the app's version. Example: ::
 
     version = (1, 0, 2)  # Major version 1, release 2 (1.0.2)
 
+Meta Example
+````````````
+
+::
+
+  name = "Sarapis' Curing System"
+  description = "The curing of the Logos"
+  version = (3, 1, 9)
+  installed_apps = (
+    'black_boar_autohug',
+    'randomzap'
+  )
+
 Entry Point
 -----------
 
 The entry point for your app (a python file with the same name as your app)
-has an optional interface with two basic methods: `init` and `cleanup`.
+has an optional interface with two basic methods: `init` and `unload`.
 A basic entry point could look like the following: ::
 
     def init():

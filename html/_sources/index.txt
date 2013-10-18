@@ -4,6 +4,7 @@ Welcome to Sage
 ===============
 
 .. image:: _static/logo-full.png
+    :class: floatingsage
 
 Welcome to Sage's documentation. This documentation is divided into different
 parts. I recommend you get started with :ref:`installation` and then head over

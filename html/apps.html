@@ -124,12 +124,24 @@ Here&#8217;s an example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">version</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># Major version 1, release 2 (1.0.2)</span>
 </pre></div>
 </div>
+<div class="section" id="meta-example">
+<h4>Meta Example<a class="headerlink" href="#meta-example" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;Sarapis&#39; Curing System&quot;</span>
+<span class="n">description</span> <span class="o">=</span> <span class="s">&quot;The curing of the Logos&quot;</span>
+<span class="n">version</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">installed_apps</span> <span class="o">=</span> <span class="p">(</span>
+  <span class="s">&#39;black_boar_autohug&#39;</span><span class="p">,</span>
+  <span class="s">&#39;randomzap&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="entry-point">
 <h2>Entry Point<a class="headerlink" href="#entry-point" title="Permalink to this headline">¶</a></h2>
 <p>The entry point for your app (a python file with the same name as your app)
-has an optional interface with two basic methods: <cite>init</cite> and <cite>cleanup</cite>.
+has an optional interface with two basic methods: <cite>init</cite> and <cite>unload</cite>.
 A basic entry point could look like the following:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot; This method will be called when the app is loaded (after it is</span>
@@ -175,7 +187,10 @@ issues you have so they can be addressed and this feature improved.</p>
 <li><a class="reference internal" href="#structure-of-a-sage-application">Structure of a Sage Application</a></li>
 <li><a class="reference internal" href="#meta-py">meta.py</a><ul>
 <li><a class="reference internal" href="#installed-apps">Installed Apps</a></li>
-<li><a class="reference internal" href="#other-attributes">Other Attributes</a></li>
+<li><a class="reference internal" href="#other-attributes">Other Attributes</a><ul>
+<li><a class="reference internal" href="#meta-example">Meta Example</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#entry-point">Entry Point</a></li>
