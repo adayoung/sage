@@ -164,6 +164,21 @@ class TestHooks(unittest.TestCase):
         trigger.bind(test_callback, {'test': True})
         trigger.call_methods()
 
+    def test_hook_multi(self):
+        trigger = triggers.get('test_hooks/test_0')
+
+        def test_callback_1(matchable, param):
+            self.assertEqual(True, param['test'])
+
+        def test_callback_2(matchable, param):
+            self.assertEqual(False, param['an_arg'])
+
+        trigger.bind(test_callback_1, {'test': True})
+        trigger.bind(test_callback_2, {'an_arg': False})
+
+        trigger.call_methods()
+
+
 
 class TestApps(unittest.TestCase):
 

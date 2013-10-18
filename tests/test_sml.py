@@ -11,27 +11,31 @@ else:
 
 class LoadSML(unittest.TestCase):
 
+    def setUp(self):
+        self.group = triggers.create_group('sml_parent', app='sage')
+        sml.register(self.sml_method_2)
+        sml.register(self.sml_method_1)
+
+    def tearDown(self):
+        self.group.destroy()
+        sml.methods.clear()
+
     def test_creation(self):
+        sml.load_file(path + 'test1.yaml', self.group)
 
-        sml.methods.register(self.sml_method_2)
+        self.assertIn('test_1', self.group.groups)
+        self.assertIn('test_2', self.group.groups)
 
-        sml.load_file(path + 'test1.yaml', triggers)
-
-        self.assertIn('test_1', triggers.groups)
-        self.assertIn('test_2', triggers.groups)
-
-        self.assertIn('trigger_1', triggers.groups['test_1'].matchables)
-        self.assertIn('trigger_2', triggers.groups['test_2'].matchables)
+        self.assertIn('trigger_1', self.group.groups['test_1'].matchables)
+        self.assertIn('trigger_2', self.group.groups['test_2'].matchables)
 
     def test_load(self):
-        sml.load_file(path + 'test1.yaml', triggers)
+        sml.load_file(path + 'test1.yaml', self.group)
 
     def test_register(self):
-        sml.methods.register(self.sml_method_1)
-
         self.assertIn('sml_method_1', sml.methods)
 
-    def sml_method_1(self):
+    def sml_method_1(self, *args):
         pass
 
     def sml_method_2(self, *args):

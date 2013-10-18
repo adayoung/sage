@@ -272,7 +272,7 @@ class Hook(Signal):
                     receiver = saferef.safe_ref(receiver,
                                     on_delete=self._remove_receiver)
 
-                for r_key, _ in self.receivers:
+                for r_key, _, p in self.receivers:
                     if r_key == lookup_key:
                         break
                 else:

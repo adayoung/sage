@@ -73,3 +73,8 @@ Main Containers
 -------------
 .. automodule:: sage.player
     :members:
+
+`sage.sml`
+-------------
+.. automodule:: sage.sml
+    :members:

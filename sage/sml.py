@@ -12,7 +12,11 @@ class NoMatchablePattern(Exception):
     pass
 
 
-class InvalidSMLMethod(Exception):
+class InvalidMethod(Exception):
+    pass
+
+
+class InvalidParent(Exception):
     pass
 
 
@@ -26,16 +30,23 @@ class SMLMethods(dict):
             name = method.__name__
 
         if name in self.reserved_names:
-            raise InvalidSMLMethod('%s is considered a reserved name and '
+            raise InvalidMethod('%s is considered a reserved name and '
                 'cannot be registered' % name)
 
         if name in self:
-            raise InvalidSMLMethod('%s is already a registered name')
+            raise InvalidMethod('%s is already a registered name')
 
         self[name] = method
 
 
 def load_file(f, parent):
+    """ Load and parse a SML file
+
+        :param file: path to file to be loaded
+        :type file: string
+        :param parent: Matchable group to be the parent of those created by the SML file
+        :type parent: `sage.matchable.Group`
+    """
     f = file(f, 'r')
     data = yaml.load(f)
 
@@ -43,31 +54,42 @@ def load_file(f, parent):
 
 
 def load(data, parent):
-    if '::parent' in data:
-        parent = parent.get_group(data['::parent'])
-        if parent is None:
-            raise InvalidParent("Can't find a valid parent named %s"
-                % data['::parent'])
+    """ Load a dictionary and process as SML
 
-    walk(data, triggers)
+        :param data: parsed SML dictionary
+        :type data: dict
+        :param parent: Matchable group to be the parent of those created by the SML file
+        :type parent: `sage.matchable.Group`
+    """
+    if parent is None:
+        raise InvalidParent("Parent cannot be None for SML")
+
+    if parent.app is None:
+        raise InvalidParent("SML parent must be registered to an app")
+
+    walk(data, parent)
 
 
-def walk(d, parent=None):
+def walk(d, parent):
 
     attrs = {}
     matchables = {}
     groups = {}
 
     for k in d.iterkeys():
-        if ':' not in k:
-            continue
+        if k.startswith(':') is False:
+            groups[k] = d[k]
+        else:
+            matchables[k[1:]] = d[k]
 
+        """
         target, name = k.split(':')
 
         if target in ('g', 'group'):
             groups[name] = d[k]
         elif target == '':
             matchables[name] = d[k]
+        """
 
     for name, data in groups.iteritems():
         new_group = create_group(name, data, parent)
@@ -80,13 +102,12 @@ def walk(d, parent=None):
 def create_group(name, data, parent):
     attrs = {k: v for k, v in data.iteritems() if ':' not in k}
 
-    app = attrs.pop('app', None)
     enabled = attrs.pop('enabled', True)
 
     group = parent.get_group(name)
 
     if group is None:
-        group = parent.create_group(name, app=app, enabled=enabled)
+        group = parent.create_group(name, app=parent.app, enabled=enabled)
 
     return group
 
@@ -130,8 +151,20 @@ def create_matchable(name, data, parent):
         if method in methods:
             m.bind(methods[method], args)
         else:
-            raise InvalidSMLMethod('No registered method called %s available '
+            raise InvalidMethod('No registered method called %s available '
                 'for matchable %s' % (method, name))
+
+
+def register(method, name=None):
+    """ Register a method as an SML method
+
+        :param method: method to register
+        :type method: method
+        :param name: (optional) name to use to call the method in SML
+        :type name: string
+    """
+
+    methods.register(method, name)
 
 
 methods = SMLMethods()

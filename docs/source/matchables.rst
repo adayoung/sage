@@ -312,17 +312,16 @@ Language' (SML). SML provides an easy and brief syntax for writing matchables
 and groups. Here's an example of SML written in
 `YAML <http://www.yaml.org/>`_: ::
 
-    group:my_app:
-        app: my_app
+    group_1:
+        :trigger_1:
+            exact: An exact line that will be matched.
+            some_method: true
 
-        group:group_1:
-            :trigger_1:
-                exact: An exact line that will be matched.
-                some_method: true
+    group_2:
+        :trigger_2:
+            regex: ^Regular expressions are (cool|confusing)\.$
+            another_method: [A, List, of, Strings]
 
-        group:group_2:
-            :trigger_2:
-                regex: ^Regular expressions are (cool|confusing)\.$
-                another_method: [A, List, of, Strings]
+
 
 

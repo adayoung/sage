@@ -1,14 +1,17 @@
 # test case 1
-group:test_1:
-    app: sage
 
+test_1:
     :trigger_1:
         exact: Exact line trigger.
         sml_method_2: true
 
-group:test_2:
-    app: sage
+    sub_test_1:
+        :sub_trigger_1:
+            exact: Another exact trigger
+            sml_method_2: true
+            sml_method_1: another string
 
+test_2:
     :trigger_2:
         substring: Substring trigger.
         sml_method_2: a string
