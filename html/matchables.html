@@ -226,8 +226,7 @@ bind them. This is helpful if you are using one method for many matchables.</p>
 <p>Sometimes you&#8217;ll not want to take action at the immediate time a line is
 matched. For this, Sage allows you to delay a matchable running its bound
 methods.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="nd">@group.trigger</span><span class="p">(</span>
-    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;Something horrible will happen in 5 seconds.&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@group.exact</span><span class="p">(</span><span class="s">&quot;Something horrible will happen in 5 seconds.&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">delay_example</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="k">pass</span>  <span class="c"># this will run 5 seconds after being matched</span>
 </pre></div>
@@ -241,7 +240,7 @@ instance of the matchable. This object will have different attributes and
 behaviors depending on which matchable type it is.</p>
 <p><strong>all matchables</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Line: &quot;Sage has many ways to match a line.&quot;</span>
-<span class="nd">@group.trigger</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s">&#39;exact&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s">&#39;Sage has many ways to match a line.&#39;</span><span class="p">)</span>
+<span class="nd">@group.exact</span><span class="p">(</span><span class="s">&#39;Sage has many ways to match a line.&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">example</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
 
     <span class="n">trigger</span><span class="o">.</span><span class="n">line</span>  <span class="c"># &quot;Sage has many ways to match a line.&quot;</span>
@@ -264,7 +263,7 @@ behaviors depending on which matchable type it is.</p>
 </div>
 <p><strong>regex</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Line: &quot;Sage has many ways to match a line.&quot;</span>
-<span class="nd">@group.trigger</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s">&#39;regex&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s">&#39;^Sage has (many|few) ways&#39;</span><span class="p">)</span>
+<span class="nd">@group.regex</span><span class="p">(</span><span class="s">&#39;^Sage has (many|few) ways&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">example</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
 
     <span class="c"># regex groups</span>
@@ -280,7 +279,7 @@ behaviors depending on which matchable type it is.</p>
 </div>
 <p><strong>substring</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Line: &quot;Sage has many ways to match a line.&quot;</span>
-<span class="nd">@group.trigger</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s">&#39;substring&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s">&#39;has many ways&#39;</span><span class="p">)</span>
+<span class="nd">@group.substring</span><span class="p">(</span><span class="s">&#39;has many ways&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">example</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
 
     <span class="c"># prefix, what came before the pattern in the line</span>
@@ -292,7 +291,7 @@ behaviors depending on which matchable type it is.</p>
 </div>
 <p><strong>startswith</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Line: &quot;Sage has many ways to match a line.&quot;</span>
-<span class="nd">@group.trigger</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s">&#39;startswith&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s">&#39;Sage has many&#39;</span><span class="p">)</span>
+<span class="nd">@group.startswith</span><span class="p">(</span><span class="s">&#39;Sage has many&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">example</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
 
     <span class="c"># suffix, what came after the pattern</span>
@@ -301,7 +300,7 @@ behaviors depending on which matchable type it is.</p>
 </div>
 <p><strong>endswith</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Line: &quot;Sage has many ways to match a line.&quot;</span>
-<span class="nd">@group.trigger</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s">&#39;endswith&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s">&#39;match a line.&#39;</span><span class="p">)</span>
+<span class="nd">@group.endswith</span><span class="p">(</span><span class="s">&#39;match a line.&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">example</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
 
     <span class="c"># prefix, what came before the pattern in the line</span>
@@ -358,7 +357,7 @@ method. Assume the following structure:</p>
       +-trigger_2 (disabled)</pre>
 </div>
 <p>When <cite>trigger_1</cite> gets matched, it will enable trigger_2:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="nd">@group_1.trigger</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;Something is coming!&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@group_1.exact</span><span class="p">(</span><span class="s">&quot;Something is coming!&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">trigger_1</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="n">trigger</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;group_2/trigger_2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
 </pre></div>
