@@ -3,7 +3,10 @@ from sage import sml, triggers
 import os
 
 path = os.getcwd()
-path = "%s/sml/" % path
+if 'tests' not in path:
+    path = "%s/tests/sml/" % path
+else:
+    path = "%s/sml/" % path
 
 
 class LoadSML(unittest.TestCase):
