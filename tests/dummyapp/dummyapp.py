@@ -3,7 +3,7 @@ from sage import triggers
 dg = triggers.create_group('dummy', app='dummyapp')
 
 
-@dg.trigger(pattern='test', type='exact')
+@dg.exact('test')
 def decorator_trigger(trigger):
     pass
 
@@ -21,6 +21,6 @@ dg.create(
 sg = dg.create_group('subdummy')
 
 
-@sg.trigger(pattern='test', type='substring')
+@sg.substring('test')
 def sg_trigger(trigger):
     pass

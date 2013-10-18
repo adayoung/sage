@@ -164,10 +164,16 @@ class Apps(dict):
         while len(self.groups[name]) > 0:
             self.groups[name].pop().destroy()
 
+        del(self.groups[name])
         del(self.paths[name])
         del(self[name])
         del(self.meta[name])
-        del(sys.modules[name])
+
+        to_del = [mod for mod in sys.modules if mod.startswith(name)]
+
+        for mod in to_del:
+            del(sys.modules[mod])
+
         gc.collect()
         return True
 

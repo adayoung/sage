@@ -174,6 +174,7 @@ class TestApps(unittest.TestCase):
         apps.unload('dummyapp')
 
     def test_created_group(self):
+        self.assertIn('dummyapp', apps)
         self.assertIn('dummy', triggers.groups)
         self.assertEqual('dummyapp', triggers.groups['dummy'].app)
         self.assertIn('dummyapp', apps.groups)
