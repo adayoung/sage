@@ -141,9 +141,6 @@ The decorator mimics the parameters of :py:meth:`~sage.matching.Group.create`.
 In absence of ``name`` being passed in the decorator, the matchable will have
 the same name as the method bound to it.
 
-For alias groups the decorator will be `@<group>.alias()` and for trigger
-groups `@<group>.trigger()`. This will make it easier in your code to recall
-what type of matchable is being used.
 
 Binding Methods to Existing Matchables
 ``````````````````````````````````````
@@ -166,7 +163,7 @@ Sometimes you'll not want to take action at the immediate time a line is
 matched. For this, Sage allows you to delay a matchable running its bound
 methods. ::
 
-    @group.exact("Something horrible will happen in 5 seconds.", type="exact", delay=5)
+    @group.exact("Something horrible will happen in 5 seconds.", delay=5)
     def delay_example(trigger):
         pass  # this will run 5 seconds after being matched
 

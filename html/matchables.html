@@ -204,9 +204,6 @@ time.</p>
 <p>The decorator mimics the parameters of <a class="reference internal" href="api.html#sage.matching.Group.create" title="sage.matching.Group.create"><tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt></a>.
 In absence of <tt class="docutils literal"><span class="pre">name</span></tt> being passed in the decorator, the matchable will have
 the same name as the method bound to it.</p>
-<p>For alias groups the decorator will be <cite>&#64;&lt;group&gt;.alias()</cite> and for trigger
-groups <cite>&#64;&lt;group&gt;.trigger()</cite>. This will make it easier in your code to recall
-what type of matchable is being used.</p>
 </div>
 </div>
 <div class="section" id="binding-methods-to-existing-matchables">
@@ -226,7 +223,7 @@ bind them. This is helpful if you are using one method for many matchables.</p>
 <p>Sometimes you&#8217;ll not want to take action at the immediate time a line is
 matched. For this, Sage allows you to delay a matchable running its bound
 methods.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="nd">@group.exact</span><span class="p">(</span><span class="s">&quot;Something horrible will happen in 5 seconds.&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@group.exact</span><span class="p">(</span><span class="s">&quot;Something horrible will happen in 5 seconds.&quot;</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">delay_example</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="k">pass</span>  <span class="c"># this will run 5 seconds after being matched</span>
 </pre></div>
