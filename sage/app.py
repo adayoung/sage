@@ -61,6 +61,7 @@ class Apps(dict):
                 ns = imports.import_file(name)
             except ImportError:
                 sage._log.err("Error: Unable to import app '%s'" % name)
+                return
 
             path = os.path.dirname(inspect.getabsfile(ns))
 

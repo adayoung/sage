@@ -132,7 +132,7 @@ class GMCPReceiver(object):
             elif k == 'name':
                 player.name = v
             elif k == 'level':
-                player.level = int(v)
+                player.level = int(v.split(' ')[0])
             elif k == 'house':
                 player.house = v
             elif k == 'age':
