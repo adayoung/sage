@@ -133,7 +133,7 @@ Using a
 is a convenient way to create a matchable and bind it to a method at the same
 time. ::
 
-    @group.trigger(pattern="You have recovered equilibrium.", type="exact")
+    @group.exact("You have recovered equilibrium.")
     def eq_recovered(trigger):
         pass  # do stuff when equilibrium is recovered
 
