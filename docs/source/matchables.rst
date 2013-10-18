@@ -317,6 +317,12 @@ and groups. Here's an example of SML written in
             exact: An exact line that will be matched.
             some_method: true
 
+        sub_group_1:
+            :sub_trigger_1:
+                exact: Another exact line.
+                method_1: "a string"
+                method_2: "another string"
+
     group_2:
         :trigger_2:
             regex: ^Regular expressions are (cool|confusing)\.$
