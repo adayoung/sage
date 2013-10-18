@@ -978,7 +978,7 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 
 <dl class="data">
 <dt id="sage.player.room">
-<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x10551a890&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x1046fecd0&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
 <dd><p>Room data</p>
 </dd></dl>
 
@@ -1019,6 +1019,63 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 </dd></dl>
 
 </div>
+<div class="section" id="module-sage.sml">
+<span id="sage-sml"></span><h2><cite>sage.sml</cite><a class="headerlink" href="#module-sage.sml" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="sage.sml.load">
+<tt class="descclassname">sage.sml.</tt><tt class="descname">load</tt><big>(</big><em>data</em>, <em>parent</em><big>)</big><a class="reference internal" href="_modules/sage/sml.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.sml.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a dictionary and process as SML</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>dict</em>) &#8211; parsed SML dictionary</li>
+<li><strong>parent</strong> (<cite>sage.matchable.Group</cite>) &#8211; Matchable group to be the parent of those created by the SML file</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sage.sml.load_file">
+<tt class="descclassname">sage.sml.</tt><tt class="descname">load_file</tt><big>(</big><em>f</em>, <em>parent</em><big>)</big><a class="reference internal" href="_modules/sage/sml.html#load_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.sml.load_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and parse a SML file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file</strong> (<em>string</em>) &#8211; path to file to be loaded</li>
+<li><strong>parent</strong> (<cite>sage.matchable.Group</cite>) &#8211; Matchable group to be the parent of those created by the SML file</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="sage.sml.register">
+<tt class="descclassname">sage.sml.</tt><tt class="descname">register</tt><big>(</big><em>method</em>, <em>name=None</em><big>)</big><a class="reference internal" href="_modules/sage/sml.html#register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.sml.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a method as an SML method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>method</strong> (<em>method</em>) &#8211; method to register</li>
+<li><strong>name</strong> (<em>string</em>) &#8211; (optional) name to use to call the method in SML</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -1040,6 +1097,7 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 <li><a class="reference internal" href="#module-sage.inbound"><cite>sage.inbound</cite></a></li>
 <li><a class="reference internal" href="#module-sage.matching"><cite>sage.matching</cite></a></li>
 <li><a class="reference internal" href="#module-sage.player"><cite>sage.player</cite></a></li>
+<li><a class="reference internal" href="#module-sage.sml"><cite>sage.sml</cite></a></li>
 </ul>
 </li>
 </ul>

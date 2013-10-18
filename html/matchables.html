@@ -367,18 +367,21 @@ can become cumbersome. To alleviate this, Sage provides the &#8216;Sage Matchabl
 Language&#8217; (SML). SML provides an easy and brief syntax for writing matchables
 and groups. Here&#8217;s an example of SML written in
 <a class="reference external" href="http://www.yaml.org/">YAML</a>:</p>
-<div class="highlight-python"><pre>group:my_app:
-    app: my_app
+<div class="highlight-python"><pre>group_1:
+    :trigger_1:
+        exact: An exact line that will be matched.
+        some_method: true
 
-    group:group_1:
-        :trigger_1:
-            exact: An exact line that will be matched.
-            some_method: true
+    sub_group_1:
+        :sub_trigger_1:
+            exact: Another exact line.
+            method_1: "a string"
+            method_2: "another string"
 
-    group:group_2:
-        :trigger_2:
-            regex: ^Regular expressions are (cool|confusing)\.$
-            another_method: [A, List, of, Strings]</pre>
+group_2:
+    :trigger_2:
+        regex: ^Regular expressions are (cool|confusing)\.$
+        another_method: [A, List, of, Strings]</pre>
 </div>
 </div>
 </div>
