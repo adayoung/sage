@@ -89,9 +89,7 @@ writing a single line of code!</p>
 &#8216;exits&#8217; line you&#8217;d see in every room in Achaea. In <cite>quickstart/quickstart.py</cite>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">echo</span><span class="p">,</span> <span class="n">triggers</span>
 
-<span class="nd">@triggers.trigger</span><span class="p">(</span>
-    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
-    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
+<span class="nd">@triggers.regex</span><span class="p">(</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="n">echo</span><span class="p">(</span><span class="s">&#39;Exits detected!&#39;</span><span class="p">)</span>
 </pre></div>
@@ -106,12 +104,11 @@ is technically the top-level <a class="reference internal" href="api.html#sage.m
 triggers in Sage. From that group, we use a
 <a class="reference external" href="http://docs.python.org/2/reference/compound_stmts.html#function">decorator</a>
 (declared by the &#64;) to call the <tt class="xref py py-meth docutils literal"><span class="pre">trigger()</span></tt>
-method and pass it two parameters. The <tt class="docutils literal"><span class="pre">pattern</span></tt> is what we match against and
-the <tt class="docutils literal"><span class="pre">type</span></tt> is the type of trigger it is (in this case &#8216;regex&#8217;). We &#8216;wrap&#8217;
-<tt class="xref py py-meth docutils literal"><span class="pre">exits()</span></tt> with the decorator to <a class="reference internal" href="api.html#sage.matching.Matchable.bind" title="sage.matching.Matchable.bind"><tt class="xref py py-data docutils literal"><span class="pre">bind</span></tt></a>
+method and pass it two parameters. The parameter we pass to the trigger is the &#8216;pattern&#8217;.
+We &#8216;wrap&#8217; <tt class="xref py py-meth docutils literal"><span class="pre">exits()</span></tt> with the decorator to <a class="reference internal" href="api.html#sage.matching.Matchable.bind" title="sage.matching.Matchable.bind"><tt class="xref py py-data docutils literal"><span class="pre">bind</span></tt></a>
 it to the trigger it creates for you.</p>
 <p>In Sage, triggers and aliases are better known as <cite>matchables</cite> since they are
-identical. Methods bound to matchables like <tt class="xref py py-meth docutils literal"><span class="pre">exits()</span></tt> accept a single
+identical code. Methods bound to matchables like <tt class="xref py py-meth docutils literal"><span class="pre">exits()</span></tt> accept a single
 parameter that is the <a class="reference internal" href="api.html#sage.matching.Matchable" title="sage.matching.Matchable"><tt class="xref py py-class docutils literal"><span class="pre">Matchable</span></tt></a> instance they
 belong to.</p>
 <div class="section" id="taking-it-to-the-next-level">
@@ -122,9 +119,7 @@ we are processing is:</p>
 </div>
 <p>First, we need to break up the exits into a
 <a class="reference external" href="http://docs.python.org/2/tutorial/introduction.html#lists">list</a>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="nd">@triggers.trigger</span><span class="p">(</span>
-    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
-    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@triggers.regex</span><span class="p">(</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
 
     <span class="c"># get the second regex group (0 would be the first)</span>
@@ -184,9 +179,7 @@ change its <cite>.output</cite> attribute.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage</span> <span class="kn">import</span> <span class="n">triggers</span><span class="p">,</span> <span class="n">ansi</span>
 
 
-<span class="nd">@triggers.trigger</span><span class="p">(</span>
-    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
-    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
+<span class="nd">@triggers.regex</span><span class="p">(</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="c"># get the second regex group (0 would be the first)</span>
     <span class="n">exit_str</span> <span class="o">=</span> <span class="n">trigger</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -225,10 +218,8 @@ recommended you read more about <a class="reference internal" href="matchables.h
 <span class="hll"><span class="n">room_triggers</span> <span class="o">=</span> <span class="n">triggers</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;quickstart&#39;</span><span class="p">)</span>
 </span>
 <span class="c"># notice how the decorator changes to the group</span>
-<span class="hll"><span class="nd">@room_triggers.trigger</span><span class="p">(</span>
-</span>    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
-    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
+<span class="hll"><span class="nd">@room_triggers.regex</span><span class="p">(</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">)</span>
+</span><span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="n">exit_str</span> <span class="o">=</span> <span class="n">trigger</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">exit_str</span> <span class="o">=</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;and&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
     <span class="n">exits</span> <span class="o">=</span> <span class="p">[</span><span class="n">ansi</span><span class="o">.</span><span class="n">bold_white</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)]</span>
@@ -251,15 +242,13 @@ need to make an alias. This works nearly identical to how triggers work:</p>
 </span>
 
 <span class="c"># We create an alias similar to how we create a trigger</span>
-<span class="hll"><span class="nd">@room_aliases.alias</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;ql&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">)</span>
+<span class="hll"><span class="nd">@room_aliases.exact</span><span class="p">(</span><span class="s">&quot;ql&quot;</span><span class="p">)</span>
 </span><span class="hll"><span class="k">def</span> <span class="nf">ql</span><span class="p">(</span><span class="n">alias</span><span class="p">):</span>
 </span><span class="hll">    <span class="c"># send to Achaea</span>
 </span><span class="hll">    <span class="n">send</span><span class="p">(</span><span class="s">&#39;ql&#39;</span><span class="p">)</span>
 </span>
 
-<span class="nd">@room_triggers.trigger</span><span class="p">(</span>
-    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
-    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">)</span>
+<span class="nd">@room_triggers.regex</span><span class="p">(</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="n">exit_str</span> <span class="o">=</span> <span class="n">trigger</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">exit_str</span> <span class="o">=</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;and&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
@@ -276,7 +265,7 @@ to be disabled by default:</p>
 
 <span class="n">room_aliases</span> <span class="o">=</span> <span class="n">aliases</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s">&#39;room&#39;</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="s">&#39;quickstart&#39;</span><span class="p">)</span>
 
-<span class="nd">@room_aliases.alias</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s">&quot;ql&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;exact&quot;</span><span class="p">)</span>
+<span class="nd">@room_aliases.exact</span><span class="p">(</span><span class="s">&quot;ql&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">ql</span><span class="p">(</span><span class="n">alias</span><span class="p">):</span>
 
     <span class="c"># enable the exits trigger</span>
@@ -286,20 +275,17 @@ to be disabled by default:</p>
     <span class="n">send</span><span class="p">(</span><span class="s">&#39;ql&#39;</span><span class="p">)</span>
 
 
-<span class="nd">@room_triggers.trigger</span><span class="p">(</span>
-    <span class="n">pattern</span><span class="o">=</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span>
-    <span class="nb">type</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">,</span>
-<span class="hll">    <span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>  <span class="c"># notice this is now disabled</span>
-</span><span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
+<span class="nd">@room_triggers.regex</span><span class="p">(</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>  <span class="c"># notice this is now disabled</span>
+<span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="n">exit_str</span> <span class="o">=</span> <span class="n">trigger</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;and&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">exits</span> <span class="o">=</span> <span class="p">[</span><span class="n">ansi</span><span class="o">.</span><span class="n">bold_white</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)]</span>
+<span class="hll">    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;and&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+</span>    <span class="n">exits</span> <span class="o">=</span> <span class="p">[</span><span class="n">ansi</span><span class="o">.</span><span class="n">bold_white</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)]</span>
     <span class="n">new_str</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exits</span><span class="p">)</span>
     <span class="n">trigger</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="s">&quot;Exits: &quot;</span> <span class="o">+</span> <span class="n">new_str</span>
 
     <span class="c"># now disable this trigger</span>
-<span class="hll">    <span class="n">trigger</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
-</span></pre></div>
+    <span class="n">trigger</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
+</pre></div>
 </div>
 <p>Congratulations! Now the alias will enable the <cite>exits</cite> trigger whenever you
 send &#8220;ql&#8221;, and <cite>exits</cite> will disable itself after it runs. This is just a tiny

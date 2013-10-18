@@ -42,9 +42,7 @@ Cool as that is, it's not terribly useful. Now lets make a trigger for the
 
     from sage import echo, triggers
 
-    @triggers.trigger(
-        pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
-        type="regex")
+    @triggers.regex("^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$")
     def exits(trigger):
         echo('Exits detected!')
 
@@ -59,13 +57,12 @@ is technically the top-level :py:class:`group <sage.matching.Group>` of
 triggers in Sage. From that group, we use a
 `decorator <http://docs.python.org/2/reference/compound_stmts.html#function>`_
 (declared by the @) to call the :py:meth:`~sage.matching.TriggerGroup.trigger`
-method and pass it two parameters. The ``pattern`` is what we match against and
-the ``type`` is the type of trigger it is (in this case 'regex'). We 'wrap'
-:py:meth:`exits` with the decorator to :py:data:`~sage.matching.Matchable.bind`
+method and pass it two parameters. The parameter we pass to the trigger is the 'pattern'.
+We 'wrap' :py:meth:`exits` with the decorator to :py:data:`~sage.matching.Matchable.bind`
 it to the trigger it creates for you.
 
 In Sage, triggers and aliases are better known as `matchables` since they are
-identical. Methods bound to matchables like :py:meth:`exits` accept a single
+identical code. Methods bound to matchables like :py:meth:`exits` accept a single
 parameter that is the :py:class:`~sage.matching.Matchable` instance they
 belong to.
 
@@ -80,9 +77,7 @@ we are processing is: ::
 First, we need to break up the exits into a
 `list <http://docs.python.org/2/tutorial/introduction.html#lists>`_: ::
 
-    @triggers.trigger(
-        pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
-        type="regex")
+    @triggers.regex("^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$")
     def exits(trigger):
 
         # get the second regex group (0 would be the first)
@@ -142,9 +137,7 @@ Now we have nice easy to read exits. Here's the app in its entirety so far: ::
     from sage import triggers, ansi
 
 
-    @triggers.trigger(
-        pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
-        type="regex")
+    @triggers.regex("^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$")
     def exits(trigger):
         # get the second regex group (0 would be the first)
         exit_str = trigger.groups[1]
@@ -186,9 +179,7 @@ The code now changes to:
     room_triggers = triggers.create_group('room', app='quickstart')
 
     # notice how the decorator changes to the group
-    @room_triggers.trigger(
-        pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
-        type="regex")
+    @room_triggers.regex("^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$")
     def exits(trigger):
         exit_str = trigger.groups[1]
         exit_str = exit_str.replace('and', '')
@@ -216,15 +207,13 @@ need to make an alias. This works nearly identical to how triggers work:
 
 
     # We create an alias similar to how we create a trigger
-    @room_aliases.alias(pattern="ql", type="exact")
+    @room_aliases.exact("ql")
     def ql(alias):
         # send to Achaea
         send('ql')
 
 
-    @room_triggers.trigger(
-        pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
-        type="regex")
+    @room_triggers.regex("^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$")
     def exits(trigger):
         exit_str = trigger.groups[1]
         exit_str = exit_str.replace('and', '')
@@ -244,7 +233,7 @@ to be disabled by default:
 
     room_aliases = aliases.create_group('room', app='quickstart')
 
-    @room_aliases.alias(pattern="ql", type="exact")
+    @room_aliases.exact("ql")
     def ql(alias):
 
         # enable the exits trigger
@@ -254,10 +243,7 @@ to be disabled by default:
         send('ql')
 
 
-    @room_triggers.trigger(
-        pattern="^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$",
-        type="regex",
-        enabled=False)  # notice this is now disabled
+    @room_triggers.regex("^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$", enabled=False)  # notice this is now disabled
     def exits(trigger):
         exit_str = trigger.groups[1]
         exit_str = exit_str.replace('and', '')
