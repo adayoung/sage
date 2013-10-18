@@ -166,8 +166,7 @@ Sometimes you'll not want to take action at the immediate time a line is
 matched. For this, Sage allows you to delay a matchable running its bound
 methods. ::
 
-    @group.trigger(
-        pattern="Something horrible will happen in 5 seconds.", type="exact", delay=5)
+    @group.exact("Something horrible will happen in 5 seconds.", type="exact", delay=5)
     def delay_example(trigger):
         pass  # this will run 5 seconds after being matched
 
@@ -182,7 +181,7 @@ behaviors depending on which matchable type it is.
 **all matchables** ::
 
     # Line: "Sage has many ways to match a line."
-    @group.trigger(type='exact', pattern='Sage has many ways to match a line.')
+    @group.exact('Sage has many ways to match a line.')
     def example(trigger):
 
         trigger.line  # "Sage has many ways to match a line."
@@ -206,7 +205,7 @@ behaviors depending on which matchable type it is.
 **regex** ::
 
     # Line: "Sage has many ways to match a line."
-    @group.trigger(type='regex', pattern='^Sage has (many|few) ways')
+    @group.regex('^Sage has (many|few) ways')
     def example(trigger):
 
         # regex groups
@@ -223,7 +222,7 @@ behaviors depending on which matchable type it is.
 **substring** ::
 
     # Line: "Sage has many ways to match a line."
-    @group.trigger(type='substring', pattern='has many ways')
+    @group.substring('has many ways')
     def example(trigger):
 
         # prefix, what came before the pattern in the line
@@ -235,7 +234,7 @@ behaviors depending on which matchable type it is.
 **startswith** ::
 
     # Line: "Sage has many ways to match a line."
-    @group.trigger(type='startswith', pattern='Sage has many')
+    @group.startswith('Sage has many')
     def example(trigger):
 
         # suffix, what came after the pattern
@@ -244,7 +243,7 @@ behaviors depending on which matchable type it is.
 **endswith** ::
 
     # Line: "Sage has many ways to match a line."
-    @group.trigger(type='endswith', pattern='match a line.')
+    @group.endswith('match a line.')
     def example(trigger):
 
         # prefix, what came before the pattern in the line
@@ -303,7 +302,7 @@ method. Assume the following structure: ::
 
 When `trigger_1` gets matched, it will enable trigger_2: ::
 
-    @group_1.trigger(pattern="Something is coming!", type="exact")
+    @group_1.exact("Something is coming!")
     def trigger_1(trigger):
         trigger.parent().parent().get('group_2/trigger_2').enable()
 
