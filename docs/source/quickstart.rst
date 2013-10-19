@@ -57,7 +57,7 @@ is technically the top-level :py:class:`group <sage.matching.Group>` of
 triggers in Sage. From that group, we use a
 `decorator <http://docs.python.org/2/reference/compound_stmts.html#function>`_
 (declared by the @) to call the :py:meth:`~sage.matching.TriggerGroup.trigger`
-method and pass it two parameters. The parameter we pass to the trigger is the 'pattern'.
+method and pass it the 'pattern' to be matched.
 We 'wrap' :py:meth:`exits` with the decorator to :py:data:`~sage.matching.Matchable.bind`
 it to the trigger it creates for you.
 
@@ -225,7 +225,7 @@ Now modify your alias to enable the exits trigger, and change the exits trigger
 to be disabled by default:
 
 .. code-block:: python
-    :emphasize-lines: 11,20,29
+    :emphasize-lines: 11,17
 
     from sage import triggers, aliases, ansi, send
 
