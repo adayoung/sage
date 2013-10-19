@@ -104,7 +104,7 @@ is technically the top-level <a class="reference internal" href="api.html#sage.m
 triggers in Sage. From that group, we use a
 <a class="reference external" href="http://docs.python.org/2/reference/compound_stmts.html#function">decorator</a>
 (declared by the &#64;) to call the <tt class="xref py py-meth docutils literal"><span class="pre">trigger()</span></tt>
-method and pass it two parameters. The parameter we pass to the trigger is the &#8216;pattern&#8217;.
+method and pass it the &#8216;pattern&#8217; to be matched.
 We &#8216;wrap&#8217; <tt class="xref py py-meth docutils literal"><span class="pre">exits()</span></tt> with the decorator to <a class="reference internal" href="api.html#sage.matching.Matchable.bind" title="sage.matching.Matchable.bind"><tt class="xref py py-data docutils literal"><span class="pre">bind</span></tt></a>
 it to the trigger it creates for you.</p>
 <p>In Sage, triggers and aliases are better known as <cite>matchables</cite> since they are
@@ -275,11 +275,11 @@ to be disabled by default:</p>
     <span class="n">send</span><span class="p">(</span><span class="s">&#39;ql&#39;</span><span class="p">)</span>
 
 
-<span class="nd">@room_triggers.regex</span><span class="p">(</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>  <span class="c"># notice this is now disabled</span>
-<span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
+<span class="hll"><span class="nd">@room_triggers.regex</span><span class="p">(</span><span class="s">&quot;^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$&quot;</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>  <span class="c"># notice this is now disabled</span>
+</span><span class="k">def</span> <span class="nf">exits</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="n">exit_str</span> <span class="o">=</span> <span class="n">trigger</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="hll">    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;and&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
-</span>    <span class="n">exits</span> <span class="o">=</span> <span class="p">[</span><span class="n">ansi</span><span class="o">.</span><span class="n">bold_white</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)]</span>
+    <span class="n">exit_str</span> <span class="o">=</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;and&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">exits</span> <span class="o">=</span> <span class="p">[</span><span class="n">ansi</span><span class="o">.</span><span class="n">bold_white</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exit_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)]</span>
     <span class="n">new_str</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exits</span><span class="p">)</span>
     <span class="n">trigger</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="s">&quot;Exits: &quot;</span> <span class="o">+</span> <span class="n">new_str</span>
 
