@@ -8,6 +8,7 @@ This is a rudimentary health and mana sipper only intended to be an example.
 from __future__ import division
 import sage
 from sage import player, triggers
+from sage.signals import post_prompt
 
 # create a new balance called player.sip
 player.sip = player.Balance()
@@ -53,7 +54,7 @@ def onprompt(sender, **kwargs):
         sip('mana')
 
 # connect to sage.signals.post_prompt
-#post_prompt.connect(onprompt)
+post_prompt.connect(onprompt)
 
 
 """ --- Triggers --- """
