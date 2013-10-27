@@ -3,6 +3,7 @@
 """
 
 from sage import triggers, aliases, ansi, send
+from sage.signals.gmcp import room as room_signal
 
 room_triggers = triggers.create_group('room', app='quickstart')
 
@@ -29,3 +30,10 @@ def exits(trigger):
 
     # now disable this trigger
     trigger.disable()
+
+
+def on_room_update(**kwargs):
+    room_triggers('exits').enable()
+
+
+room_signal.connect(on_room_update)  # Enable the room exits trigger on room change

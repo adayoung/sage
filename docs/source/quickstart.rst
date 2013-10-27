@@ -255,6 +255,31 @@ to be disabled by default:
         trigger.disable()
 
 Congratulations! Now the alias will enable the `exits` trigger whenever you
-send "ql", and `exits` will disable itself after it runs. This is just a tiny
+send "ql", and `exits` will disable itself after it runs.
+
+
+Using Signals
+~~~~~~~~~~~~~
+
+Now we get nice readable exits every time we 'ql', but we probably want this to happen
+every time we get an exits line in the game. There's two ways to achieve this.
+One way is to just leave the trigger enabled all the time. While this is simplier, I
+generally prefer not to do this. It's better to have more control over when a trigger
+fires so you don't accidently introduce unexpected behavior in your apps. The other way
+would be to only enable the trigger whenever you move rooms.
+
+Detecting when a room change happens could be fairly involved, but Sage makes this pretty
+easy with the use of :ref:`signals`. A signal will connect to and execute a method you
+specify. Lets use the signal :py:data:`sage.signals.gmcp.room`: ::
+
+    from sage.signals.gmcp import room as room_signal
+
+    def on_room_update(**kwargs):
+        room_triggers('exits').enable()
+
+
+    room_signal.connect(on_room_update)
+
+Now the trigger will be enabled every time the room changes. This is just a tiny
 example of the things you can make with Sage. Continue reading the user guide
 and try writing your own apps!
