@@ -309,8 +309,7 @@ SML - Sage Matchable Language
 When you have many matchables with similar behavior, writing through the API
 can become cumbersome. To alleviate this, Sage provides the 'Sage Matchable
 Language' (SML). SML provides an easy and brief syntax for writing matchables
-and groups. Here's an example of SML written in
-`YAML <http://www.yaml.org/>`_: ::
+and groups expressed in `YAML <http://www.yaml.org/>`_. Here's an example: ::
 
     group_1:
         :trigger_1:
@@ -327,6 +326,30 @@ and groups. Here's an example of SML written in
         :trigger_2:
             regex: ^Regular expressions are (cool|confusing)\.$
             another_method: [A, List, of, Strings]
+
+
+**Creating Groups**
+
+Groups are just keys with the value being a list of matchables and/or groups. ::
+
+    my_group:
+        ...
+        ...
+        child_group:
+            ...
+            ...
+    sibling:
+        ...
+        ...
+
+You can have groups enabled or disabled by default by having `enabled: (bool)` as a member of the
+group's list: ::
+
+    my_group:
+        enabled: False  # This will be disabled by default
+        ...
+
+
 
 
 

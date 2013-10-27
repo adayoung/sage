@@ -287,9 +287,8 @@ class GMCPReceiver(object):
                 del(player.inv[item])
             gmcp_signals.inv_remove_item.send_robust(self, item=item)
         else:
-            pass
             # probably a container
-            # print("Char.Items.Remove - Unknown location: %s" % d)
+            pass
 
     # 'Char.Items.Update'
     def update_item(self, d):
