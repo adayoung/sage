@@ -46,7 +46,7 @@ class Apps(dict):
 
         for app, path in self.paths.items():
             if path in event.src_path:
-                self.reload(app)
+                self.reload(app, event.src_path)
 
     def add_group(self, app, matchable):
         self.groups[app].add(matchable)
@@ -135,7 +135,7 @@ class Apps(dict):
     def get_path(self, name):
         return self.meta[name].path
 
-    def reload(self, name):
+    def reload(self, name, event_src_path=None):
         """ Try to fully rebuild an app """
 
         if name not in self:
@@ -145,7 +145,21 @@ class Apps(dict):
             obj.destroy()
 
         try:
+            # generally reload the app
             self[name] = rebuild(self[name], False)
+
+            # Attempt to directly reload a module by the event path
+            if event_src_path:
+                targets = []
+                for mname, module in sys.modules.items():
+                    if module:
+                        if hasattr(module, '__file__'):
+                            if event_src_path in module.__file__:
+                                targets.append(module)
+
+                for target in targets:
+                    rebuild(target, False)
+
             sage._log.msg("Reloaded app '%s'" % name)
         except:
             sage._log.msg("Error reloading '%s'" % name)
