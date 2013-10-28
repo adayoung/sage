@@ -17,6 +17,14 @@ class Balance(object):
         self.last_off = 0
         self.waiting = False
 
+    def is_on(self):
+        """ Is this balance currently on balance? """
+
+        if self.waiting:
+            return False
+
+        return self.balance
+
     def on(self):
         """ Set to on balance """
 
