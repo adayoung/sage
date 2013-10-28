@@ -372,7 +372,7 @@ class GMCP(object):
             "Char.Items 1", "Room 1", "IRE.Rift 1", "Comm.Channel 1", \
             "IRE.Time 1"],
             'ping': True,
-            'ping_frequency': 5
+            'ping_frequency': 1
         }
 
         # looping ping call
