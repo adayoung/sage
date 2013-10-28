@@ -103,7 +103,7 @@ class GMCPReceiver(object):
         player.willpower.update(d['wp'], d['maxwp'])
         player.xp = float(d['nl'])
 
-        gmcp_signals.vitals.send_robust(
+        gmcp_signals.vitals.send(
             self,
             health=player.health,
             max_health=player.health.max,
@@ -204,7 +204,7 @@ class GMCPReceiver(object):
         player.room.details = d['details']
         player.room.map = d['map']
 
-        gmcp_signals.room.send_robust(self, room=player.room)
+        gmcp_signals.room.send(self, room=player.room)
 
     # Room.Players
     def room_players(self, d):
@@ -214,20 +214,20 @@ class GMCPReceiver(object):
             if p['name'] != player.name:
                 player.room.players.add(p['name'])
 
-        gmcp_signals.room_players.send_robust(self, players=player.room.players)
+        gmcp_signals.room_players.send(self, players=player.room.players)
 
     # Room.AddPlayer
     def room_addplayer(self, d):
 
         player.room.players.add(d['name'])
-        gmcp_signals.room_add_player.send_robust(self, player=d['name'])
+        gmcp_signals.room_add_player.send(self, player=d['name'])
 
     # Room.RemovePlayer
     def room_removeplayer(self, d):
 
         if d in player.room.players:
             player.room.players.remove(d)
-        gmcp_signals.room_remove_player.send_robust(self, player=d)
+        gmcp_signals.room_remove_player.send(self, player=d)
 
     # Char.Items.List
     def items(self, d):
@@ -239,7 +239,7 @@ class GMCPReceiver(object):
                 attrib = item['attrib'] if 'attrib' in item else None
                 player.room.items.add(int(item['id']), item['name'], attrib)
 
-            gmcp_signals.room_items.send_robust(self, items=player.room.items)
+            gmcp_signals.room_items.send(self, items=player.room.items)
 
         elif d['location'] == 'inv':
             player.inv.clear()
@@ -247,7 +247,7 @@ class GMCPReceiver(object):
                 attrib = item['attrib'] if 'attrib' in item else None
                 player.inv.add(int(item['id']), item['name'], attrib)
 
-            gmcp_signals.inv_items.send_robust(self, items=player.inv.items)
+            gmcp_signals.inv_items.send(self, items=player.inv.items)
 
         else:
             print("Char.Items.List %s" % d)
@@ -261,12 +261,12 @@ class GMCPReceiver(object):
         if d['location'] == 'inv':
             if iid in player.inv:
                 player.inv[iid].update_item(item['attrib'])
-                gmcp_signals.inv_update_item.send_robust(self, item=player.inv[iid])
+                gmcp_signals.inv_update_item.send(self, item=player.inv[iid])
 
         elif d['location'] == 'room':
             if iid in player.room.items:
                 player.room.items[iid].update_items(item['attrib'])
-                gmcp_signals.room_update_item.send_robust(self, item=player.room.items[iid])
+                gmcp_signals.room_update_item.send(self, item=player.room.items[iid])
 
     # Char.Items.Add
     def add_item(self, d):
@@ -280,11 +280,11 @@ class GMCPReceiver(object):
 
         if d['location'] == 'room':
             item = player.room.items.add(num, name, attrib)
-            gmcp_signals.room_add_item.send_robust(self, item=item)
+            gmcp_signals.room_add_item.send(self, item=item)
 
         elif d['location'] == 'inv':
             item = player.inv.add(num, name, attrib)
-            gmcp_signals.inv_add_item.send_robust(self, item=item)
+            gmcp_signals.inv_add_item.send(self, item=item)
 
         else:
             print("Char.Items.Add %s" % d)
@@ -297,11 +297,11 @@ class GMCPReceiver(object):
         if d['location'] == 'room':
             if item in player.room.items:
                 del(player.room.items[item])
-            gmcp_signals.room_remove_item.send_robust(self, item=item)
+            gmcp_signals.room_remove_item.send(self, item=item)
         elif d['location'] == 'inv':
             if item in player.room.items:
                 del(player.inv[item])
-            gmcp_signals.inv_remove_item.send_robust(self, item=item)
+            gmcp_signals.inv_remove_item.send(self, item=item)
         else:
             # probably a container
             pass
@@ -314,17 +314,17 @@ class GMCPReceiver(object):
         for i in d:
             player.rift[i['name']] = int(i['amount'])
 
-        gmcp_signals.rift.send_robust(self, rift=player.rift)
+        gmcp_signals.rift.send(self, rift=player.rift)
 
     # IRE.Rift.Change
     def rift_change(self, d):
         player.rift[d['name']] = int(d['amount'])
 
-        gmcp_signals.rift_change.send_robust(self, name=d['name'], amount=int(d['amount']))
+        gmcp_signals.rift_change.send(self, name=d['name'], amount=int(d['amount']))
 
     # Core.Goodbye
     def goodbye(self, d):
-        gmcp_signals.goodbye.send_robust(self)
+        gmcp_signals.goodbye.send(self)
 
     # Core.Ping
     def ping(self):
@@ -333,7 +333,7 @@ class GMCPReceiver(object):
         latency = time() - self.ping_start
         self.pinging = False
 
-        gmcp_signals.ping.send_robust(self, latency=latency)
+        gmcp_signals.ping.send(self, latency=latency)
 
     # Comm.Channel.List
     def comm_channels(self, d):
@@ -354,7 +354,7 @@ class GMCPReceiver(object):
     # IRE.Time.Update & IRE.Time.List
     def time_update(self, d):
         player.iretime = d
-        gmcp_signals.iretime.send_robust(self, time=d)
+        gmcp_signals.iretime.send(self, time=d)
 
 
 class GMCP(object):

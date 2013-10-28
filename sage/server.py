@@ -8,7 +8,7 @@ from sage.signals import pre_start, player_connected
 def run():
     """ Start Sage Server """
 
-    pre_start.send_robust(sender=None)
+    pre_start.send(sender=None)
 
     setup_system()
 
@@ -109,5 +109,5 @@ def setup_system():
 def connect(trigger):
     """ Successful login """
     player.connected = True
-    player_connected.send_robust(sender=None)
+    player_connected.send(sender=None)
     trigger.destroy()

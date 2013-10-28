@@ -126,30 +126,6 @@ class Signal(object):
                 break
 
     def send(self, sender, **named):
-        """Send signal from sender to all connected receivers.
-
-        If any receiver raises an error, the error propagates back through
-        send, terminating the dispatch loop, so it is quite possible to not
-        have all receivers called if a raises an error.
-
-        :param sender: The sender of the signal. Either a specific
-            object or :const:`None`.
-
-        :keyword \*\*named: Named arguments which will be passed to receivers.
-
-        :returns: a list of tuple pairs: `[(receiver, response), ... ]`.
-
-        """
-        responses = []
-        if not self.receivers:
-            return responses
-
-        for receiver in self._live_receivers(_make_id(sender)):
-            response = receiver(signal=self, sender=sender, **named)
-            responses.append((receiver, response))
-        return responses
-
-    def send_robust(self, sender, **named):
         """Send signal from sender to all connected receivers catching errors.
 
         :param sender: The sender of the signal. Can be any python object

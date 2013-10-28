@@ -136,7 +136,7 @@ class TelnetClient(Telnet):
 
         data = data.split('\n')
 
-        pre_prompt.send_robust(sender=None, raw_data=data)
+        pre_prompt.send(sender=None, raw_data=data)
 
         # lines recieved
         lines = data[:-1]
@@ -150,7 +150,7 @@ class TelnetClient(Telnet):
         # send lines to inbound receiver
         lines = inbound.receiver(lines)
 
-        post_prompt.send_robust(sender=None)
+        post_prompt.send(sender=None)
 
         output = ''
 
@@ -159,7 +159,7 @@ class TelnetClient(Telnet):
 
         output += prompt_output + '\r\n'
 
-        signal.pre_outbound.send_robust(sender=self, lines=sage.buffer,
+        signal.pre_outbound.send(sender=self, lines=sage.buffer,
             prompt=prompt_output)
 
         self.ws_server.instream(lines, prompt_output)
@@ -172,12 +172,12 @@ class TelnetClient(Telnet):
         sage.connected = True
         self.telnet_server.ready()
         self.ws_server.ready()
-        signal.connected.send_robust(sender=self)
+        signal.connected.send(sender=self)
         sage._send = self.transport.write
 
     def connectionLost(self, reason):
         sage.connected = False
-        signal.disconnected.send_robust(sender=self)
+        signal.disconnected.send(sender=self)
         '''if self.telnet_server is not None:
             self.server.transport.loseConnection()
             self.server = None'''
