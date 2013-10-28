@@ -29,6 +29,9 @@ room_items = Signal(providing_args=['items'])
 # Item added to room
 room_add_item = Signal(providing_args=['item'])
 
+# Item in room updated
+room_update_item = Signal(providing_args=['item'])
+
 # Item removed from room
 room_remove_item = Signal(providing_args=['item'])
 
@@ -43,6 +46,9 @@ room_players = Signal(providing_args=['players'])
 
 # Item added to inventory
 inv_add_item = Signal(providing_args=['item'])
+
+# Item updated
+inv_update_item = Signal(providing_args=['item'])
 
 # Item removed from inventory
 inv_remove_item = Signal(providing_args=['item'])

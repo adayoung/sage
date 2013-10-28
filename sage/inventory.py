@@ -33,6 +33,40 @@ class Item(object):
         if self.container:
             self.items = Inventory()
 
+    def update_item(self, attrib):
+        self.worn = False
+        self.wearable = False
+        self.wielded_left = False
+        self.wielded_right = False
+        self.groupable = False
+        self.container = False
+        self.takeable = False
+        self.riftable = False
+        self.denizen = False
+        self.dead = False
+
+        if 'w' in attrib:
+            self.worn = True
+        if 'W' in attrib:
+            self.wearable = True
+        if 'l' in attrib:
+            self.wielded_left = True
+        if 'L' in attrib:
+            self.wielded_right = True
+        if 'g' in attrib:
+            self.groupable = True
+        if 'c' in attrib:
+            self.container = True
+        if 't' in attrib:
+            self.takeable = True
+        if 'r' in attrib:
+            self.riftable = True
+        if 'm' in attrib:
+            self.denizen = True
+        if 'd' in attrib:
+            self.dead = True
+
+
     def __repr__(self):
         return "Item(%s)" % self.name
 

@@ -252,6 +252,22 @@ class GMCPReceiver(object):
         else:
             print("Char.Items.List %s" % d)
 
+    # 'Char.Items.Update'
+    def update_item(self, d):
+
+        item = d['item']
+        iid = int(item['id'])
+
+        if d['location'] == 'inv':
+            if iid in player.inv:
+                player.inv[iid].update_item(item['attrib'])
+                gmcp_signals.inv_update_item.send_robust(self, item=player.inv[iid])
+
+        elif d['location'] == 'room':
+            if iid in player.room.items:
+                player.room.items[iid].update_items(item['attrib'])
+                gmcp_signals.room_update_item.send_robust(self, item=player.room.items[iid])
+
     # Char.Items.Add
     def add_item(self, d):
 
@@ -289,11 +305,6 @@ class GMCPReceiver(object):
         else:
             # probably a container
             pass
-
-    # 'Char.Items.Update'
-    def update_item(self, d):
-
-        print("Update Item: %s" % d)
 
     # IRE.Rift.List
     def rift_list(self, d):
