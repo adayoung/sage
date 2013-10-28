@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from twisted.internet import reactor
-from sage import telnet, config, apps, path, triggers, player
+from sage import net, config, apps, path, triggers, player
 from sage.signals import pre_start, player_connected
 
 
-def run(backdoor=True):
+def run():
     """ Start Sage Server """
 
     pre_start.send_robust(sender=None)
@@ -15,10 +15,6 @@ def run(backdoor=True):
     if config.auto_reload:
         apps.observer.schedule(apps.event_handler, path, recursive=True)
         apps.observer.start()
-
-    # Setup reactor to listen
-    reactor.listenTCP(config.proxy_port, telnet.build_factory())
-    print("Proxy port: %s" % config.proxy_port)
 
     # setup the backdoor
     if config.backdoor:
@@ -33,8 +29,18 @@ def run(backdoor=True):
         }
 
         reactor.listenTCP(config.backdoor_port, get_manhole_factory(imports),
-            interface='127.0.0.1')
+            interface=config.backdoor_host)
         print("Backdoor port: %s" % config.backdoor_port)
+
+    if config.telnet_proxy:
+        factory = net.build_telnet_factory()
+        import sage
+        sage.factory = factory
+        print("Telnet proxy port: %s" % config.telnet_port)
+
+    if config.ws_server:
+        net.build_ws_factory()
+        print("Sage WS protocol: ws://%s:%s" % (config.ws_host, config.ws_port))
 
     # Add shutdown events
     reactor.addSystemEventTrigger('before', 'shutdown', pre_shutdown)

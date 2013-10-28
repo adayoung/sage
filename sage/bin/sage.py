@@ -97,6 +97,12 @@ def run(args):
     if args.no_backdoor:
         sage.config.backdoor = False
 
+    if args.no_telnet_proxy:
+        sage.config.telnet_proxy = False
+
+    if args.no_websocket:
+        sage.config.ws_server = False
+
     from sage.server import run
 
     if args.profile:
@@ -127,6 +133,9 @@ subparsers = parser.add_subparsers(dest='command')
 runparser = subparsers.add_parser('run', parents=[parent])
 runparser.add_argument('-b', '--no-backdoor', action='store_true', help='Disable the SSH backdoor')
 runparser.add_argument('-p', '--profile', help='Run cProfile and save the stats to file')
+runparser.add_argument('-t', '--no-telnet-proxy', action='store_true', help='Disable the telnet proxy')
+runparser.add_argument('-w', '--no-websocket', action='store_true', help='Disable the websocket server')
+runparser.add_argument('-D', '--ws-debug', action='store_true', help='Enable Websocket WAMP debugging')
 runparser.add_argument('app')
 
 mkappparser = subparsers.add_parser('mkapp', parents=[parent])

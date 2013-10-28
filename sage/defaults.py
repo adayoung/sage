@@ -22,10 +22,16 @@ class Configuration(dict):
 defaults = Configuration({
     'port': 2003,
     'host': 'achaea.com',
-    'proxy_port': 5493,
+    'telnet_proxy': True,
+    'telnet_port': 5493,
+    'ws_server': True,
+    'ws_port': 9000,
+    'ws_host': 'localhost',
+    'ws_debug': False,
     'backdoor': True,
     'backdoor_user': 'sage',
     'backdoor_password': 'sage',
     'backdoor_port': 5494,
+    'backdoor_host': 'localhost',
     'auto_reload': True
 })

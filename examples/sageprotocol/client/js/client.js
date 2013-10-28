@@ -53,7 +53,11 @@ window.onload = function() {
 
 function instream(topicUri, event) {
    Object.keys(event.lines).forEach(function (key) {
-      swindow.append('<div class="line">' + ansi_up.ansi_to_html(event.lines[key]) + '</div>');
+      if (event.lines[key] === '') {
+         swindow.append('<div class="blank line">&nbsp;</div>');
+      } else {
+         swindow.append('<div class="line">' + ansi_up.ansi_to_html(event.lines[key]) + '</div>');
+      }
    });
    swindow.append('<div class="prompt">' + ansi_up.ansi_to_html(event.prompt) + '</div>');
    swindow.scrollTop(swindow[0].scrollHeight);
