@@ -311,6 +311,9 @@ class GMCPReceiver(object):
 
         player.rift.clear()
 
+        if type(d) is not dict:
+            return
+
         for i in d:
             player.rift[i['name']] = int(i['amount'])
 
