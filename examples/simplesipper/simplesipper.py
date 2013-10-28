@@ -21,7 +21,7 @@ def sip(vial):
     """ Takes a sip of health or mana """
 
     # Don't try to sip if we are off sip balance
-    if player.sip is False:
+    if player.sip == False:
         return
 
     # turn on the sip group
@@ -63,7 +63,8 @@ post_prompt.connect(onprompt)
 sip_group = ss.create_group('sips', enabled=False)
 
 
-# Health sip taken
+# Health sip or mana sip taken
+@sip_group.exact(name='sip_mana', pattern='Your mind feels stronger and more alert.')
 @sip_group.exact(name='sip_health', pattern='The elixir heals and soothes you.')
 def sip_trigger(trigger):
     # set sip balance to off
@@ -74,13 +75,6 @@ def sip_trigger(trigger):
 
     # in 4 seconds, turn on the restored sip balance trigger
     sage.delay(4, lambda: ss('restored_balance').enable())
-
-# create a new trigger and share the same method as 'sip_health'
-sip_group.create(
-    'sip_mana',
-    'exact',
-    'Your mind feels stronger and more alert.',
-    [sip_trigger])
 
 
 # Sip balance restored
