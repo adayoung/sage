@@ -11,6 +11,9 @@ import importlib
 from collections import OrderedDict
 import inspect
 
+class AppNotLoaded(Exception):
+    pass
+
 
 class Apps(dict):
     """ Dict-like container of loaded apps """
@@ -185,4 +188,7 @@ class Apps(dict):
         return str(self.__class__)
 
     def __getattr__(self, item):
-        return self.__getitem__(item)
+        if item in self:
+            return self.__getitem__(item)
+        else:
+            raise AppNotLoaded("App '%s' not currently loaded" % item)
