@@ -64,3 +64,6 @@ rift_change = Signal(providing_args=['name', 'amount'])
 
 # IRE Time update
 iretime = Signal(providing_args=['time'])
+
+# Updated dictionary of all skills
+skills = Signal(providing_args=['skills'])

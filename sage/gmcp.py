@@ -68,6 +68,19 @@ class GMCPReceiver(object):
         self.ping_start = None
         # if we are waiting for a ping
         self.pinging = False
+        # container for skill groups left to query
+        self._skill_groups = set()
+        # skills that don't have subskills
+        self._skill_exclude = set((
+            'frost',
+            'thermology',
+            'constitution',
+            'galvanism',
+            'philosophy',
+            'fitness',
+            'avoidance',
+            'antidotes'
+        ))
 
     def map(self, cmd, args=None):
         """ Map GMCP commands to assigned methods """
@@ -177,6 +190,9 @@ class GMCPReceiver(object):
 
         player.skill_groups = result
 
+        self._skill_groups = set(result.keys())
+        self._skill_groups.difference_update(self._skill_exclude)
+
         # Get full listing of our skills
         for skill in player.skill_groups.keys():
             self.out.get_skills(group=skill)
@@ -189,6 +205,11 @@ class GMCPReceiver(object):
         skills = d['list']
 
         player.skills[group] = [skill.lower() for skill in skills]
+
+        self._skill_groups.discard(group)
+
+        if len(self._skill_groups) == 0:
+            gmcp_signals.skills.send(self, skills=player.skills)
 
     # Room.Info
     def room(self, d):
