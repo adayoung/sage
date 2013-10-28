@@ -80,6 +80,11 @@ def run(args):
     else:
         path = os.getcwd()
 
+    if os.path.exists('%s/%s.py' % (path, args.app)):
+        path = '/'.join(path.split('/')[:-1])
+
+    os.chdir(path)
+
     sys.path.append(path)
 
     sage.path = path
