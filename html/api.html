@@ -124,7 +124,7 @@ important right here and provide links to the canonical documentation.</p>
 <h3>Main Containers<a class="headerlink" href="#main-containers" title="Permalink to this headline">¶</a></h3>
 <dl class="data">
 <dt id="sage.config">
-<tt class="descclassname">sage.</tt><tt class="descname">config</tt><em class="property"> = {'backdoor_port': 5494, 'auto_reload': True, 'backdoor_user': 'sage', 'backdoor_password': 'sage', 'proxy_port': 5493, 'backdoor': True, 'host': 'achaea.com', 'port': 2003}</em><a class="headerlink" href="#sage.config" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.</tt><tt class="descname">config</tt><em class="property"> = {'backdoor_port': 5494, 'auto_reload': True, 'telnet_proxy': True, 'ws_port': 9000, 'backdoor_user': 'sage', 'telnet_port': 5493, 'ws_debug': False, 'backdoor_host': 'localhost', 'backdoor_password': 'sage', 'ws_server': True, 'backdoor': True, 'host': 'achaea.com', 'ws_host': 'localhost', 'port': 2003}</em><a class="headerlink" href="#sage.config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Container for sage configuration</p>
 </dd></dl>
 
@@ -146,7 +146,7 @@ important right here and provide links to the canonical documentation.</p>
 
 <dl class="method">
 <dt id="sage.app.Apps.reload">
-<tt class="descname">reload</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/sage/app.html#Apps.reload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.app.Apps.reload" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">reload</tt><big>(</big><em>name</em>, <em>event_src_path=None</em><big>)</big><a class="reference internal" href="_modules/sage/app.html#Apps.reload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.app.Apps.reload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Try to fully rebuild an app</p>
 </dd></dl>
 
@@ -475,7 +475,7 @@ both are identical. The only difference is where they occur in execution.</p>
 <dd><p>Base matchable group</p>
 <dl class="method">
 <dt id="sage.matching.Group.create">
-<tt class="descname">create</tt><big>(</big><em>name</em>, <em>mtype</em>, <em>pattern</em>, <em>methods=</em><span class="optional">[</span><span class="optional">]</span>, <em>enabled=True</em>, <em>ignorecase=True</em>, <em>delay=None</em>, <em>disable_on_match=False</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.create" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">create</tt><big>(</big><em>name</em>, <em>mtype</em>, <em>pattern</em>, <em>methods=</em><span class="optional">[</span><span class="optional">]</span>, <em>enabled=True</em>, <em>ignorecase=True</em>, <em>delay=None</em>, <em>disable_on_match=False</em>, <em>disable_on_prompt=False</em>, <em>gag=False</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a trigger or alias (depending on the master group)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -493,6 +493,9 @@ both are identical. The only difference is where they occur in execution.</p>
 bound methods after a successful match.</li>
 <li><strong>disable_on_match</strong> (<em>bool</em>) &#8211; (optional) disable matchable after a
 successful match.</li>
+<li><strong>disable_on_prompt</strong> (<em>bool</em>) &#8211; (optional) disable matchable after a
+successful match on the following prompt.</li>
+<li><strong>gag</strong> (<em>bool</em>) &#8211; (optional) gag the line on a match.</li>
 </ul>
 </td>
 </tr>
@@ -664,6 +667,12 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 <dd><p>disable the matchable on a successful match</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="sage.matching.Matchable.disable_on_prompt">
+<tt class="descname">disable_on_prompt</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.disable_on_prompt" title="Permalink to this definition">¶</a></dt>
+<dd><p>disable on the prompt after a successful match</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="sage.matching.Matchable.enable">
 <tt class="descname">enable</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Matchable.enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Matchable.enable" title="Permalink to this definition">¶</a></dt>
@@ -674,6 +683,12 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 <dt id="sage.matching.Matchable.enabled">
 <tt class="descname">enabled</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.enabled" title="Permalink to this definition">¶</a></dt>
 <dd><p>enabled.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sage.matching.Matchable.gag">
+<tt class="descname">gag</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.gag" title="Permalink to this definition">¶</a></dt>
+<dd><p>gag the line on match</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -776,6 +791,12 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 <dt id="sage.player.Balance">
 <em class="property">class </em><tt class="descclassname">sage.player.</tt><tt class="descname">Balance</tt><a class="reference internal" href="_modules/sage/player.html#Balance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.player.Balance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tracks a balance</p>
+<dl class="method">
+<dt id="sage.player.Balance.is_on">
+<tt class="descname">is_on</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/player.html#Balance.is_on"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.player.Balance.is_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this balance currently on balance?</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="sage.player.Balance.off">
 <tt class="descname">off</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sage/player.html#Balance.off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.player.Balance.off" title="Permalink to this definition">¶</a></dt>
@@ -978,7 +999,7 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 
 <dl class="data">
 <dt id="sage.player.room">
-<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x10a454cd0&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x10a0f3a90&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
 <dd><p>Room data</p>
 </dd></dl>
 

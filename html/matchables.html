@@ -365,8 +365,7 @@ method. Assume the following structure:</p>
 <p>When you have many matchables with similar behavior, writing through the API
 can become cumbersome. To alleviate this, Sage provides the &#8216;Sage Matchable
 Language&#8217; (SML). SML provides an easy and brief syntax for writing matchables
-and groups. Here&#8217;s an example of SML written in
-<a class="reference external" href="http://www.yaml.org/">YAML</a>:</p>
+and groups expressed in <a class="reference external" href="http://www.yaml.org/">YAML</a>. Here&#8217;s an example:</p>
 <div class="highlight-python"><pre>group_1:
     :trigger_1:
         exact: An exact line that will be matched.
@@ -382,6 +381,24 @@ group_2:
     :trigger_2:
         regex: ^Regular expressions are (cool|confusing)\.$
         another_method: [A, List, of, Strings]</pre>
+</div>
+<p><strong>Creating Groups</strong></p>
+<p>Groups are just keys with the value being a list of matchables and/or groups.</p>
+<div class="highlight-python"><pre>my_group:
+    ...
+    ...
+    child_group:
+        ...
+        ...
+sibling:
+    ...
+    ...</pre>
+</div>
+<p>You can have groups enabled or disabled by default by having <cite>enabled: (bool)</cite> as a member of the
+group&#8217;s list:</p>
+<div class="highlight-python"><pre>my_group:
+    enabled: False  # This will be disabled by default
+    ...</pre>
 </div>
 </div>
 </div>

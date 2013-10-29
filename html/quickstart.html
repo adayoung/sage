@@ -288,7 +288,29 @@ to be disabled by default:</p>
 </pre></div>
 </div>
 <p>Congratulations! Now the alias will enable the <cite>exits</cite> trigger whenever you
-send &#8220;ql&#8221;, and <cite>exits</cite> will disable itself after it runs. This is just a tiny
+send &#8220;ql&#8221;, and <cite>exits</cite> will disable itself after it runs.</p>
+</div>
+<div class="section" id="using-signals">
+<h3>Using Signals<a class="headerlink" href="#using-signals" title="Permalink to this headline">¶</a></h3>
+<p>Now we get nice readable exits every time we &#8216;ql&#8217;, but we probably want this to happen
+every time we get an exits line in the game. There&#8217;s two ways to achieve this.
+One way is to just leave the trigger enabled all the time. While this is simplier, I
+generally prefer not to do this. It&#8217;s better to have more control over when a trigger
+fires so you don&#8217;t accidently introduce unexpected behavior in your apps. The other way
+would be to only enable the trigger whenever you move rooms.</p>
+<p>Detecting when a room change happens could be fairly involved, but Sage makes this pretty
+easy with the use of <em class="xref std std-ref">signals</em>. A signal will connect to and execute a method you
+specify. Lets use the signal <tt class="xref py py-data docutils literal"><span class="pre">sage.signals.gmcp.room</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage.signals.gmcp</span> <span class="kn">import</span> <span class="n">room</span> <span class="k">as</span> <span class="n">room_signal</span>
+
+<span class="k">def</span> <span class="nf">on_room_update</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">room_triggers</span><span class="p">(</span><span class="s">&#39;exits&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+
+
+<span class="n">room_signal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">on_room_update</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now the trigger will be enabled every time the room changes. This is just a tiny
 example of the things you can make with Sage. Continue reading the user guide
 and try writing your own apps!</p>
 </div>
@@ -308,6 +330,7 @@ and try writing your own apps!</p>
 <li><a class="reference internal" href="#taking-it-to-the-next-level">Taking It To The Next Level</a></li>
 <li><a class="reference internal" href="#get-organized">Get Organized</a></li>
 <li><a class="reference internal" href="#adding-an-alias">Adding an Alias</a></li>
+<li><a class="reference internal" href="#using-signals">Using Signals</a></li>
 </ul>
 </li>
 </ul>
