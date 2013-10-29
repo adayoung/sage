@@ -60,6 +60,9 @@ class Matchable(object):
         #: disable on the prompt after a successful match
         self.disable_on_prompt = kwargs.pop('disable_on_prompt', False)
 
+        #: gag the line on match
+        self.gag = kwargs.pop('gag', False)
+
         self.timer = None
 
         #: matched line
@@ -124,6 +127,9 @@ class Matchable(object):
 
         if self.disable_on_prompt:
             defer_to_prompt(self.disable)
+
+        if self.gag:
+            self.line.gag()
 
         if self.delay:
             self.timer = reactor.callLater(self.delay, self.call_methods)
@@ -295,7 +301,8 @@ class Group(object):
         ignorecase=True,
         delay=None,
         disable_on_match=False,
-        disable_on_prompt=False):
+        disable_on_prompt=False,
+        gag=False):
         """ Create a trigger or alias (depending on the master group)
 
             :param name: name of the matchable.
@@ -320,6 +327,8 @@ class Group(object):
             :param disable_on_prompt: (optional) disable matchable after a
                 successful match on the following prompt.
             :type disable_on_prompt: bool
+            :param gag: (optional) gag the line on a match.
+            :type gag: bool
         """
 
         kwargs = {
@@ -330,6 +339,7 @@ class Group(object):
             'delay': delay,
             'disable_on_match': disable_on_match,
             'disable_on_prompt': disable_on_prompt,
+            'gag': gag,
             'parent': self
         }
 
@@ -558,6 +568,7 @@ class Group(object):
         param = kwargs.pop('param', None)
         disable_on_prompt = kwargs.pop('disable_on_prompt', False)
         disable_on_match = kwargs.pop('disable_on_match', False)
+        gag = kwargs.pop('gag', False)
 
         def dec(func):
 
@@ -578,7 +589,7 @@ class Group(object):
 
             m = self.create(mname, mtype, pattern,
                 enabled=enabled, ignorecase=ignorecase, delay=delay,
-                disable_on_match=disable_on_match, disable_on_prompt=disable_on_prompt)
+                disable_on_match=disable_on_match, disable_on_prompt=disable_on_prompt, gag=gag)
             m.bind(func, param)
 
             return func
