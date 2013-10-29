@@ -1,11 +1,11 @@
 from __future__ import absolute_import
 from sage.dispatch.signal import Signal
 
-# Connected to Achaea
+#: Connected to Achaea
 connected = Signal()
 
-# Disconnected from Achaea
+#: Disconnected from Achaea
 disconnected = Signal()
 
-# Processed lines about to go out to the client
+#: Processed lines about to go out to the client
 pre_outbound = Signal(providing_args=['lines', 'prompt'])

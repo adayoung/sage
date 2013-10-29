@@ -1,13 +1,13 @@
 from __future__ import absolute_import
 from sage.dispatch.signal import Signal
 
-# Goodbye
+#: Goodbye
 goodbye = Signal()
 
-# Recieved a GMCP Ping from Achaea
+#: Recieved a GMCP Ping from Achaea
 ping = Signal(providing_args=['latency'])
 
-# Received a Char.Vitals
+#: Received a Char.Vitals
 vitals = Signal(providing_args=[
     'health',
     'max_health',
@@ -20,46 +20,46 @@ vitals = Signal(providing_args=[
     'xp'
 ])
 
-# Updated room
+#: Updated room
 room = Signal(providing_args=['room'])
 
-# Updated room items
+#: Updated room items
 room_items = Signal(providing_args=['items'])
 
-# Item added to room
+#: Item added to room
 room_add_item = Signal(providing_args=['item'])
 
-# Item in room updated
+#: Item in room updated
 room_update_item = Signal(providing_args=['item'])
 
-# Item removed from room
+#: Item removed from room
 room_remove_item = Signal(providing_args=['item'])
 
-# Add a player to the room
+#: Add a player to the room
 room_add_player = Signal(providing_args=['player'])
 
-# Remove a player to the room
+#: Remove a player to the room
 room_remove_player = Signal(providing_args=['player'])
 
-# Updated players in the room
+#: Updated players in the room
 room_players = Signal(providing_args=['players'])
 
-# Item added to inventory
+#: Item added to inventory
 inv_add_item = Signal(providing_args=['item'])
 
-# Item updated
+#: Item updated
 inv_update_item = Signal(providing_args=['item'])
 
-# Item removed from inventory
+#: Item removed from inventory
 inv_remove_item = Signal(providing_args=['item'])
 
-# Updated inventory items
+#: Updated inventory items
 inv_items = Signal(providing_args=['items'])
 
-# Updated rift change
+#: Updated rift change
 rift = Signal(providing_args=['rift'])
 
-# Changed rift item
+#: Changed rift item
 rift_change = Signal(providing_args=['name', 'amount'])
 
 # IRE Time update

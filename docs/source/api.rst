@@ -78,3 +78,14 @@ Main Containers
 -------------
 .. automodule:: sage.sml
     :members:
+
+`sage.signals`
+--------------
+.. automodule:: sage.signals
+    :members:
+
+.. automodule:: sage.signals.gmcp
+    :members:
+
+.. automodule:: sage.signals.net
+    :members:
