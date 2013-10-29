@@ -22,8 +22,19 @@ def main():
         mkapp(args)
     elif args.command == 'run':
         run(args)
+    elif args.command == 'console':
+        console(args)
     elif args.command == 'version':
         version()
+
+def console(args):
+
+    host = args.host if args.host else sage.config.backdoor_host
+    port = args.port if args.port else sage.config.backdoor_port
+    user = args.user if args.user else sage.config.backdoor_user
+
+    print("SSH to %s:%s as %s. Cntr-D to exit." % (host, port, user))
+    os.system("ssh %s -p %s -l %s" % (host, port, user))
 
 
 def mkapp(args):
@@ -146,5 +157,10 @@ runparser.add_argument('app')
 mkappparser = subparsers.add_parser('mkapp', parents=[parent])
 mkappparser.add_argument('-m', '--minimal', action='store_true', help='Create a minimal application')
 mkappparser.add_argument('app')
+
+consoleparser = subparsers.add_parser('console', parents=[parent])
+consoleparser.add_argument('-H', '--host', help='Hostname')
+consoleparser.add_argument('-p', '--port', help='Port')
+consoleparser.add_argument('-u', '--user', help='Username')
 
 versionparser = subparsers.add_parser('version', parents=[parent])
