@@ -42,7 +42,7 @@ def defer_to_prompt(method, *args):
     :param \*args: optional arguments to be passed to the provided method.
     """
 
-    sage._deferred.append((weakref.ref(method), args))
+    sage._deferred.append((method, args))
 
 
 def delay(seconds, method, *args, **kwargs):

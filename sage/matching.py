@@ -10,6 +10,7 @@ import re
 from time import time
 from sage.dispatch.signal import Hook
 from sage import apps
+from sage.api import defer_to_prompt
 from twisted.internet import reactor
 import weakref
 
@@ -55,6 +56,9 @@ class Matchable(object):
 
         #: disable the matchable on a successful match
         self.disable_on_match = kwargs.pop('disable_on_match', False)
+
+        #: disable on the prompt after a successful match
+        self.disable_on_prompt = kwargs.pop('disable_on_prompt', False)
 
         self.timer = None
 
@@ -117,6 +121,9 @@ class Matchable(object):
 
         if self.disable_on_match:
             self.disable()
+
+        if self.disable_on_prompt:
+            defer_to_prompt(self.disable)
 
         if self.delay:
             self.timer = reactor.callLater(self.delay, self.call_methods)
@@ -287,7 +294,8 @@ class Group(object):
         enabled=True,
         ignorecase=True,
         delay=None,
-        disable_on_match=False):
+        disable_on_match=False,
+        disable_on_prompt=False):
         """ Create a trigger or alias (depending on the master group)
 
             :param name: name of the matchable.
@@ -309,6 +317,9 @@ class Group(object):
             :param disable_on_match: (optional) disable matchable after a
                 successful match.
             :type disable_on_match: bool
+            :param disable_on_prompt: (optional) disable matchable after a
+                successful match on the following prompt.
+            :type disable_on_prompt: bool
         """
 
         kwargs = {
@@ -318,6 +329,7 @@ class Group(object):
             'enabled': enabled,
             'delay': delay,
             'disable_on_match': disable_on_match,
+            'disable_on_prompt': disable_on_prompt,
             'parent': self
         }
 
@@ -544,6 +556,8 @@ class Group(object):
         ignorecase = kwargs.pop('ignorecase', True)
         delay = kwargs.pop('delay', None)
         param = kwargs.pop('param', None)
+        disable_on_prompt = kwargs.pop('disable_on_prompt', False)
+        disable_on_match = kwargs.pop('disable_on_match', False)
 
         def dec(func):
 
@@ -563,7 +577,8 @@ class Group(object):
                         % mname)
 
             m = self.create(mname, mtype, pattern,
-                enabled=enabled, ignorecase=ignorecase, delay=delay)
+                enabled=enabled, ignorecase=ignorecase, delay=delay,
+                disable_on_match=disable_on_match, disable_on_prompt=disable_on_prompt)
             m.bind(func, param)
 
             return func

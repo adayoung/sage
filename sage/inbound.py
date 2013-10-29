@@ -70,8 +70,7 @@ def receiver(lines):
     sage.triggers.in_loop = False
 
     # since the prompt has already run, we execute deferred methods here
-    for ref, args in sage._deferred:
-        method = ref()
+    for method, args in sage._deferred:
 
         if method is not None:
             method(*args)
