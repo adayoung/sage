@@ -2,6 +2,7 @@
 import sage
 import sys
 from twisted.python.rebuild import rebuild
+from twisted.python.filepath import FilePath
 from sage.utils import imports
 import gc
 from watchdog.observers import Observer
@@ -102,6 +103,9 @@ class Apps(dict):
             if meta.__name__ not in self.paths:
                 self._generate_paths()
 
+            # Things get weird if the module is not in sys.modules...
+            #sys.modules[meta.__name__] = app
+
             sage._log.msg("Loaded app '%s'" % fullname)
             return True
 
@@ -145,12 +149,16 @@ class Apps(dict):
             obj.destroy()
 
         try:
-            # generally reload the app
-            self[name] = rebuild(self[name], False)
-
-            # Attempt to directly reload a module by the event path
             if event_src_path:
+
+                if event_src_path.endswith('.py'):
+                    path, f = os.path.split(event_src_path)
+                    pyc = path + '/' + f[:-3] + '.pyc'
+                    if os.path.isfile(pyc):
+                        os.remove(pyc)
+
                 targets = []
+
                 for mname, module in sys.modules.items():
                     if module:
                         if hasattr(module, '__file__'):
@@ -160,16 +168,21 @@ class Apps(dict):
                 for target in targets:
                     rebuild(target, False)
 
-            if hasattr(self[name], 'reload'):
-                self[name].relooad()
-
-            sage._log.msg("Reloaded app '%s'" % name)
+            else:
+                # generally try to reload the app
+                self[name] = rebuild(self[name], False)
         except:
             sage._log.msg("Error reloading '%s'" % name)
             sage._log.err()
             return False
 
         gc.collect()
+
+        if hasattr(self[name], 'reload'):
+            self[name].reload()
+
+        sage._log.msg("Reloaded app '%s'" % name)
+
         return True
 
     def unload(self, name):
