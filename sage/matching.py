@@ -334,7 +334,7 @@ class Group(object):
             :param gag: (optional) gag the line on a match.
             :type gag: bool
             :param intercept: (optional) (aliases only) Intercept the output of
-            the command being sent.
+                the command being sent.
             :type intercept: bool
         """
 
