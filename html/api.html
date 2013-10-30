@@ -475,7 +475,7 @@ both are identical. The only difference is where they occur in execution.</p>
 <dd><p>Base matchable group</p>
 <dl class="method">
 <dt id="sage.matching.Group.create">
-<tt class="descname">create</tt><big>(</big><em>name</em>, <em>mtype</em>, <em>pattern</em>, <em>methods=</em><span class="optional">[</span><span class="optional">]</span>, <em>enabled=True</em>, <em>ignorecase=True</em>, <em>delay=None</em>, <em>disable_on_match=False</em>, <em>disable_on_prompt=False</em>, <em>gag=False</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.create" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">create</tt><big>(</big><em>name</em>, <em>mtype</em>, <em>pattern</em>, <em>methods=</em><span class="optional">[</span><span class="optional">]</span>, <em>enabled=True</em>, <em>ignorecase=True</em>, <em>delay=None</em>, <em>disable_on_match=False</em>, <em>disable_on_prompt=False</em>, <em>gag=False</em>, <em>intercept=True</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a trigger or alias (depending on the master group)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -496,11 +496,14 @@ successful match.</li>
 <li><strong>disable_on_prompt</strong> (<em>bool</em>) &#8211; (optional) disable matchable after a
 successful match on the following prompt.</li>
 <li><strong>gag</strong> (<em>bool</em>) &#8211; (optional) gag the line on a match.</li>
+<li><strong>intercept</strong> &#8211; (optional) (aliases only) Intercept the output of</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>the command being sent.
+:type intercept: bool</p>
 </dd></dl>
 
 <dl class="method">
@@ -695,6 +698,12 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 <dt id="sage.matching.Matchable.groups">
 <tt class="descname">groups</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>re.MatchObject.groups() - regex groups as a list (regex only)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sage.matching.Matchable.intercept">
+<tt class="descname">intercept</tt><em class="property"> = None</em><a class="headerlink" href="#sage.matching.Matchable.intercept" title="Permalink to this definition">¶</a></dt>
+<dd><p>(aliases only) intercept the output of the command</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -999,7 +1008,7 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 
 <dl class="data">
 <dt id="sage.player.room">
-<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x10a0f3a90&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.player.Room object at 0x10d273310&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
 <dd><p>Room data</p>
 </dd></dl>
 
@@ -1097,6 +1106,159 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 </dd></dl>
 
 </div>
+<div class="section" id="module-sage.signals">
+<span id="sage-signals"></span><h2><cite>sage.signals</cite><a class="headerlink" href="#module-sage.signals" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3>sage.signals<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>This module defines the signals (Observer pattern) used throught SAGE.</p>
+<p>Functions can be connected to these signals, and connected functions are called
+whenever a signal is called.</p>
+<dl class="data">
+<dt id="sage.signals.player_connected">
+<tt class="descclassname">sage.signals.</tt><tt class="descname">player_connected</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.player_connected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Player has successfully logged in</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.post_prompt">
+<tt class="descclassname">sage.signals.</tt><tt class="descname">post_prompt</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.post_prompt" title="Permalink to this definition">¶</a></dt>
+<dd><p>After prompt is received</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.pre_prompt">
+<tt class="descclassname">sage.signals.</tt><tt class="descname">pre_prompt</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.pre_prompt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Before prompt processing</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.pre_start">
+<tt class="descclassname">sage.signals.</tt><tt class="descname">pre_start</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.pre_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Before the sage server starts</p>
+</dd></dl>
+
+</div>
+<span class="target" id="module-sage.signals.gmcp"></span><dl class="data">
+<dt id="sage.signals.gmcp.goodbye">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">goodbye</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.goodbye" title="Permalink to this definition">¶</a></dt>
+<dd><p>Goodbye</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.inv_add_item">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_add_item</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_add_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Item added to inventory</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.inv_items">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_items</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updated inventory items</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.inv_remove_item">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_remove_item</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_remove_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Item removed from inventory</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.inv_update_item">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_update_item</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_update_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Item updated</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.ping">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">ping</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.ping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recieved a GMCP Ping from Achaea</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.rift">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">rift</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.rift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updated rift change</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.rift_change">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">rift_change</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.rift_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changed rift item</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.room">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updated room</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.room_add_item">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_add_item</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_add_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Item added to room</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.room_add_player">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_add_player</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_add_player" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a player to the room</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.room_items">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_items</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updated room items</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.room_players">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_players</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_players" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updated players in the room</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.room_remove_item">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_remove_item</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_remove_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Item removed from room</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.room_remove_player">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_remove_player</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_remove_player" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a player to the room</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.room_update_item">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_update_item</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_update_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Item in room updated</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.vitals">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">vitals</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.vitals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Received a Char.Vitals</p>
+</dd></dl>
+
+<span class="target" id="module-sage.signals.net"></span><dl class="data">
+<dt id="sage.signals.net.connected">
+<tt class="descclassname">sage.signals.net.</tt><tt class="descname">connected</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.net.connected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connected to Achaea</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.net.disconnected">
+<tt class="descclassname">sage.signals.net.</tt><tt class="descname">disconnected</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.net.disconnected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnected from Achaea</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.net.pre_outbound">
+<tt class="descclassname">sage.signals.net.</tt><tt class="descname">pre_outbound</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.net.pre_outbound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processed lines about to go out to the client</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -1119,6 +1281,10 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 <li><a class="reference internal" href="#module-sage.matching"><cite>sage.matching</cite></a></li>
 <li><a class="reference internal" href="#module-sage.player"><cite>sage.player</cite></a></li>
 <li><a class="reference internal" href="#module-sage.sml"><cite>sage.sml</cite></a></li>
+<li><a class="reference internal" href="#module-sage.signals"><cite>sage.signals</cite></a><ul>
+<li><a class="reference internal" href="#id2">sage.signals</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
