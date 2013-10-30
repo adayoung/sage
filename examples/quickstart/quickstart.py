@@ -10,14 +10,15 @@ room_triggers = triggers.create_group('room', app='quickstart')
 room_aliases = aliases.create_group('room', app='quickstart')
 
 
-@room_aliases.exact("ql")
+# interception to False means the original command passes through
+@room_aliases.exact(pattern="ql", intercept=False)
 def ql(alias):
 
     # enable the exits trigger
     room_triggers('exits').enable()
 
     # send to Achaea
-    send('ql')
+    #send('ql')
 
 
 @room_triggers.regex("^You see (a single exit leading|exits leading) ([a-z, \(\)]+)\.$", enabled=False)
