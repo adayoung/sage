@@ -333,7 +333,7 @@ class Group(object):
             :type disable_on_prompt: bool
             :param gag: (optional) gag the line on a match.
             :type gag: bool
-            :param intercept: (optional) (aliases only) Intercept the output of
+            :param intercept: (optional) -aliases only- Intercept the output of
                 the command being sent.
             :type intercept: bool
         """
