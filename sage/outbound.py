@@ -13,8 +13,10 @@ def receiver(line):
 
         # if we match, don't return the line. Expect the method to send for us.
         if alias.match(line):
-            out = None
-            continue
+            if alias.intercept is True:
+                print alias.name
+                print "INTERCEPT"
+                out = None
 
     sage.aliases.flush_set()
     sage.aliases.in_loop = False

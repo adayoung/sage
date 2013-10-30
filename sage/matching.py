@@ -63,6 +63,9 @@ class Matchable(object):
         #: gag the line on match
         self.gag = kwargs.pop('gag', False)
 
+        #: (aliases only) intercept the output of the command
+        self.intercept = kwargs.pop('intercept', True)
+
         self.timer = None
 
         #: matched line
@@ -302,7 +305,8 @@ class Group(object):
         delay=None,
         disable_on_match=False,
         disable_on_prompt=False,
-        gag=False):
+        gag=False,
+        intercept=True):
         """ Create a trigger or alias (depending on the master group)
 
             :param name: name of the matchable.
@@ -329,6 +333,9 @@ class Group(object):
             :type disable_on_prompt: bool
             :param gag: (optional) gag the line on a match.
             :type gag: bool
+            :param intercept: (optional) (aliases only) Intercept the output of
+            the command being sent.
+            :type intercept: bool
         """
 
         kwargs = {
@@ -340,6 +347,7 @@ class Group(object):
             'disable_on_match': disable_on_match,
             'disable_on_prompt': disable_on_prompt,
             'gag': gag,
+            'intercept': intercept,
             'parent': self
         }
 
@@ -569,6 +577,7 @@ class Group(object):
         disable_on_prompt = kwargs.pop('disable_on_prompt', False)
         disable_on_match = kwargs.pop('disable_on_match', False)
         gag = kwargs.pop('gag', False)
+        intercept = kwargs.pop('intercept', True)
 
         def dec(func):
 
@@ -589,7 +598,8 @@ class Group(object):
 
             m = self.create(mname, mtype, pattern,
                 enabled=enabled, ignorecase=ignorecase, delay=delay,
-                disable_on_match=disable_on_match, disable_on_prompt=disable_on_prompt, gag=gag)
+                disable_on_match=disable_on_match, disable_on_prompt=disable_on_prompt, gag=gag,
+                intercept=intercept)
             m.bind(func, param)
 
             return func
