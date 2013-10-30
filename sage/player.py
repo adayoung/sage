@@ -92,6 +92,7 @@ class Room(object):
         self.map = None
         self.items = Inventory()
         self.players = set()
+        self.last_id = None
 
 
 class Rift(dict):

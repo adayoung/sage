@@ -213,6 +213,8 @@ class GMCPReceiver(object):
 
     # Room.Info
     def room(self, d):
+        if int(d['num']) != player.room.id:
+            player.room.last_id = player.room.id
         player.room.id = int(d['num'])
         player.room.name = d['name']
         player.room.area = d['area']
