@@ -160,6 +160,9 @@ class Apps(dict):
                 for target in targets:
                     rebuild(target, False)
 
+            if hasattr(self[name], 'reload'):
+                self[name].relooad()
+
             sage._log.msg("Reloaded app '%s'" % name)
         except:
             sage._log.msg("Error reloading '%s'" % name)
