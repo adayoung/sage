@@ -258,6 +258,28 @@ Congratulations! Now the alias will enable the `exits` trigger whenever you
 send "ql", and `exits` will disable itself after it runs.
 
 
+Alias Interception
+``````````````````
+
+For the sake of keeping the example simple I left out an important best-practice for creating
+aliases like the one above. When you want to introduce behavior on a command but not change the
+command itself, it's best to disable interception on the alias. This is best explained in an example:
+
+Pretend we have our quickstart app loaded and a few other apps as well. One of these other apps also
+has an alias for 'ql' and using :py:meth:`~sage.send` to pass the command through just like we did
+above. If you type 'ql' into your client, Sage will send 'ql' twice; one for each alias!
+
+To prevent this and make it easier to add behavior to existing commands, you can disable
+interception when you make the alias. Lets change our alias to this: ::
+
+    @room_aliases.exact(pattern="ql", intercept=False)
+    def ql(alias):
+
+        # enable the exits trigger
+        room_triggers('exits').enable()
+
+That's it! Now our alias will allow the raw command from the user to just pass through to Achaea.
+
 Using Signals
 ~~~~~~~~~~~~~
 
@@ -283,3 +305,5 @@ specify. Lets use the signal :py:data:`sage.signals.gmcp.room`: ::
 Now the trigger will be enabled every time the room changes. This is just a tiny
 example of the things you can make with Sage. Continue reading the user guide
 and try writing your own apps!
+
+See this full example at https://github.com/astralinae/sage/tree/master/examples/quickstart
