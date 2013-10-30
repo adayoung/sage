@@ -103,9 +103,6 @@ class Apps(dict):
             if meta.__name__ not in self.paths:
                 self._generate_paths()
 
-            # Things get weird if the module is not in sys.modules...
-            #sys.modules[meta.__name__] = app
-
             sage._log.msg("Loaded app '%s'" % fullname)
             return True
 
