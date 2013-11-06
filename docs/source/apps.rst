@@ -129,6 +129,14 @@ If you wanted to access another loaded app, you can address it through
 access it in another app with `sage.apps.demo` as if you were referencing the
 module itself.
 
+You can also just import the app package directly if it has already been loaded. ::
+
+  from awesome_curing import awesome_curing  # the entry point file awesome_curing.py
+
+  awesome_curing.affliction('anorexia')
+
+Consider reading up on Python `packages <http://stackoverflow.com/questions/7948494/whats-the-difference-between-a-python-module-and-a-python-package>`_ if this confuses you.
+
 Auto-Reloading
 --------------
 
