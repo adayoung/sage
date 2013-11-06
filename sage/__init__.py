@@ -56,6 +56,8 @@ aliases = AliasMasterGroup()
 #: Master trigger group (:class:`sage.matching.TriggerMasterGroup`)
 triggers = TriggerMasterGroup()
 
+triggers.create_group('sage', app='sage')
+
 # telnet write and echo internal methods
 _send = None
 _echo = None

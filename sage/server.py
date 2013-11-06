@@ -10,8 +10,6 @@ def run():
 
     pre_start.send(sender=None)
 
-    setup_system()
-
     if config.auto_reload:
         apps.observer.schedule(apps.event_handler, path, recursive=True)
         apps.observer.start()
@@ -97,7 +95,7 @@ def get_manhole_factory(namespace):
 def setup_system():
     """ Creates system triggers """
 
-    sage_group = triggers.create_group('sage', app='sage')
+    sage_group = triggers.get_group('sage')
 
     sage_group.create(
         'connect',

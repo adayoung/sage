@@ -100,3 +100,6 @@ balance = Balance()
 
 #: 'equilibrium' balance
 equilibrium = Balance()
+
+#: Player in blackout
+blackout = False

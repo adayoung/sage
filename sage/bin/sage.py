@@ -108,6 +108,10 @@ def run(args):
 
     app = args.app
 
+    from sage.server import run, setup_system
+
+    setup_system()
+
     sage.apps.load(app)
 
     if args.no_backdoor:
@@ -118,8 +122,6 @@ def run(args):
 
     if args.no_websocket:
         sage.config.ws_server = False
-
-    from sage.server import run
 
     if args.profile:
         from cProfile import Profile
