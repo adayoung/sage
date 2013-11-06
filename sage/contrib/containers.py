@@ -184,3 +184,25 @@ class Inventory(dict):
         """ Return list of containers """
 
         return [item for item in self.values() if item.container]
+
+
+class Rift(dict):
+    """ Container for the Rift """
+    pass
+
+
+class Room(object):
+    """ Container for room information """
+
+    def __init__(self):
+        self.id = None
+        self.name = None
+        self.exits = None
+        self.area = None
+        self.environment = None
+        self.coords = None
+        self.details = None
+        self.map = None
+        self.items = Inventory()
+        self.players = set()
+        self.last_id = None
