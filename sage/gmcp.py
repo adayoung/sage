@@ -284,7 +284,11 @@ class GMCPReceiver(object):
 
         if d['location'] == 'inv':
             if iid in player.inv:
-                player.inv[iid].update_item(item['attrib'])
+                if 'attrib' in item:
+                    player.inv[iid].update_item(item['attrib'])
+                else:
+                    player.inv[iid].update_item(None)
+
                 gmcp_signals.inv_update_item.send(self, item=player.inv[iid])
 
         elif d['location'] == 'room':

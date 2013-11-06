@@ -2,7 +2,6 @@
 """
 This module contains all player "state" data much like a session.
 """
-from __future__ import division
 from sage.contrib.containers import Inventory, Rift, Room
 from sage.contrib import Vital, Balance
 

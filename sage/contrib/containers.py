@@ -45,6 +45,9 @@ class Item(object):
         self.denizen = False
         self.dead = False
 
+        if attrib is None:
+            return
+
         if 'w' in attrib:
             self.worn = True
         if 'W' in attrib:

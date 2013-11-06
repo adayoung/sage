@@ -24,3 +24,6 @@ post_prompt = Signal()
 
 #: Player has successfully logged in
 player_connected = Signal()
+
+#: Prompt stats (eq, bal, kola, cloak, etc)
+prompt_stats = Signal(providing_args=['stats'])
