@@ -12,7 +12,7 @@ from autobahn.websocket import listenWS
 from autobahn.wamp import WampServerFactory, WampServerProtocol
 import sage
 from sage.utils import error
-from sage import inbound, outbound, gmcp, prompt, config, _log
+from sage import inbound, outbound, gmcp, prompt, config, _log, ansi
 from sage.signals import net as signal
 from sage.signals import post_prompt, pre_prompt
 import re
@@ -145,7 +145,11 @@ class TelnetClient(Telnet):
         prompt_data = data[-1]
 
         # Send the prompt to the prompt receiver
-        prompt_output = prompt.receiver(prompt_data)
+        try:
+            prompt_output = prompt.receiver(prompt_data)
+        except Exception as err:
+            _log.err()
+            prompt_output = "%s - %s" % (ansi.bold_red('ERROR:'), ansi.red(str(err)))
 
         # send lines to inbound receiver
         lines = inbound.receiver(lines)
