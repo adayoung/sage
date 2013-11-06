@@ -230,12 +230,13 @@ class GMCPReceiver(object):
         gmcp_signals.room.send(self, room=player.room)
 
     # Room.Players
-    def room_players(self, d):
+    def room_players(self, d=None):
         player.room.players.clear()
 
-        for p in d:
-            if p['name'] != player.name:
-                player.room.players.add(p['name'])
+        if d is not None:
+            for p in d:
+                if p['name'] != player.name:
+                    player.room.players.add(p['name'])
 
         gmcp_signals.room_players.send(self, players=player.room.players)
 
