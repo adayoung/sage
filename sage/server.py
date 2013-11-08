@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from twisted.internet import reactor
 from sage import net, config, apps, path, triggers, player
 from sage.signals import pre_start, player_connected
+from sage.signals import pre_shutdown as pre_shutdown_signal, post_shutdown as post_shutdown_signal
 
 
 def run():
@@ -49,12 +50,12 @@ def run():
 
 def pre_shutdown():
     """ Before the reactor stops """
-    pass
+    pre_shutdown_signal.send(sender=None)
 
 
 def post_shutdown():
     """ After the reactor has stopped """
-    pass
+    post_shutdown_signal.send(sender=None)
 
 
 def get_manhole_factory(namespace):

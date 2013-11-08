@@ -60,6 +60,7 @@ def colorize(text='', opts=(), **kwargs):
             code_list.append(foreground[v])
         elif k == 'bg':
             code_list.append(background[v])
+
     for o in opts:
         if o in opt_dict:
             code_list.append(opt_dict[o])
@@ -126,7 +127,7 @@ yellow = make_style(fg='yellow')
 blue = make_style(fg='blue')
 magenta = make_style(fg='magenta')
 cyan = make_style(fg='cyan')
-grey = make_style(fg='black', opts=('bold'),)
+grey = make_style(fg='black', opts=('bold',))
 bold_white = make_style(fg='white', opts=('bold',))
 bold_red = make_style(fg='red', opts=('bold',))
 bold_green = make_style(fg='green', opts=('bold',))

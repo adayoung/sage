@@ -27,3 +27,9 @@ player_connected = Signal()
 
 #: Prompt stats (eq, bal, kola, cloak, etc)
 prompt_stats = Signal(providing_args=['stats'])
+
+#: Before the Twisted Reactor stops
+pre_shutdown = Signal()
+
+#: After the Twisted Reactor stops
+post_shutdown = Signal()
