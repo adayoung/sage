@@ -142,6 +142,9 @@ class Apps(dict):
         if name not in self:
             return False
 
+        if hasattr(self[name], 'pre_reload'):
+            self[name].pre_reload()
+
         for obj in list(self.groups[name]):
             obj.destroy()
 
@@ -175,8 +178,8 @@ class Apps(dict):
 
         gc.collect()
 
-        if hasattr(self[name], 'reload'):
-            self[name].reload()
+        if hasattr(self[name], 'post_reload'):
+            self[name].post_reload()
 
         sage._log.msg("Reloaded app '%s'" % name)
 

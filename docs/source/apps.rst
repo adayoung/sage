@@ -109,17 +109,25 @@ Entry Point
 -----------
 
 The entry point for your app (a python file with the same name as your app)
-has an optional interface with two basic methods: `init` and `unload`.
-A basic entry point could look like the following: ::
+has an optional interface with four basic methods: `init`, `unload`, `pre_reload`,
+and `post_reload`. A basic entry point could look like the following: ::
 
     def init():
-        """ This method will be called when the app is loaded (after it is
-        imported). Any apps in meta.py's `installed_apps` will have already been
-        loaded before this is called. """
+      """ This method will be called when the app is loaded (after it is
+      imported). Any apps in meta.py's `installed_apps` will have already been
+      loaded before this is called. """
 
 
     def unload():
-        """ Called when an app is unloaded (or reloaded). """
+      """ Called when an app is unloaded (or reloaded). """
+
+
+    def pre_reload():
+      """ Called before the app is reloaded. """
+
+
+    def post_reload():
+      """ Called after the app is reloaded. """
 
 sage.apps
 ---------
