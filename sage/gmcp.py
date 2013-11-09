@@ -308,11 +308,18 @@ class GMCPReceiver(object):
 
         if d['location'] == 'room':
             item = player.room.items.add(num, name, attrib)
-            gmcp_signals.room_add_item.send(self, item=item)
+            gmcp_signals.room_add_item.send(self, item=item, container=player.room.items)
 
         elif d['location'] == 'inv':
             item = player.inv.add(num, name, attrib)
-            gmcp_signals.inv_add_item.send(self, item=item)
+            gmcp_signals.inv_add_item.send(self, item=item, container=player.inv)
+
+        elif d['location'].startswith('rep'):
+            num = int(d['location'][3:])
+
+            if num in player.inv:
+                item = player.inv[num].items.add(num, name, attrib)
+                gmcp_signals.inv_add_item.send(self, item=item, container=player.inv[num])
 
         else:
             print("Char.Items.Add %s" % d)
@@ -325,14 +332,20 @@ class GMCPReceiver(object):
         if d['location'] == 'room':
             if item in player.room.items:
                 del(player.room.items[item])
-            gmcp_signals.room_remove_item.send(self, item=item)
+            gmcp_signals.room_remove_item.send(self, item=item, container=player.room.items)
         elif d['location'] == 'inv':
             if item in player.room.items:
                 del(player.inv[item])
-            gmcp_signals.inv_remove_item.send(self, item=item)
+            gmcp_signals.inv_remove_item.send(self, item=item, container=player.inv)
+
+        elif d['location'].startswith('rep'):
+            num = int(d['location'][3:])
+
+            if num in player.inv:
+                del(player.inv[num][item])
+                gmcp_signals.room_remove_item.send(self, item=item, container=player.inv[num])
         else:
-            # probably a container
-            pass
+           print("Char.Items.Remove %s" % d)
 
     # IRE.Rift.List
     def rift_list(self, d):

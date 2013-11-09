@@ -21,15 +21,6 @@ class Item(object):
         self.dead = dead
         self.container = container
 
-        if wielded_left or wielded_right:
-            self.wielded = True
-
-            if wielded_left and wielded_right:
-                self.wielded_both = True
-
-        if wielded_right and wielded_left:
-            self.wielded_both = True
-
         if self.container:
             self.items = Inventory()
 
@@ -68,6 +59,16 @@ class Item(object):
             self.denizen = True
         if 'd' in attrib:
             self.dead = True
+        if 't' in attrib:
+            self.takeable = True
+
+    def wielded(self):
+        """ Is the item wielded? """
+        return self.wielded_left or self.wielded_right
+
+    def wielded_both(self):
+        """ Is the item wielded in both hands? """
+        return self.wielded_left and self.wielded_right
 
 
     def __repr__(self):
