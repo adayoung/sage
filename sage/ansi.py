@@ -10,6 +10,9 @@ import re
 # for finding ANSI color sequences
 ANSI_COLOR_REGEXP = re.compile('(' + chr(27) + '\[[0-9;]*m)')
 
+# Used for strfcolor
+CFORMAT = re.compile('[%&].')
+
 color_names = ('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', \
     'white')
 foreground = dict([(color_names[x], '3%s' % x) for x in range(8)])
@@ -117,6 +120,74 @@ def split_expanded(text):
         processed.append(code)
 
     return processed
+
+strfcolor_table = {
+    '%w': '\x1b[37m',
+    '%b': '\x1b[34m',
+    '%r': '\x1b[31m',
+    '%g': '\x1b[32m',
+    '%y': '\x1b[33m',
+    '%_': '\x1b[30m',
+    '%m': '\x1b[35m',
+    '%c': '\x1b[36m',
+    '%-': '\x1b[30;1m',
+    '%W': '\x1b[37;1m',
+    '%R': '\x1b[31;1m',
+    '%G': '\x1b[32;1m',
+    '%Y': '\x1b[33;1m',
+    '%B': '\x1b[34;1m',
+    '%M': '\x1b[35;1m',
+    '%C': '\x1b[36;1m',
+    '&w': '\x1b[47m',
+    '&b': '\x1b[44m',
+    '&r': '\x1b[41m',
+    '&g': '\x1b[42m',
+    '&y': '\x1b[43m',
+    '&m': '\x1b[45m',
+    '&c': '\x1b[46m',
+    '%0': '\x1b[0m',
+    '%%': '%'
+}
+
+def repl_color(matchobj):
+    key = matchobj.group(0)
+    if key in strfcolor_table:
+        return strfcolor_table[key]
+
+    return matchobj.group(0)
+
+
+def strfcolor(string):
+    """ Format a string with a color format syntax.
+
+    %w = white
+    %b = blue
+    %r = red
+    %g = green
+    %y = yellow
+    %_ = black
+    %m = magenta
+    %c = cyan
+    %- = grey
+    %W = bold white
+    %R = bold red
+    %G = bold green
+    %Y = bold yellow
+    %B = bold blue
+    %M = bold magenta
+    %C = bold cyan
+    &w = white backgound
+    &b = blue background
+    &r = red background
+    &g = green background
+    &y = yellow background
+    &m = magenta background
+    &c = cyan background
+    %0 = reset
+    """
+    return CFORMAT.sub(repl_color, string)
+
+
 
 # Helper methods
 white = make_style(fg='white')
