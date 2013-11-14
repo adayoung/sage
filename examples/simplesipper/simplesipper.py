@@ -8,10 +8,11 @@ This is a rudimentary health and mana sipper only intended to be an example.
 from __future__ import division
 import sage
 from sage import player, triggers
+from sage.contrib import Balance
 from sage.signals import post_prompt
 
 # create a new balance called player.sip
-player.sip = player.Balance()
+player.sip = Balance()
 
 # create an app-level trigger group
 ss = triggers.create_group('simplesipper', app='simplesipper')
