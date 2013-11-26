@@ -27,7 +27,7 @@ entrypoints = {
 
 setup(
     name='sage',
-    version='2.0.0.a1',
+    version='2.0.0.a2',
     description="Proxy and development framework for IRE's Achaea.",
     author='Todd Wilson',
     url='http://github.com/astralinae/sage',

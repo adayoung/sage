@@ -11,7 +11,7 @@ games.
 :license: GPLv3, see LICENSE for more details.
 """
 
-version = (2, 0, 0, 'a1')
+version = (2, 0, 0, 'a2')
 
 __title__ = 'sage'
 __version__ = '.'.join(str(i) for i in version)

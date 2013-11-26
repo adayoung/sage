@@ -116,6 +116,16 @@ class GMCPReceiver(object):
         player.willpower.update(d['wp'], d['maxwp'])
         player.xp = float(d['nl'])
 
+        if d['eq'] == '1':
+            player.equilibrium.on()
+        else:
+            player.equilibrium.off()
+
+        if d['bal'] == '1':
+            player.balance.on()
+        else:
+            player.balance.off()
+
         gmcp_signals.vitals.send(
             self,
             health=player.health,
@@ -126,7 +136,9 @@ class GMCPReceiver(object):
             max_endurance=player.endurance.max,
             willpower=player.willpower,
             max_willpower=player.willpower.max,
-            xp=player.xp
+            xp=player.xp,
+            bal=player.balance,
+            eq=player.equilibrium
         )
 
     # Char.Status

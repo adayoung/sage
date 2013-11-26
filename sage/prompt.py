@@ -58,16 +58,6 @@ def receiver(raw):
 
     stats = prompt.split(' ')[-1][:-1]
 
-    if 'x' in stats:
-        player.balance.on()
-    else:
-        player.balance.off()
-
-    if 'e' in stats:
-        player.equilibrium.on()
-    else:
-        player.equilibrium.off()
-
     prompt_stats.send(sender=renderer, stats=stats)
 
     renderer.receive(raw, stats)
