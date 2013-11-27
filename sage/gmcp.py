@@ -537,7 +537,6 @@ class GMCP(object):
         self.receiver.lag_defer = None
         sage.lagging = True
         net_signals.lagging.send()
-        print "LAG EVENT"
 
     def _start_pinging(self):
         """ Start regular pinging """
