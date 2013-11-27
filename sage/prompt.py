@@ -47,18 +47,18 @@ def receiver(raw):
 
     if prompt[0] == '-':
         player.blackout = True
-        blackout_signal.send(sender=None, blackout=True)
+        blackout_signal.send(blackout=True)
         blackout_triggers.enable()
         return renderer.render_blackout()
 
     if player.blackout is True:
-        blackout_signal.send(sender=None, blackout=False)
+        blackout_signal.send(blackout=False)
         player.blackout = False
         blackout_triggers.disable()
 
     stats = prompt.split(' ')[-1][:-1]
 
-    prompt_stats.send(sender=renderer, stats=stats)
+    prompt_stats.send(stats=stats, renderer=renderer)
 
     renderer.receive(raw, stats)
 

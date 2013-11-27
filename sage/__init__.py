@@ -43,6 +43,12 @@ apps = Apps()
 #: Is sage connected
 connected = False
 
+#: Average GMCP Ping value
+average_ping = 0
+
+#: Is Sage lagging?
+lagging = False
+
 from .inbound import Buffer
 
 #: Input buffer of lines (:class:`sage.inbound.Buffer`)

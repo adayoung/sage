@@ -14,7 +14,7 @@ def write_players():
         sage.buffer.insert(len(sage.buffer) - 1, 'Who: ' + players)  # Insert line above exits in QL
 
 
-def on_room_update(signal, sender, room):
+def on_room_update(signal, room):
 
     def update_players():
         # use of global isn't encouraged, but in this case it was a simple solution

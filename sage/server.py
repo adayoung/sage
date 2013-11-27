@@ -9,7 +9,7 @@ from sage.signals import pre_shutdown as pre_shutdown_signal, post_shutdown as p
 def run():
     """ Start Sage Server """
 
-    pre_start.send(sender=None)
+    pre_start.send()
 
     if config.auto_reload:
         apps.observer.schedule(apps.event_handler, path, recursive=True)
@@ -50,12 +50,12 @@ def run():
 
 def pre_shutdown():
     """ Before the reactor stops """
-    pre_shutdown_signal.send(sender=None)
+    pre_shutdown_signal.send()
 
 
 def post_shutdown():
     """ After the reactor has stopped """
-    post_shutdown_signal.send(sender=None)
+    post_shutdown_signal.send()
 
 
 def get_manhole_factory(namespace):
@@ -108,5 +108,5 @@ def setup_system():
 def connect(trigger):
     """ Successful login """
     player.connected = True
-    player_connected.send(sender=None)
+    player_connected.send()
     trigger.destroy()

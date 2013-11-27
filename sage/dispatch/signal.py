@@ -125,12 +125,8 @@ class Signal(object):
                 del self.receivers[index]
                 break
 
-    def send(self, sender, **named):
+    def send(self, **named):
         """Send signal from sender to all connected receivers catching errors.
-
-        :param sender: The sender of the signal. Can be any python object
-            (normally one registered with a connect if you actually want
-            something to occur).
 
         :keyword \*\*named: Named arguments which will be passed to receivers.
             These arguments must be a subset of the argument names defined in
@@ -151,9 +147,10 @@ class Signal(object):
 
         # Call each receiver with whatever arguments it can accept.
         # Return a list of tuple pairs [(receiver, response), ... ].
-        for receiver in self._live_receivers(_make_id(sender)):
+        #for receiver in self._live_receivers(_make_id(sender)):
+        for receiver in self._live_receivers(None):
             try:
-                response = receiver(signal=self, sender=sender, **named)
+                response = receiver(signal=self, **named)
             except Exception as err:
                 _log.err()
                 responses.append((receiver, err))

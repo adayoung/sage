@@ -9,3 +9,9 @@ disconnected = Signal()
 
 #: Processed lines about to go out to the client
 pre_outbound = Signal(providing_args=['lines', 'prompt'])
+
+#: Sage is lagging
+lagging = Signal()
+
+#: Sage is no longer lagging
+lag_recovered = Signal()

@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
+from __future__ import division
 from twisted.internet.task import LoopingCall
+from twisted.internet import reactor
 import json
+import sage
 from sage.utils import json_str_loads
-from sage import __version__ as version
 from sage.signals import gmcp as gmcp_signals
+from sage.signals import net as net_signals
 from time import time
 import sage.player as player
+from collections import deque
 
 # small copy of some telnet bytes
 IAC = chr(255)
@@ -82,6 +86,9 @@ class GMCPReceiver(object):
             'antidotes'
         ))
 
+        self.pings = deque(maxlen=20)
+        self.lag_defer = None
+
     def map(self, cmd, args=None):
         """ Map GMCP commands to assigned methods """
 
@@ -127,7 +134,6 @@ class GMCPReceiver(object):
             player.balance.off()
 
         gmcp_signals.vitals.send(
-            self,
             health=player.health,
             max_health=player.health.max,
             mana=player.mana,
@@ -221,7 +227,7 @@ class GMCPReceiver(object):
         self._skill_groups.discard(group)
 
         if len(self._skill_groups) == 0:
-            gmcp_signals.skills.send(self, skills=player.skills)
+            gmcp_signals.skills.send(skills=player.skills)
 
     # Room.Info
     def room(self, d):
@@ -239,7 +245,7 @@ class GMCPReceiver(object):
         player.room.details = d['details']
         player.room.map = d['map']
 
-        gmcp_signals.room.send(self, room=player.room)
+        gmcp_signals.room.send(room=player.room)
 
     # Room.Players
     def room_players(self, d=None):
@@ -250,20 +256,20 @@ class GMCPReceiver(object):
                 if p['name'] != player.name:
                     player.room.players.add(p['name'])
 
-        gmcp_signals.room_players.send(self, players=player.room.players)
+        gmcp_signals.room_players.send(players=player.room.players)
 
     # Room.AddPlayer
     def room_addplayer(self, d):
 
         player.room.players.add(d['name'])
-        gmcp_signals.room_add_player.send(self, player=d['name'])
+        gmcp_signals.room_add_player.send(player=d['name'])
 
     # Room.RemovePlayer
     def room_removeplayer(self, d):
 
         if d in player.room.players:
             player.room.players.remove(d)
-        gmcp_signals.room_remove_player.send(self, player=d)
+        gmcp_signals.room_remove_player.send(player=d)
 
     # Char.Items.List
     def items(self, d):
@@ -275,7 +281,7 @@ class GMCPReceiver(object):
                 attrib = item['attrib'] if 'attrib' in item else None
                 player.room.items.add(int(item['id']), item['name'], attrib)
 
-            gmcp_signals.room_items.send(self, items=player.room.items)
+            gmcp_signals.room_items.send(items=player.room.items)
 
         elif d['location'] == 'inv':
             player.inv.clear()
@@ -283,7 +289,7 @@ class GMCPReceiver(object):
                 attrib = item['attrib'] if 'attrib' in item else None
                 player.inv.add(int(item['id']), item['name'], attrib)
 
-            gmcp_signals.inv_items.send(self, items=player.inv.items)
+            gmcp_signals.inv_items.send(items=player.inv.items)
 
         else:
             print("Char.Items.List %s" % d)
@@ -301,12 +307,12 @@ class GMCPReceiver(object):
                 else:
                     player.inv[iid].update_item(None)
 
-                gmcp_signals.inv_update_item.send(self, item=player.inv[iid])
+                gmcp_signals.inv_update_item.send(item=player.inv[iid])
 
         elif d['location'] == 'room':
             if iid in player.room.items:
                 player.room.items[iid].update_items(item['attrib'])
-                gmcp_signals.room_update_item.send(self, item=player.room.items[iid])
+                gmcp_signals.room_update_item.send(item=player.room.items[iid])
 
     # Char.Items.Add
     def add_item(self, d):
@@ -320,18 +326,18 @@ class GMCPReceiver(object):
 
         if d['location'] == 'room':
             item = player.room.items.add(num, name, attrib)
-            gmcp_signals.room_add_item.send(self, item=item, container=player.room.items)
+            gmcp_signals.room_add_item.send(item=item, container=player.room.items)
 
         elif d['location'] == 'inv':
             item = player.inv.add(num, name, attrib)
-            gmcp_signals.inv_add_item.send(self, item=item, container=player.inv)
+            gmcp_signals.inv_add_item.send(item=item, container=player.inv)
 
         elif d['location'].startswith('rep'):
             num = int(d['location'][3:])
 
             if num in player.inv:
                 item = player.inv[num].items.add(num, name, attrib)
-                gmcp_signals.inv_add_item.send(self, item=item, container=player.inv[num])
+                gmcp_signals.inv_add_item.send(item=item, container=player.inv[num])
 
         else:
             print("Char.Items.Add %s" % d)
@@ -344,18 +350,18 @@ class GMCPReceiver(object):
         if d['location'] == 'room':
             if item in player.room.items:
                 del(player.room.items[item])
-            gmcp_signals.room_remove_item.send(self, item=item, container=player.room.items)
+            gmcp_signals.room_remove_item.send(item=item, container=player.room.items)
         elif d['location'] == 'inv':
             if item in player.room.items:
                 del(player.inv[item])
-            gmcp_signals.inv_remove_item.send(self, item=item, container=player.inv)
+            gmcp_signals.inv_remove_item.send(item=item, container=player.inv)
 
         elif d['location'].startswith('rep'):
             num = int(d['location'][3:])
 
             if num in player.inv:
                 del(player.inv[num][item])
-                gmcp_signals.room_remove_item.send(self, item=item, container=player.inv[num])
+                gmcp_signals.room_remove_item.send(item=item, container=player.inv[num])
         else:
            print("Char.Items.Remove %s" % d)
 
@@ -370,26 +376,35 @@ class GMCPReceiver(object):
         for i in d:
             player.rift[i['name']] = int(i['amount'])
 
-        gmcp_signals.rift.send(self, rift=player.rift)
+        gmcp_signals.rift.send(rift=player.rift)
 
     # IRE.Rift.Change
     def rift_change(self, d):
         player.rift[d['name']] = int(d['amount'])
 
-        gmcp_signals.rift_change.send(self, name=d['name'], amount=int(d['amount']))
+        gmcp_signals.rift_change.send(name=d['name'], amount=int(d['amount']))
 
     # Core.Goodbye
     def goodbye(self, d):
-        gmcp_signals.goodbye.send(self)
+        gmcp_signals.goodbye.send()
 
     # Core.Ping
     def ping(self):
         """ Recieves a Core.Ping and times it """
 
+        if self.lag_defer is not None:
+            self.lag_defer.cancel()
+
+        self.lag_defer = None
+
         latency = time() - self.ping_start
         self.pinging = False
 
-        gmcp_signals.ping.send(self, latency=latency)
+        self.pings.append(latency)
+
+        sage.average_ping = sum(self.pings) / len(self.pings)
+
+        gmcp_signals.ping.send(latency=latency)
 
     # Comm.Channel.List
     def comm_channels(self, d):
@@ -410,7 +425,7 @@ class GMCPReceiver(object):
     # IRE.Time.Update & IRE.Time.List
     def time_update(self, d):
         player.iretime = d
-        gmcp_signals.iretime.send(self, time=d)
+        gmcp_signals.iretime.send(time=d)
 
 
 class GMCP(object):
@@ -428,8 +443,11 @@ class GMCP(object):
             "Char.Items 1", "Room 1", "IRE.Rift 1", "Comm.Channel 1", \
             "IRE.Time 1"],
             'ping': True,
-            'ping_frequency': 1
+            'ping_frequency': 1,
+            'lag_factor': 5  # multiple by how much time over average ping is lagging
         }
+
+        self.lagging = False
 
         # looping ping call
         self.ping_task = LoopingCall(self.ping)
@@ -495,7 +513,7 @@ class GMCP(object):
     def hello(self):
         """ GMCP Hello """
 
-        self.cmd('Core.Hello', {'client': 'SAGE', 'version': version})
+        self.cmd('Core.Hello', {'client': 'SAGE', 'version': sage.__version__})
         self._start_pinging()
 
     # Core.Ping
@@ -508,6 +526,18 @@ class GMCP(object):
         self.receiver.pinging = True
         self.receiver.ping_start = time()
         self.cmd('Core.Ping')
+
+        if player.connected:
+            self.receiver.lag_defer = reactor.callLater(
+                sage.average_ping * self.options['lag_factor'],
+                self._lag_event
+            )
+
+    def _lag_event(self):
+        self.receiver.lag_defer = None
+        sage.lagging = True
+        net_signals.lagging.send()
+        print "LAG EVENT"
 
     def _start_pinging(self):
         """ Start regular pinging """

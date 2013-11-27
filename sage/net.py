@@ -136,7 +136,7 @@ class TelnetClient(Telnet):
 
         data = data.split('\n')
 
-        pre_prompt.send(sender=None, raw_data=data)
+        pre_prompt.send(raw_data=data)
 
         # lines recieved
         lines = data[:-1]
@@ -154,7 +154,7 @@ class TelnetClient(Telnet):
         # send lines to inbound receiver
         lines = inbound.receiver(lines)
 
-        post_prompt.send(sender=None)
+        post_prompt.send()
 
         output = ''
 
@@ -163,8 +163,7 @@ class TelnetClient(Telnet):
 
         output += prompt_output + '\r\n'
 
-        signal.pre_outbound.send(sender=self, lines=sage.buffer,
-            prompt=prompt_output)
+        signal.pre_outbound.send(lines=sage.buffer, prompt=prompt_output)
 
         self.ws_server.instream(lines, prompt_output)
         self.telnet_server.write(output)
@@ -176,18 +175,22 @@ class TelnetClient(Telnet):
         sage.connected = True
         self.telnet_server.ready()
         self.ws_server.ready()
-        signal.connected.send(sender=self)
+        signal.connected.send()
         sage._send = self.transport.write
 
     def connectionLost(self, reason):
         sage.connected = False
-        signal.disconnected.send(sender=self)
+        signal.disconnected.send()
         '''if self.telnet_server is not None:
             self.server.transport.loseConnection()
             self.server = None'''
 
     def dataReceived(self, data):
         """ Recieves and processes raw data from the server """
+
+        if sage.lagging:
+            sage.lagging = False
+            signal.lag_recovered.send()
 
         #if self.compress:  # disabled until it works with GMCP
             #data = self.decompressobj.decompress(data)
