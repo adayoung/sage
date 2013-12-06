@@ -38,7 +38,7 @@ def run():
         print("Telnet proxy port: %s" % config.telnet_port)
 
     if config.ws_server:
-        net.build_ws_factory()
+        factory = net.build_ws_factory()
         print("Sage WS protocol: ws://%s:%s" % (config.ws_host, config.ws_port))
 
     # Add shutdown events

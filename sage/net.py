@@ -69,12 +69,14 @@ class ISageProxy(object):
     def write(self, data):
         pass
 
+    def send(self, data):
+        pass
+
 
 class ISageWSProxy(ISageProxy):
 
     def instream(self, lines, prompt):
         pass
-
 
 class TelnetClient(Telnet):
     """ Connects to the remote server. """
@@ -305,6 +307,30 @@ class TelnetClient(Telnet):
         if self.gmcp_passthrough:
             self.telnet_server.write(IAC + SB + GMCP + data + IAC + SE)
 
+    def send(self, data):
+
+        if data == '':
+            return
+
+        if data == NL:
+            self.transport.write(CR + NL)
+            return
+
+        if NL not in data:
+            line = outbound.receiver(data)
+            self.transport.write(line + CR + NL)
+        else:
+            data = data.replace(CR, '').split(NL)[:-1]
+
+            for line in data:
+                if line == '':
+                    continue
+
+                line = outbound.receiver(line)
+
+                if line:
+                    self.transport.write(line + CR + NL)
+
 
 # client instance
 client = TelnetClient()
@@ -368,20 +394,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
             self.data_buffer += data
 
     def _applicationDataReceived(self, data):
-        if data == NL:
-            self.client.transport.write(data)
-
-        if NL in data:
-            data = data.replace(CR, '').split(NL)[:-1]
-
-            for line in data:
-                if line == '':
-                    continue
-
-                line = outbound.receiver(line)
-
-                if line:
-                    self.client.transport.write(line + CR + NL)
+        self.client.send(data)
 
     def write(self, data):
         for transport in self.factory.transports:
@@ -398,14 +411,14 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
 class SAGEProtoServerProtocol(WampServerProtocol):
 
     def onSessionOpen(self):
-        self.client = client
         self.client.ws_server = self
         self.registerForPubSub("http://sage/event#", True)
         self.registerMethodForRpc('http://sage/input', self, SAGEProtoServerProtocol.input)
         self.registerMethodForRpc('http://sage/is_connected', self, SAGEProtoServerProtocol.is_connected)
 
     def input(self, msg):
-        sage.send(msg.encode('us-ascii'))
+        msg = msg.encode('us-ascii')  # data going to TelnetClient MUST be us-ascii
+        self.client.send(msg + NL)
 
     def is_connected(self):
         self.dispatch('http://sage/event#connected', sage.connected)

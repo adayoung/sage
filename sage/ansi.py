@@ -66,7 +66,7 @@ def colorize(text='', opts=(), **kwargs):
 
     for o in opts:
         if o in opt_dict:
-            code_list.append(opt_dict[o])
+            code_list.insert(0, opt_dict[o])
     if 'noreset' not in opts:
         text = text + '\x1b[%sm' % RESET
     return ('\x1b[%sm' % ';'.join(code_list)) + text
@@ -130,14 +130,14 @@ strfcolor_table = {
     '%_': '\x1b[30m',
     '%m': '\x1b[35m',
     '%c': '\x1b[36m',
-    '%-': '\x1b[30;1m',
-    '%W': '\x1b[37;1m',
-    '%R': '\x1b[31;1m',
-    '%G': '\x1b[32;1m',
-    '%Y': '\x1b[33;1m',
-    '%B': '\x1b[34;1m',
-    '%M': '\x1b[35;1m',
-    '%C': '\x1b[36;1m',
+    '%-': '\x1b[1;30m',
+    '%W': '\x1b[1;37m',
+    '%R': '\x1b[1;31m',
+    '%G': '\x1b[1;32m',
+    '%Y': '\x1b[1;33m',
+    '%B': '\x1b[1;34m',
+    '%M': '\x1b[1;35m',
+    '%C': '\x1b[1;36m',
     '&w': '\x1b[47m',
     '&b': '\x1b[44m',
     '&r': '\x1b[41m',
