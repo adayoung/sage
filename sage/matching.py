@@ -66,6 +66,8 @@ class Matchable(object):
         #: (aliases only) intercept the output of the command
         self.intercept = kwargs.pop('intercept', True)
 
+        self.type = kwargs.pop('group_type', None)
+
         self.timer = None
 
         #: matched line
@@ -348,7 +350,8 @@ class Group(object):
             'disable_on_prompt': disable_on_prompt,
             'gag': gag,
             'intercept': intercept,
-            'parent': self
+            'parent': self,
+            'group_type': self.group_type
         }
 
         if mtype == 'exact':
@@ -387,9 +390,14 @@ class Group(object):
         """
 
         if name is None:
+            self.enabled = False
+
             for instance in self.matchables.values():
                 self.parent()._disable(instance)
-            self.enabled = False
+
+            for group in self.groups.values():
+                group.disable()
+
             return True
         else:
             target = self.get(name)
@@ -421,10 +429,14 @@ class Group(object):
         """
 
         if name is None:
+            self.enabled = True
+
             for instance in self.matchables.values():
                 if instance.enabled:
                     self.parent()._enable(instance)
-            self.enabled = True
+            for group in self.groups.values():
+                if group.enabled:
+                    group.enable()
             return True
         else:
             target = self.get(name)
@@ -649,12 +661,16 @@ class Group(object):
 
 class TriggerGroup(Group):
 
+    group_type = 'trigger'
+
     #: deprecated
     def trigger(self, **kwargs):
         return self._decorator(**kwargs)
 
 
 class AliasGroup(Group):
+
+    group_type = 'alias'
 
     #: deprecated
     def alias(self, **kwargs):

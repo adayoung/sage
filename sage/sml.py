@@ -2,6 +2,7 @@
 
 import yaml
 from sage import triggers, aliases
+import os
 
 
 class NoMatchableType(Exception):
@@ -19,6 +20,9 @@ class InvalidMethod(Exception):
 class InvalidParent(Exception):
     pass
 
+class SMLMethodException(Exception):
+    pass
+
 
 class SMLMethods(dict):
 
@@ -30,6 +34,9 @@ class SMLMethods(dict):
             name = method.__name__
 
         if name in self.reserved_names:
+            if id(method) == id(self[name]):
+                return
+
             raise InvalidMethod('%s is considered a reserved name and '
                 'cannot be registered' % name)
 
@@ -37,6 +44,31 @@ class SMLMethods(dict):
             raise InvalidMethod('%s is already a registered name')
 
         self[name] = method
+
+
+def load_directory(path, parent, extension=None):
+    """ Load all SML files in a directory
+
+        :param path: path to directory
+        :type path: string
+        :param parent: Matchable group to be the parent of those created by the SML file
+        :type parent: string
+        :param extension: (optional) limit files to a file extension
+        :type extension: string
+    """
+    if path.endswith('/') is False:
+        path += '/'
+
+    if extension is not None:
+        if extension.startswith('.') is False:
+            extension = '.' + extension
+
+    for f in os.listdir(path):
+        if extension is None:
+            load_file(path + f, parent)
+            continue
+        elif f.endswith(extension):
+            load_file(path + f, parent)
 
 
 def load_file(f, parent):
@@ -77,19 +109,12 @@ def walk(d, parent):
     groups = {}
 
     for k in d.iterkeys():
-        if k.startswith(':') is False:
+        if k == 'enabled':
+            continue
+        elif k.startswith(':') is False:
             groups[k] = d[k]
         else:
             matchables[k[1:]] = d[k]
-
-        """
-        target, name = k.split(':')
-
-        if target in ('g', 'group'):
-            groups[name] = d[k]
-        elif target == '':
-            matchables[name] = d[k]
-        """
 
     for name, data in groups.iteritems():
         new_group = create_group(name, data, parent)
@@ -168,3 +193,20 @@ def register(method, name=None):
 
 
 methods = SMLMethods()
+
+
+""" Default methods """
+
+def disable_group(sender, param):
+    if sender.type == 'trigger':
+        g = triggers.get_group(param)
+
+    elif sender.type == 'alias':
+        g = aliases.get_group(param)
+
+    if g:
+        g.disable()
+    else:
+        raise SMLMethodException('Cannot find group `%s` for disable_group()' % param)
+
+methods.register(disable_group)

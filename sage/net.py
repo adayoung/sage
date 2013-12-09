@@ -415,6 +415,10 @@ class SAGEProtoServerProtocol(WampServerProtocol):
         self.registerForPubSub("http://sage/event#", True)
         self.registerMethodForRpc('http://sage/input', self, SAGEProtoServerProtocol.input)
         self.registerMethodForRpc('http://sage/is_connected', self, SAGEProtoServerProtocol.is_connected)
+        self.registerMethodForRpc('http://sage/connect', self, SAGEProtoServerProtocol.connect)
+
+    def connect(self):
+        pass
 
     def input(self, msg):
         msg = msg.encode('us-ascii')  # data going to TelnetClient MUST be us-ascii
