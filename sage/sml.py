@@ -27,21 +27,17 @@ class SMLMethodException(Exception):
 class SMLMethods(dict):
 
     reserved_names = ('exact', 'substring', 'regex', 'startswith', 'endswith',
-        'delay', 'enabled', 'ignorecase', 'disable_on_match')
+        'delay', 'enabled', 'ignorecase', 'disable_on_match', 'enable', 'disable',
+        'enable_group', 'disable_group', 'echo', 'gag')
 
-    def register(self, method, name=None):
+    def register(self, method, name=None, system=False):
         if name is None:
             name = method.__name__
 
-        if name in self.reserved_names:
-            if id(method) == id(self[name]):
-                return
+        if name in self.reserved_names and system is False:
 
             raise InvalidMethod('%s is considered a reserved name and '
                 'cannot be registered' % name)
-
-        if name in self:
-            raise InvalidMethod('%s is already a registered name')
 
         self[name] = method
 
@@ -197,6 +193,21 @@ methods = SMLMethods()
 
 """ Default methods """
 
+def enable_group(sender, param):
+    if sender.type == 'trigger':
+        g = triggers.get_group(param)
+
+    elif sender.type == 'alias':
+        g = aliases.get_group(param)
+
+    if g:
+        g.enable()
+    else:
+        raise SMLMethodException('Cannot find group `%s` for enable_group()' % param)
+
+methods.register(enable_group, system=True)
+
+
 def disable_group(sender, param):
     if sender.type == 'trigger':
         g = triggers.get_group(param)
@@ -209,4 +220,4 @@ def disable_group(sender, param):
     else:
         raise SMLMethodException('Cannot find group `%s` for disable_group()' % param)
 
-methods.register(disable_group)
+methods.register(disable_group, system=True)

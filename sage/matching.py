@@ -379,7 +379,7 @@ class Group(object):
 
         return m
 
-    def disable(self, name=None):
+    def disable(self, name=None, child=False):
         """ Disable a group or matchable
 
             If called without a parameter, will disable the group being called.
@@ -390,13 +390,14 @@ class Group(object):
         """
 
         if name is None:
-            self.enabled = False
+            if child is False:
+                self.enabled = False
 
             for instance in self.matchables.values():
                 self.parent()._disable(instance)
 
             for group in self.groups.values():
-                group.disable()
+                group.disable(child=True)
 
             return True
         else:
@@ -418,7 +419,7 @@ class Group(object):
 
         self.parent()._remove_group(self.name)
 
-    def enable(self, name=None):
+    def enable(self, name=None, child=False):
         """ Enable a group or matchable
 
             If called without a parameter, will enable the group being called.
@@ -429,14 +430,15 @@ class Group(object):
         """
 
         if name is None:
-            self.enabled = True
+            if child is False:
+                self.enabled = True
 
             for instance in self.matchables.values():
                 if instance.enabled:
                     self.parent()._enable(instance)
             for group in self.groups.values():
                 if group.enabled:
-                    group.enable()
+                    group.enable(child=True)
             return True
         else:
             target = self.get(name)
@@ -456,6 +458,9 @@ class Group(object):
             :param enabled: (optional) if group is enabled
             :type enabled: bool
         """
+
+        if name in self.groups:
+            return self.groups[name]
 
         if app is None:
             if self.app is None:
