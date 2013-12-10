@@ -193,11 +193,68 @@ methods = SMLMethods()
 
 """ Default methods """
 
-def enable_group(sender, param):
+def disable(sender, param):
+    if param == 'self':
+        sender.disable()
+        return
+
+    if sender.type == 'trigger':
+        m = triggers.get(param)
+    else:
+        m = aliases.get(param)
+
+    if m:
+        m.disable()
+    else:
+        raise SMLMethodException('Cannot find matchable `%s` for disable()' % param)
+
+methods.register(disable, system=True)
+
+
+def enable(sender, param):
+    if param == 'self':
+        sender.enable()
+        return
+
+    if sender.type == 'trigger':
+        m = triggers.get(param)
+    else:
+        m = aliases.get(param)
+
+    if m:
+        m.enable()
+    else:
+        raise SMLMethodException('Cannot find matchable `%s` for enable()' % param)
+
+methods.register(enable, system=True)
+
+
+def disable_group(sender, param):
+    if param == 'self':
+        sender.parent().disable()
+        return
+
     if sender.type == 'trigger':
         g = triggers.get_group(param)
+    else:
+        g = aliases.get_group(param)
 
-    elif sender.type == 'alias':
+    if g:
+        g.disable()
+    else:
+        raise SMLMethodException('Cannot find group `%s` for disable_group()' % param)
+
+methods.register(disable_group, system=True)
+
+
+def enable_group(sender, param):
+    if param == 'self':
+        sender.parent().enable()
+        return
+
+    if sender.type == 'trigger':
+        g = triggers.get_group(param)
+    else:
         g = aliases.get_group(param)
 
     if g:
@@ -208,16 +265,45 @@ def enable_group(sender, param):
 methods.register(enable_group, system=True)
 
 
-def disable_group(sender, param):
-    if sender.type == 'trigger':
-        g = triggers.get_group(param)
+def enable_trigger_group(sender, param):
+    g = triggers.get_group(param)
 
-    elif sender.type == 'alias':
-        g = aliases.get_group(param)
+    if g:
+        g.enable()
+    else:
+        raise SMLMethodException('Cannot find trigger group `%s` for enable_group()' % param)
+
+methods.register(enable_trigger_group, system=True)
+
+
+def enable_alias_group(sender, param):
+    g = aliases.get_group(param)
+
+    if g:
+        g.enable()
+    else:
+        raise SMLMethodException('Cannot find alias group `%s` for enable_group()' % param)
+
+methods.register(enable_alias_group, system=True)
+
+
+def disable_trigger_group(sender, param):
+    g = triggers.get_group(param)
 
     if g:
         g.disable()
     else:
-        raise SMLMethodException('Cannot find group `%s` for disable_group()' % param)
+        raise SMLMethodException('Cannot find trigger group `%s` for disable_group()' % param)
 
-methods.register(disable_group, system=True)
+methods.register(disable_trigger_group, system=True)
+
+
+def disable_alias_group(sender, param):
+    g = aliases.get_group(param)
+
+    if g:
+        g.disable()
+    else:
+        raise SMLMethodException('Cannot find alias group `%s` for disable_group()' % param)
+
+methods.register(disable_alias_group, system=True)
