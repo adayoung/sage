@@ -407,8 +407,6 @@ class Group(object):
                 target.disable()
                 return True
 
-        return False
-
     def destroy(self):
         """ Destroys (deletes) the group """
         for matchable in self.matchables.values():
@@ -447,7 +445,6 @@ class Group(object):
                 target.enable()
                 return True
 
-        return False
 
     def create_group(self, name, app=None, enabled=True):
         """ Creates a child group
@@ -654,8 +651,9 @@ class Group(object):
         return self._decorator(**kwargs)
 
     def __repr__(self):
-        return "%s '%s' (%s groups, %s objects)" % (self.__class__,
-            self.name, len(self.groups), len(self.matchables))
+        estring = 'enabled' if self.enabled else 'disabled'
+        return "%s '%s' (%s groups, %s objects) [%s]" % (self.__class__,
+            self.name, len(self.groups), len(self.matchables), estring)
 
     def __getitem__(self, *args, **kwargs):
         return self.matchables.__getitem__(*args, **kwargs)
