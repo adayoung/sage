@@ -29,7 +29,7 @@ You might enjoy Sage if:
 - Unix-like operating system (OS X, Linux, BSD, etc...)
 
 ## Documentation
-Go to http://astralinae.github.com/sage for a prebuilt version of the current documentation. Otherwise build them yourself from the sphinx sources in the docs folder.
+Go to http://spicerack.github.com/sage for a prebuilt version of the current documentation. Otherwise build them yourself from the sphinx sources in the docs folder.
 
 ## Support
 Please feel free to file an issue here if you have a problem or find a bug.
@@ -38,6 +38,6 @@ You might find some helpful folks at \#astralinae on Freenode IRC.
 
 ## Contribute
 1. Check for open issues or open a fresh issue to start a discussion around a feature idea or a bug.
-2. Fork the [repository](http://github.com/astralinae/sage) on Github to start making your changes to the master branch (or branch off of it).
+2. Fork the [repository](http://github.com/spicerack/sage) on Github to start making your changes to the master branch (or branch off of it).
 3. If you can, please write a test which shows that the bug was fixed or that the feature works as expected.
 4. Send a pull request and bug the maintainer until it gets merged and published.
