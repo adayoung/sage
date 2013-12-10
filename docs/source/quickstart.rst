@@ -306,4 +306,4 @@ Now the trigger will be enabled every time the room changes. This is just a tiny
 example of the things you can make with Sage. Continue reading the user guide
 and try writing your own apps!
 
-See this full example at https://github.com/astralinae/sage/tree/master/examples/quickstart
+See this full example at https://github.com/spicerack/sage/tree/master/examples/quickstart

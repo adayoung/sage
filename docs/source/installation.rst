@@ -26,12 +26,12 @@ Pip makes installing Sage and its dependencies painless.
 
 .. code-block:: console
 
-    $ pip install -e git+https://github.com/astralinae/sage.git#egg=sage
+    $ pip install -e git+https://github.com/spicerack/sage.git#egg=sage
 
 Manually
 --------
 
-Because of `Issue #4 <https://github.com/astralinae/sage/issues/4>`_, you might
+Because of `Issue #4 <https://github.com/spicerack/sage/issues/4>`_, you might
 have to install `pyasn1` manually first if you are using a virtualenv:
 
 .. code-block:: console
@@ -42,7 +42,7 @@ Clone Sage and build with `setup.py`:
 
 .. code-block:: console
 
-    $ git clone git://github.com/astralinae/sage.git
+    $ git clone git://github.com/spicerack/sage.git
     $ cd sage
     $ python setup.py install
 

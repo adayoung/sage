@@ -1,5 +1,5 @@
 """
-    http://astralinae.github.io/sage/html/quickstart.html
+    http://spicerack.github.io/sage/html/quickstart.html
 """
 
 from sage import triggers, aliases, ansi, send

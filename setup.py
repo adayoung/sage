@@ -30,7 +30,7 @@ setup(
     version='2.0.0.a2',
     description="Proxy and development framework for IRE's Achaea.",
     author='Todd Wilson',
-    url='http://github.com/astralinae/sage',
+    url='http://github.com/spicerack/sage',
     install_requires=requires,
     license='GPLv3',
     packages=find_packages(exclude=['ez_setup', 'tests', 'tests.*']),

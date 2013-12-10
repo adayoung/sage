@@ -1,4 +1,4 @@
-![Sage Logo](https://raw.github.com/astralinae/sage/master/docs/source/_static/logo-full.png) _A Python Framework and Proxy for Achaea_
+![Sage Logo](https://raw.github.com/spicerack/sage/master/docs/source/_static/logo-full.png) _A Python Framework and Proxy for Achaea_
 
 ## Description
 
