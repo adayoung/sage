@@ -211,5 +211,19 @@ class TestApps(unittest.TestCase):
         self.assertIn('dummy', triggers.groups)
         self.assertEqual(len(apps.groups['dummyapp']), 1)
 
+
+class TestGroups(unittest.TestCase):
+
+    def setUp(self):
+        self.l1 = triggers.create_group('level_1', app='sage')
+        self.l2 = self.l1.create_group('level_2', enabled=False)
+        self.l3 = self.l2.create_group('level_3')
+
+    def test_subgroup_disable_chain(self):
+        self.assertFalse(self.l2.enabled)
+        self.l1.disable()
+        self.assertFalse(self.l1.enabled)
+        self.assertTrue(self.l3.enabled)
+
 if __name__ == '__main__':
     unittest.main()
