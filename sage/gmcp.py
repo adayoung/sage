@@ -360,8 +360,8 @@ class GMCPReceiver(object):
             num = int(d['location'][3:])
 
             if num in player.inv:
-                del(player.inv[num])
                 gmcp_signals.room_remove_item.send(item=item, container=player.inv[num])
+                del(player.inv[num])
         else:
            print("Char.Items.Remove %s" % d)
 
