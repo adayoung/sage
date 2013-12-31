@@ -52,6 +52,11 @@ def pre_shutdown():
     """ Before the reactor stops """
     pre_shutdown_signal.send()
 
+    to_unload = [app for app in apps]
+
+    for app in to_unload:
+        apps.unload(app)
+
 
 def post_shutdown():
     """ After the reactor has stopped """
