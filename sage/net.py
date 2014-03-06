@@ -8,8 +8,8 @@ from __future__ import absolute_import
 from twisted.conch.telnet import Telnet, StatefulTelnetProtocol
 from twisted.internet.protocol import ClientFactory, ServerFactory
 from twisted.internet import reactor
-from autobahn.websocket import listenWS
-from autobahn.wamp import WampServerFactory, WampServerProtocol
+#from autobahn.websocket import listenWS
+#from autobahn.wamp import WampServerFactory, WampServerProtocol
 import sage
 from sage.utils import error
 from sage import inbound, outbound, gmcp, prompt, config, _log, ansi
@@ -408,6 +408,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
         return False
 
 
+'''
 class SAGEProtoServerProtocol(WampServerProtocol):
 
     def onSessionOpen(self):
@@ -432,6 +433,7 @@ class SAGEProtoServerProtocol(WampServerProtocol):
 
     def ready(self):
         pass
+'''
 
 
 def build_telnet_factory():
@@ -444,6 +446,8 @@ def build_telnet_factory():
     return factory
 
 
+'''
+WAMP websocket stuff is disabled for the moment
 def build_ws_factory():
     """ Setup Websocket factory """
 
@@ -451,5 +455,7 @@ def build_ws_factory():
     SAGEProtoServerProtocol.client = client
     factory.protocol = SAGEProtoServerProtocol
     factory.setProtocolOptions(allowHixie76=True)
-    listenWS(factory)
+    reactor.listenTCP(config.ws_port, factory)
+    #listenWS(factory)
     return factory
+'''
