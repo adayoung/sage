@@ -2,7 +2,6 @@ PyYAML>=3.10
 Twisted==13.2.0
 pyasn1>=0.1.7
 pycrypto==2.6.1
-setproctitle>=1.1.8
 zope.interface>=4.0.5
 watchdog==0.7.1
 autobahn==0.8.4-2

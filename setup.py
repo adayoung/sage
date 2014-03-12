@@ -14,11 +14,11 @@ from setuptools import setup, find_packages
 
 requires = [
     'twisted',
-    'setproctitle',
     'pycrypto',
     'pyasn1',
     'PyYAML',
-    'watchdog'
+    'watchdog',
+    'autobahn'
 ]
 
 entrypoints = {
