@@ -983,7 +983,7 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 
 <dl class="data">
 <dt id="sage.player.room">
-<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.contrib.containers.Room object at 0x106677d50&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.contrib.containers.Room object at 0x1118cfd10&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
 <dd><p>Room data</p>
 </dd></dl>
 
@@ -1083,7 +1083,7 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 
 <dl class="data">
 <dt id="sage.sml.methods">
-<tt class="descclassname">sage.sml.</tt><tt class="descname">methods</tt><em class="property"> = {'enable_group': &lt;function enable_group at 0x1066dd758&gt;, 'disable_group': &lt;function disable_group at 0x1066dd7d0&gt;}</em><a class="headerlink" href="#sage.sml.methods" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.sml.</tt><tt class="descname">methods</tt><em class="property"> = {'enable': &lt;function enable at 0x111996938&gt;, 'disable_alias_group': &lt;function disable_alias_group at 0x111996c08&gt;, 'enable_group': &lt;function enable_group at 0x111996a28&gt;, 'enable_alias_group': &lt;function enable_alias_group at 0x111996b18&gt;, 'disable': &lt;function disable at 0x1119968c0&gt;, 'enable_trigger_group': &lt;function enable_trigger_group at 0x111996aa0&gt;, 'disable_trigger_group': &lt;function disable_trigger_group at 0x111996b90&gt;, 'disable_group': &lt;function disable_group at 0x1119969b0&gt;}</em><a class="headerlink" href="#sage.sml.methods" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default methods</p>
 </dd></dl>
 
@@ -1157,6 +1157,12 @@ whenever a signal is called.</p>
 
 </div>
 <span class="target" id="module-sage.signals.gmcp"></span><dl class="data">
+<dt id="sage.signals.gmcp.comms">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">comms</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.comms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Someone speaking on a communications channel</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="sage.signals.gmcp.goodbye">
 <tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">goodbye</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.goodbye" title="Permalink to this definition">¶</a></dt>
 <dd><p>Goodbye</p>
@@ -1184,6 +1190,12 @@ whenever a signal is called.</p>
 <dt id="sage.signals.gmcp.inv_update_item">
 <tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_update_item</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_update_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Item updated</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.iretime">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">iretime</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.iretime" title="Permalink to this definition">¶</a></dt>
+<dd><p>IRE Time update</p>
 </dd></dl>
 
 <dl class="data">
@@ -1250,6 +1262,18 @@ whenever a signal is called.</p>
 <dt id="sage.signals.gmcp.room_update_item">
 <tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_update_item</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_update_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Item in room updated</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.room_wrongdir">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_wrongdir</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_wrongdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>You attempted to go in the wrong direction</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="sage.signals.gmcp.skills">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">skills</tt><em class="property"> = &lt;Signal: Signal&gt;</em><a class="headerlink" href="#sage.signals.gmcp.skills" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updated dictionary of all skills</p>
 </dd></dl>
 
 <dl class="data">
