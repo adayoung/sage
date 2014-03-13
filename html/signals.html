@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+
+    <title>Signals &mdash; sage 2.0.0.r2 documentation</title>
+
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+
+
+    
+    <link rel="stylesheet" href="_static/rtd.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.0.0.r2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/searchtools.js"></script>
+    <link rel="top" title="sage 2.0.0.r2 documentation" href="index.html" />
+    <link rel="next" title="API" href="api.html" />
+    <link rel="prev" title="Matchables" href="matchables.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="matchables.html" title="Matchables"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">sage 2.0.0.r2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="signals">
+<span id="id1"></span><h1>Signals<a class="headerlink" href="#signals" title="Permalink to this headline">¶</a></h1>
+<p>Sage includes a &#8220;signal dispatcher&#8221; which helps allow decoupled applications
+get notified when actions occur elsewhere in the framework. In a nutshell,
+signals allow certain <em>senders</em> to notify a set of <em>receivers</em> that some action
+has taken place. They&#8217;re especially useful when many pieces of code may be
+interested in the same events.</p>
+<p>Sage provides a <tt class="xref doc docutils literal"><span class="pre">set</span> <span class="pre">of</span> <span class="pre">built-in</span> <span class="pre">signals</span></tt> that let user
+code get notified by Sage itself of certain actions.
+You can also <a class="reference internal" href="#defining-and-sending-signals">define and send your own custom signals</a>; see below.</p>
+<div class="section" id="listening-to-signals">
+<h2>Listening to signals<a class="headerlink" href="#listening-to-signals" title="Permalink to this headline">¶</a></h2>
+<p>To receive a signal, you need to register a <em>receiver</em> function that gets
+called when the signal is sent by using the <a class="reference internal" href="#Signal.connect" title="Signal.connect"><tt class="xref py py-meth docutils literal"><span class="pre">Signal.connect()</span></tt></a> method:</p>
+<dl class="method">
+<dt id="Signal.connect">
+<tt class="descclassname">Signal.</tt><tt class="descname">connect</tt><big>(</big><em>receiver</em><span class="optional">[</span>, <em>sender=None</em>, <em>weak=True</em>, <em>dispatch_uid=None</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#Signal.connect" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>receiver</strong> &#8211; The callback function which will be connected to this
+signal. See <a class="reference internal" href="#receiver-functions"><em>Receiver functions</em></a> for more information.</li>
+<li><strong>sender</strong> &#8211; Specifies a particular sender to receive signals from. See
+<em class="xref std std-ref">connecting-to-specific-signals</em> for more information.</li>
+<li><strong>weak</strong> &#8211; Sage stores signal handlers as weak references by
+default. Thus, if your receiver is a local function, it may be
+garbage collected. To prevent this, pass <tt class="docutils literal"><span class="pre">weak=False</span></tt> when you call
+the signal&#8217;s <tt class="docutils literal"><span class="pre">connect()</span></tt> method.</li>
+<li><strong>dispatch_uid</strong> &#8211; A unique identifier for a signal receiver in cases
+where duplicate signals may be sent. See
+<a class="reference internal" href="#preventing-duplicate-signals"><em>Preventing duplicate signals</em></a> for more information.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Let&#8217;s see how this works by registering a signal that
+gets called every time we successfully log into Achaea. We&#8217;ll be connecting to the
+<a class="reference internal" href="api.html#sage.signals.player_connected" title="sage.signals.player_connected"><tt class="xref py py-data docutils literal"><span class="pre">player_connected</span></tt></a> signal.</p>
+<div class="section" id="receiver-functions">
+<span id="id2"></span><h3>Receiver functions<a class="headerlink" href="#receiver-functions" title="Permalink to this headline">¶</a></h3>
+<p>First, we need to define a receiver function. A receiver can be any Python
+function or method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">my_callback</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Request finished!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notice that the function takes a <tt class="docutils literal"><span class="pre">signal</span></tt> argument, along with wildcard
+keyword arguments (<tt class="docutils literal"><span class="pre">**kwargs</span></tt>); all signal handlers must take these arguments.</p>
+<p>We&#8217;ll look at senders a bit later, but right now look at the <tt class="docutils literal"><span class="pre">**kwargs</span></tt>
+argument. All signals send keyword arguments, and may change those keyword
+arguments at any time. In the case of
+<a class="reference internal" href="api.html#sage.signals.player_connected" title="sage.signals.player_connected"><tt class="xref py py-data docutils literal"><span class="pre">player_connected</span></tt></a>, it&#8217;s documented as sending no
+arguments, which means we might be tempted to write our signal handling as
+<tt class="docutils literal"><span class="pre">my_callback(signal)</span></tt>.</p>
+<p>This would be wrong &#8211; in fact, Sage might throw an error if you do so. That&#8217;s
+because at any point arguments could get added to the signal and your receiver
+must be able to handle those new arguments.</p>
+</div>
+<div class="section" id="connecting-receiver-functions">
+<span id="id3"></span><h3>Connecting receiver functions<a class="headerlink" href="#connecting-receiver-functions" title="Permalink to this headline">¶</a></h3>
+<p>To connect a receiver to a signal, you use that signal&#8217;s <tt class="docutils literal"><span class="pre">connect</span></tt> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage.signals</span> <span class="kn">import</span> <span class="n">player_connected</span>
+
+<span class="n">player_connected</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">my_callback</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, our <tt class="docutils literal"><span class="pre">my_callback</span></tt> function will be called each time a request finishes.</p>
+</div>
+<div class="section" id="preventing-duplicate-signals">
+<span id="id4"></span><h3>Preventing duplicate signals<a class="headerlink" href="#preventing-duplicate-signals" title="Permalink to this headline">¶</a></h3>
+<p>In some circumstances, the code connecting receivers to signals may run
+multiple times. This can cause your receiver function to be registered more
+than once, and thus called multiples times for a single signal event.</p>
+<p>If this behavior is problematic (such as when using signals to
+send an email whenever a model is saved), pass a unique identifier as
+the <tt class="docutils literal"><span class="pre">dispatch_uid</span></tt> argument to identify your receiver function. This
+identifier will usually be a string, although any hashable object will
+suffice. The end result is that your receiver function will only be
+bound to the signal once for each unique <tt class="docutils literal"><span class="pre">dispatch_uid</span></tt> value.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage.signals</span> <span class="kn">import</span> <span class="n">player_connected</span>
+
+<span class="n">player_connected</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">my_callback</span><span class="p">,</span> <span class="n">dispatch_uid</span><span class="o">=</span><span class="s">&quot;my_unique_identifier&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="defining-and-sending-signals">
+<h2>Defining and sending signals<a class="headerlink" href="#defining-and-sending-signals" title="Permalink to this headline">¶</a></h2>
+<p>Your applications can take advantage of the signal infrastructure and provide
+its own signals.</p>
+<div class="section" id="defining-signals">
+<h3>Defining signals<a class="headerlink" href="#defining-signals" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Signal">
+<em class="property">class </em><tt class="descname">Signal</tt><big>(</big><span class="optional">[</span><em>providing_args=list</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#Signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>All signals are <tt class="xref py py-class docutils literal"><span class="pre">sage.dispatch.signal.Signal</span></tt> instances. The
+<tt class="docutils literal"><span class="pre">providing_args</span></tt> is a list of the names of arguments the signal will provide
+to listeners. This is purely documentational, however, as there is nothing that
+checks that the signal actually provides these arguments to its listeners.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sage.dispatch.signal</span> <span class="kn">import</span> <span class="n">Signal</span>
+
+<span class="n">pizza_done</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="n">providing_args</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;toppings&quot;</span><span class="p">,</span> <span class="s">&quot;size&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This declares a <tt class="docutils literal"><span class="pre">pizza_done</span></tt> signal that will provide receivers with
+<tt class="docutils literal"><span class="pre">toppings</span></tt> and <tt class="docutils literal"><span class="pre">size</span></tt> arguments.</p>
+<p>Remember that you&#8217;re allowed to change this list of arguments at any time, so getting the API right on the first try isn&#8217;t necessary.</p>
+</div>
+<div class="section" id="sending-signals">
+<h3>Sending signals<a class="headerlink" href="#sending-signals" title="Permalink to this headline">¶</a></h3>
+<p>To send a signal, call either <a class="reference internal" href="#Signal.send" title="Signal.send"><tt class="xref py py-meth docutils literal"><span class="pre">Signal.send()</span></tt></a>.
+You must provide the <tt class="docutils literal"><span class="pre">sender</span></tt> argument, and may provide as many other keyword
+arguments as you like.</p>
+<dl class="method">
+<dt id="Signal.send">
+<tt class="descclassname">Signal.</tt><tt class="descname">send</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#Signal.send" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>For example, here&#8217;s how sending our <tt class="docutils literal"><span class="pre">pizza_done</span></tt> signal might look:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">PizzaStore</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">send_pizza</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toppings</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">pizza_done</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">toppings</span><span class="o">=</span><span class="n">toppings</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">send()</span></tt> returns a list of tuple pairs
+<tt class="docutils literal"><span class="pre">[(receiver,</span> <span class="pre">response),</span> <span class="pre">...</span> <span class="pre">]</span></tt>, representing the list of called receiver
+functions and their response values.</p>
+<p><tt class="docutils literal"><span class="pre">send()</span></tt> catches all errors derived from Python&#8217;s <tt class="docutils literal"><span class="pre">Exception</span></tt> class,
+and ensures all receivers are notified of the signal. If an error occurs, the
+error instance is returned in the tuple pair for the receiver that raised the error.</p>
+</div>
+</div>
+<div class="section" id="disconnecting-signals">
+<h2>Disconnecting signals<a class="headerlink" href="#disconnecting-signals" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="Signal.disconnect">
+<tt class="descclassname">Signal.</tt><tt class="descname">disconnect</tt><big>(</big><span class="optional">[</span><em>receiver=None</em>, <em>sender=None</em>, <em>weak=True</em>, <em>dispatch_uid=None</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#Signal.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>To disconnect a receiver from a signal, call <a class="reference internal" href="#Signal.disconnect" title="Signal.disconnect"><tt class="xref py py-meth docutils literal"><span class="pre">Signal.disconnect()</span></tt></a>. The
+arguments are as described in <a class="reference internal" href="#Signal.connect" title="Signal.connect"><tt class="xref py py-meth docutils literal"><span class="pre">Signal.connect()</span></tt></a>.</p>
+<p>The <em>receiver</em> argument indicates the registered receiver to disconnect. It may
+be <tt class="docutils literal"><span class="pre">None</span></tt> if <tt class="docutils literal"><span class="pre">dispatch_uid</span></tt> is used to identify the receiver.</p>
+<div class="section" id="credit">
+<h3>Credit<a class="headerlink" href="#credit" title="Permalink to this headline">¶</a></h3>
+<p>Sage&#8217;s signals are heavily inspired by Django&#8217;s signals (as is this documentation). Full credit
+to the Django project.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Signals</a><ul>
+<li><a class="reference internal" href="#listening-to-signals">Listening to signals</a><ul>
+<li><a class="reference internal" href="#receiver-functions">Receiver functions</a></li>
+<li><a class="reference internal" href="#connecting-receiver-functions">Connecting receiver functions</a></li>
+<li><a class="reference internal" href="#preventing-duplicate-signals">Preventing duplicate signals</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#defining-and-sending-signals">Defining and sending signals</a><ul>
+<li><a class="reference internal" href="#defining-signals">Defining signals</a></li>
+<li><a class="reference internal" href="#sending-signals">Sending signals</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#disconnecting-signals">Disconnecting signals</a><ul>
+<li><a class="reference internal" href="#credit">Credit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="matchables.html"
+                        title="previous chapter">Matchables</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="next chapter">API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/signals.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="matchables.html" title="Matchables"
+             >previous</a> |</li>
+        <li><a href="index.html">sage 2.0.0.r2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+<div class="footer">
+</div>
+
+
+
+
+
+  </body>
+</html>

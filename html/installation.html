@@ -73,7 +73,7 @@ supported it yet. Sage also can be used with <a class="reference external" href=
 installed but not required.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">Sage currently does not support Windows. Please read <a class="reference internal" href="windows.html#windows"><em>Notes on Windows</em></a>
+<p class="last">Sage does not &#8220;officially&#8221; support Windows. Please read <a class="reference internal" href="windows.html#windows"><em>Notes on Windows</em></a>
 for more info.</p>
 </div>
 <div class="section" id="using-pip">
@@ -85,15 +85,19 @@ for more info.</p>
 </div>
 <div class="section" id="manually">
 <h2>Manually<a class="headerlink" href="#manually" title="Permalink to this headline">¶</a></h2>
-<p>Because of <a class="reference external" href="https://github.com/spicerack/sage/issues/4">Issue #4</a>, you might
-have to install <cite>pyasn1</cite> manually first if you are using a virtualenv:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> pip install pyasn1
-</pre></div>
-</div>
 <p>Clone Sage and build with <cite>setup.py</cite>:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> git clone git://github.com/spicerack/sage.git
 <span class="gp">$</span> <span class="nb">cd </span>sage
 <span class="gp">$</span> python setup.py install
+</pre></div>
+</div>
+</div>
+<div class="section" id="for-development">
+<h2>For Development<a class="headerlink" href="#for-development" title="Permalink to this headline">¶</a></h2>
+<p>If you&#8217;re looking to hack on Sage, then you&#8217;ll want to install it in development mode:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> git clone git://github.com/spicerack/sage.git
+<span class="gp">$</span> <span class="nb">cd </span>sage
+<span class="gp">$</span> python setup.py develop
 </pre></div>
 </div>
 </div>
@@ -118,6 +122,7 @@ is not (nor ever will be) designed to work with screenwidth 80.</p>
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#using-pip">Using Pip</a></li>
 <li><a class="reference internal" href="#manually">Manually</a></li>
+<li><a class="reference internal" href="#for-development">For Development</a></li>
 <li><a class="reference internal" href="#screenwidth-0">Screenwidth 0</a></li>
 </ul>
 </li>

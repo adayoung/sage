@@ -12,5 +12,5 @@ stability on a platform I don't have access to. If Sage ever does support
 Windows, it will be because someone has contributed pull requests (see
 :ref:`contributing`) or became a maintainer for it. That someone could be you.
 
-That being said, if you are just determined to run Sage you might have some luck
+That being said, if you are just determined to run Sage some people have had luck
 with `Cygwin <http://www.cygwin.com>`_. Good luck, and share what you know!

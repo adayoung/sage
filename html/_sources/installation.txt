@@ -16,7 +16,7 @@ It's also recommended to have `libyaml <http://pyyaml.org/wiki/LibYAML>`_
 installed but not required.
 
 .. warning::
-    Sage currently does not support Windows. Please read :ref:`windows`
+    Sage does not "officially" support Windows. Please read :ref:`windows`
     for more info.
 
 Using Pip
@@ -31,13 +31,6 @@ Pip makes installing Sage and its dependencies painless.
 Manually
 --------
 
-Because of `Issue #4 <https://github.com/spicerack/sage/issues/4>`_, you might
-have to install `pyasn1` manually first if you are using a virtualenv:
-
-.. code-block:: console
-
-    $ pip install pyasn1
-
 Clone Sage and build with `setup.py`:
 
 .. code-block:: console
@@ -45,6 +38,18 @@ Clone Sage and build with `setup.py`:
     $ git clone git://github.com/spicerack/sage.git
     $ cd sage
     $ python setup.py install
+
+For Development
+---------------
+
+If you're looking to hack on Sage, then you'll want to install it in development mode:
+
+.. code-block:: console
+
+    $ git clone git://github.com/spicerack/sage.git
+    $ cd sage
+    $ python setup.py develop
+
 
 Screenwidth 0
 -------------
