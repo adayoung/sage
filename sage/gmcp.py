@@ -371,7 +371,7 @@ class GMCPReceiver(object):
 
         player.rift.clear()
 
-        if type(d) is not dict:
+        if d is None:
             return
 
         for i in d:
