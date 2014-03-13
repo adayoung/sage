@@ -30,6 +30,3 @@ prompt_stats = Signal(providing_args=['stats', 'renderer'])
 
 #: Before the Twisted Reactor stops
 pre_shutdown = Signal()
-
-#: After the Twisted Reactor stops
-post_shutdown = Signal()
