@@ -52,6 +52,7 @@ class GMCPReceiver(object):
             'Char.StatusVars': self.statusvars,
             'Comm.Channel.List': self.comm_channels,
             'Comm.Channel.Start': self.comm_channel_start,
+            'Comm.Channel.Text': self.comm_channel_text,
             'Comm.Channel.End': self.comm_channel_end,
             'Room.Info': self.room,
             'Room.Players': self.room_players,
@@ -418,9 +419,17 @@ class GMCPReceiver(object):
     def comm_channel_end(self, d):
         pass
 
+    # Comm.Channel.Text
+    def comm_channel_text(self, d):
+        gmcp_signals.comms.send(
+            talker=d['talker'],
+            channel=d['channel'],
+            text=d['text']
+        )
+
     # Room.WrongDir
     def wrong_dir(self, d):
-        pass
+        gmcp_signals.room_wrongdir.send()
 
     # IRE.Time.Update & IRE.Time.List
     def time_update(self, d):

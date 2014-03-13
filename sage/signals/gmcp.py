@@ -44,6 +44,9 @@ room_remove_player = Signal(providing_args=['player'])
 #: Updated players in the room
 room_players = Signal(providing_args=['players'])
 
+#: You attempted to go in the wrong direction
+room_wrongdir = Signal()
+
 #: Item added to inventory
 inv_add_item = Signal(providing_args=['item', 'container'])
 
@@ -62,8 +65,11 @@ rift = Signal(providing_args=['rift'])
 #: Changed rift item
 rift_change = Signal(providing_args=['name', 'amount'])
 
-# IRE Time update
+#: IRE Time update
 iretime = Signal(providing_args=['time'])
 
-# Updated dictionary of all skills
+#: Updated dictionary of all skills
 skills = Signal(providing_args=['skills'])
+
+#: Someone speaking on a communications channel
+comms = Signal(providing_args=['talker', 'channel', 'text'])
