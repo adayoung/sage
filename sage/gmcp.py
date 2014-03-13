@@ -367,7 +367,7 @@ class GMCPReceiver(object):
            print("Char.Items.Remove %s" % d)
 
     # IRE.Rift.List
-    def rift_list(self, d):
+    def rift_list(self, d=None):
 
         player.rift.clear()
 
