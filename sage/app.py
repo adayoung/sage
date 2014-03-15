@@ -181,7 +181,7 @@ class Apps(dict):
         if hasattr(self[name], 'post_reload'):
             self[name].post_reload()
 
-        sage._log.msg("Reloaded app '%s'" % name)
+        sage._log.msg("Reloaded app '%s'" % self.meta[name].name)
 
         return True
 
