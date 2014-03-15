@@ -56,6 +56,14 @@ class Apps(dict):
         self.groups[app].discard(matchable)
 
     def load(self, name):
+        self._load(name)
+
+        for app in self._names:
+            if app is not 'sage':
+                if hasattr(self[app], 'init'):
+                    self[app].init()
+
+    def _load(self, name):
         """ Load a module or package into the namespace """
 
         name = self._preload(name)
@@ -79,16 +87,13 @@ class Apps(dict):
                     sys.path.append(path + '/apps')
 
                 for subapp in meta.installed_apps:
-                    self.load(subapp)
+                    self._load(subapp)
 
             self.meta[meta.__name__] = meta
 
             app = importlib.import_module('%s.%s' % (ns.__name__, name))
 
             self[meta.__name__] = app
-
-            if hasattr(app, 'init'):
-                app.init()
 
             fullname = ns.__name__
             if hasattr(meta, 'name'):
@@ -107,8 +112,8 @@ class Apps(dict):
             return True
 
         del(self.groups[name])
-        self._names.discard(name)
         sage._log.msg("Failed to load app '%s'" % name)
+        return False
 
     def _generate_paths(self):
         self.paths = dict()
@@ -201,6 +206,7 @@ class Apps(dict):
         del(self.paths[name])
         del(self[name])
         del(self.meta[name])
+        self._names.discard(name)
 
         to_del = [mod for mod in sys.modules if mod.startswith(name)]
 
