@@ -165,7 +165,11 @@ class TelnetClient(Telnet):
 
         output += prompt_output + '\r\n'
 
-        signal.pre_outbound.send(lines=sage.buffer, prompt=prompt_output)
+        signal.pre_outbound.send(
+            lines=sage.buffer,
+            ansi_prompt=prompt_output,
+            prompt=ansi.filter_ansi(prompt_output)
+        )
 
         self.ws_server.instream(lines, prompt_output)
         self.telnet_server.write(output)
