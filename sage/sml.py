@@ -3,6 +3,7 @@
 import yaml
 from sage import triggers, aliases
 import os
+from functools import wraps
 
 
 class NoMatchableType(Exception):
@@ -186,6 +187,14 @@ def register(method, name=None):
     """
 
     methods.register(method, name)
+
+
+def sml(method, **kwargs):
+    """ Decorator for registering SML methods """
+
+    name = kwargs.pop('name', None)
+    register(method, name=name)
+    return wraps(method)
 
 
 methods = SMLMethods()

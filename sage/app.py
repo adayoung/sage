@@ -146,6 +146,9 @@ class Apps(dict):
         else:
             shortname = name
 
+        if '.' in shortname:
+            shortname = shortname.split('.')[-1]
+
         if name not in self.groups:
             self.groups[shortname] = set()
 
@@ -212,8 +215,9 @@ class Apps(dict):
         if hasattr(self[name], 'unload'):
             self[name].unload()
 
-        while len(self.groups[name]) > 0:
-            self.groups[name].pop().destroy()
+        if name in self.groups:
+            while len(self.groups[name]) > 0:
+                self.groups[name].pop().destroy()
 
         del(self.groups[name])
         del(self.paths[name])
