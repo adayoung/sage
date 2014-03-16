@@ -68,8 +68,6 @@ class Apps(dict):
                 if hasattr(self[app], 'post_init'):
                     self[app].post_init()
 
-        self._names.clear()
-
     def _load(self, name):
         """ Load a module or package into the namespace """
 
@@ -89,8 +87,15 @@ class Apps(dict):
 
             meta = importlib.import_module('%s.meta' % name)
 
+            modname = ns.__name__
+
+            if '.' in ns.__name__:
+                modname = name.split('.')[-1]
+
+            self._names.add(modname)
+
             meta.path = path
-            meta.__name__ = ns.__name__
+            meta.__name__ = modname
 
             if hasattr(meta, 'installed_apps'):
                 if os.path.exists(path + '/apps') or os.path.isdir(path + '/apps'):
@@ -100,11 +105,6 @@ class Apps(dict):
                     self._load(subapp)
 
             self.meta[meta.__name__] = meta
-
-            modname = name
-
-            if '.' in name:
-                modname = name.split('.')[-1]
 
             app = importlib.import_module('%s.%s' % (ns.__name__, modname))
 
@@ -145,8 +145,6 @@ class Apps(dict):
             shortname = name = name.split('/')[-1]
         else:
             shortname = name
-
-        self._names.add(shortname)
 
         if name not in self.groups:
             self.groups[shortname] = set()
