@@ -77,10 +77,13 @@ class Apps(dict):
 
         with imports.cwd_in_path():
             try:
-                ns = imports.import_file(name)
+                ns = importlib.import_module(name)
             except ImportError:
-                sage._log.err("Error: Unable to import app '%s'" % name)
-                return
+                try:
+                    ns = imports.import_file(name)
+                except ImportError:
+                    sage._log.err("Error: Unable to import app '%s'" % name)
+                    return
 
             path = os.path.dirname(inspect.getabsfile(ns))
 
@@ -98,7 +101,12 @@ class Apps(dict):
 
             self.meta[meta.__name__] = meta
 
-            app = importlib.import_module('%s.%s' % (ns.__name__, name))
+            modname = name
+
+            if '.' in name:
+                modname = name.split('.')[-1]
+
+            app = importlib.import_module('%s.%s' % (ns.__name__, modname))
 
             self[meta.__name__] = app
 
