@@ -32,7 +32,7 @@ class Buffer(list):
     def __init__(self, lines):
 
         for line in lines:
-                self.append(line)
+            self.append(line)
 
     def append(self, line):
         """ Append a line to the buffer as a :class:`sage.inbound.Line` """

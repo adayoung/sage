@@ -63,6 +63,13 @@ class Apps(dict):
                 if hasattr(self[app], 'init'):
                     self[app].init()
 
+        for app in self._names:
+            if app is not 'sage':
+                if hasattr(self[app], 'post_init'):
+                    self[app].post_init()
+
+        self._names.clear()
+
     def _load(self, name):
         """ Load a module or package into the namespace """
 
