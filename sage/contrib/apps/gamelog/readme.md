@@ -23,7 +23,7 @@ By default your logs will appear in `$HOME/sage-logs`. You can change this direc
 
 ```python
 # In your parent/main app
-import gamelog
+from sage.apps import gamelog
 gamelog.config['log_directory'] = '/path/to/logs'
 ```
 
