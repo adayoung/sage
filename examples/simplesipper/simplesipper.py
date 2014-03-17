@@ -35,7 +35,7 @@ def sip(vial):
     sage.send('sip ' + vial)
 
 
-def onprompt(sender, **kwargs):
+def onprompt(**kwargs):
     """ runs every prompt """
 
     # we haven't gotten vital data yet
