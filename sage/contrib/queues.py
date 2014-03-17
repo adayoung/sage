@@ -30,7 +30,7 @@ class PriorityQueue(object):
         """ Add a task to the queue """
 
         if task in self.task_map:
-            remove_task(task)
+            self.remove(task)
 
         count = next(self.counter)
         entry = [priority, count, task]
@@ -43,7 +43,7 @@ class PriorityQueue(object):
         while self.tasks:
             priority, count, task = heapq.heappop(self.tasks)
             if task is not REMOVED:
-                del task_map[task]
+                del self.task_map[task]
                 return task
 
         return None
@@ -51,8 +51,16 @@ class PriorityQueue(object):
     def remove(self, task):
         """ Remove a task from the queue """
 
-        entry = task_map.pop(task)
+        entry = self.task_map.pop(task)
         entry[-1] = REMOVED
+
+    def empty(self):
+        """ Is the queue empty? """
+
+        if len(self.tasks) == 0:
+            return True
+
+        return False
 
 
 class MaxPriorityQueue(PriorityQueue):

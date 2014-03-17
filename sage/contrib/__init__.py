@@ -1,6 +1,7 @@
 from __future__ import division
 from time import time
 from sage.utils import MutableInt
+from sage.dispatch.signal import Signal
 
 
 class Balance(object):
@@ -11,6 +12,7 @@ class Balance(object):
         self.last_on = 0
         self.last_off = 0
         self.waiting = False
+        self.signal = Signal(providing_args=['state'])
 
     def is_on(self):
         """ Is this balance currently on balance? """
@@ -28,6 +30,7 @@ class Balance(object):
         if self.balance == False:
             self.balance = True
             self.last_on = time()
+            self.signal.send(state=True)
 
     def on_for(self):
         """ Return how long the balance has been available for or False if not"""
@@ -45,6 +48,7 @@ class Balance(object):
         if self.balance == True:
             self.balance = False
             self.last_off = time()
+            self.signal.send(state=False)
 
     def off_for(self):
         """ Return how long the balance has been off for or False if on """
@@ -77,6 +81,7 @@ class Vital(MutableInt):
     """ Tracks a vital value (health, mana, etc) """
 
     def __init__(self):
+        self.signal = Signal(providing_args=['vital'])
         self.value = None
         self.max = None
         self.delta = None
@@ -103,3 +108,6 @@ class Vital(MutableInt):
             self.delta_percentage = int(round(self.delta / self.max * 100))
 
         self.percentage = int(round(self.value / self.max * 100))
+
+        if self.delta is not 0:
+            self.signal.send(vital=self)

@@ -313,9 +313,9 @@ class Group(object):
 
             :param name: name of the matchable.
             :type name: string
-            :param type: 'type' of matchable. Must be 'exact', 'substring',
+            :param mtype: 'type' of matchable. Must be 'exact', 'substring',
                 'regex', 'startswith', or 'endswith'.
-            :type type: string
+            :type mtype: string
             :param pattern: pattern to match against.
             :type pattern: string
             :param methods: (optional) methods to bind to the matchable.
