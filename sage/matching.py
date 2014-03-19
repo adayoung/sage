@@ -417,6 +417,21 @@ class Group(object):
 
         self.parent()._remove_group(self.name)
 
+    def debug(self, indent=0):
+        """ Print out a visual representation of all child matchables and groups
+
+            :param indent: (optional) number of tabs to ident by
+            :type indent: integer
+        """
+
+        for name, g in self.groups.iteritems():
+            print("%s<%s [%s]>" % ('\t' * indent, name, '+' if g.enabled else ' '))
+            g.debug(indent+1)
+
+        for name, m in self.matchables.iteritems():
+            print("%s-%s [%s]" % ('\t' * indent, name, '+' if m.enabled else ' '))
+
+
     def enable(self, name=None, child=False):
         """ Enable a group or matchable
 
@@ -684,6 +699,7 @@ class MasterGroup(Group):
 
     def __init__(self):
 
+        self.name = 'master'
         self.enabled = set()
         self.parent = self
         self.app = None
