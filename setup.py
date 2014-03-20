@@ -18,7 +18,8 @@ requires = [
     'pyasn1',
     'PyYAML',
     'watchdog',
-    'autobahn'
+    'autobahn',
+    'six'
 ]
 
 entrypoints = {

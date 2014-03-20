@@ -5,3 +5,4 @@ pycrypto==2.6.1
 zope.interface>=4.0.5
 watchdog==0.7.1
 autobahn==0.8.4-2
+six==1.6.1

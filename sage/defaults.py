@@ -20,6 +20,7 @@ class Configuration(dict):
 
 
 defaults = Configuration({
+    'DEBUG': True,
     'port': 2003,
     'host': 'achaea.com',
     'telnet_proxy': True,
