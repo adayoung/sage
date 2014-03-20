@@ -8,7 +8,7 @@
 from __future__ import absolute_import
 import re
 from time import time
-from sage.dispatch.signal import Signal
+from sage.dispatch.signal import Hook
 from sage import apps
 from sage.api import defer_to_prompt
 from twisted.internet import reactor
@@ -116,10 +116,13 @@ class Matchable(object):
 
     def bind(self, method, param=None):
         """ Add a method to a matchable """
-        if param is None:
-            signal = Signal(providing_args=['param'])
+
+        if param is not None:
+            signal = Hook(providing_args=['param'])
         else:
-            signal = Signal()
+            signal = Hook()
+
+        signal.connect(method)
 
         self.methods.append((
             signal,
@@ -155,9 +158,9 @@ class Matchable(object):
         """ Send to all bound methods """
         for signal, param in self.methods:
             if param:
-                signal.send(param=param)
+                signal.send(self, param)
             else:
-                signal.send()
+                signal.send(self)
 
 
 class CIMatchable(Matchable):

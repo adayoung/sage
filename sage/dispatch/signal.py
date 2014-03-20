@@ -184,6 +184,29 @@ class Signal(object):
         self._dead_receivers = True
 
 
+class Hook(Signal):
+
+    def send(self, sender, param=None):
+        responses = []
+        if not self.receivers:
+            return responses
+
+        # Call each receiver with whatever arguments it can accept.
+        # Return a list of tuple pairs [(receiver, response), ... ].
+        for receiver in self._live_receivers():
+            try:
+                if param:
+                    response = receiver(sender, param)
+                else:
+                    response = receiver(sender)
+            except Exception as err:
+                _log.err()
+                responses.append((receiver, err))
+            else:
+                responses.append((receiver, response))
+        return responses
+
+
 def receiver(signal, **kwargs):
     """
     A decorator for connecting receivers to signals. Used by passing in the
