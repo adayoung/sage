@@ -49,11 +49,11 @@ class Apps(dict):
             if path in event.src_path:
                 self.reload(app, event.src_path)
 
-    def add_group(self, app, matchable):
-        self.groups[app].add(matchable)
+    def add_group(self, app, group):
+        self.groups[app].add(group)
 
-    def remove_group(self, app, matchable):
-        self.groups[app].discard(matchable)
+    def remove_group(self, app, group):
+        self.groups[app].discard(group)
 
     def load(self, name):
         self._load(name)

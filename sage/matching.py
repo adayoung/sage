@@ -470,7 +470,6 @@ class Group(object):
             :param enabled: (optional) if group is enabled
             :type enabled: bool
         """
-
         if name in self.groups:
             return self.groups[name]
 
@@ -505,7 +504,8 @@ class Group(object):
 
     def _remove_group(self, name):
         apps.remove_group(self.groups[name].app, self.groups[name])
-        del(self.groups[name])
+        if name in self.groups:
+            del(self.groups[name])
 
     def remove(self, name):
         """ Remove a matchable by name

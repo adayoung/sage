@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 import sage
-import weakref
 from twisted.internet import reactor
 import inspect
 from .utils import caller_name
