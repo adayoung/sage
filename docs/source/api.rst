@@ -20,6 +20,7 @@ The following are some primary methods available from the `sage` namespace.
 .. autofunction:: echo
 .. autofunction:: send
 .. autofunction:: defer_to_prompt
+.. autofunction:: log
 
 Main States
 ~~~~~~~~~~~

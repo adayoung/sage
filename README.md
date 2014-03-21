@@ -19,7 +19,6 @@ You might enjoy Sage if:
 * Full GMCP support.
 * Extensive 'signal' or 'pub/sub' system for easy handling of asynchronous events.
 * Powerful, fast, and easy to use triggers/aliases.
-* An alternative syntax for making large numbers of triggers and aliases.
 * Extensibility through add-on 'sage apps'.
 * Interactive console allowing you to write live code in a running app.
 * Auto-reloading of your code as you change it.

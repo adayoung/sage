@@ -16,8 +16,6 @@ Sage applications are typically structured as follows: ::
     /my_application
       ├── __init__.py
       ├── /apps
-      ├── /aliases
-      ├── /triggers
       ├── meta.py
       ├── my_application.py
 
@@ -32,14 +30,6 @@ This makes your app a Python Package.
 **/apps**
 
 This directory will contain other apps that your app requires.
-
-**/aliases**
-
-Your SML and Python files for aliases could go here.
-
-**/triggers**
-
-Your SML and Python files for triggers could go here.
 
 **meta.py**
 
