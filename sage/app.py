@@ -166,9 +166,6 @@ class Apps(dict):
         if hasattr(self[name], 'pre_reload'):
             self[name].pre_reload()
 
-        for obj in list(self.groups[name]):
-            obj.destroy()
-
         try:
             if event_src_path:
 
