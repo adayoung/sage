@@ -75,7 +75,7 @@ class Item(object):
         self.container = True
         if not hasattr(self, 'items'):
                 self.items = Inventory()
-        self.items.add(num, name, attrib)
+        return self.items.add(num, name, attrib)
 
 
     def __repr__(self):
