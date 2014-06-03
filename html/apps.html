@@ -67,13 +67,12 @@ together.</p>
 <div class="section" id="structure-of-a-sage-application">
 <h2>Structure of a Sage Application<a class="headerlink" href="#structure-of-a-sage-application" title="Permalink to this headline">¶</a></h2>
 <p>Sage applications are typically structured as follows:</p>
-<div class="highlight-python"><pre>/my_application
+<div class="highlight-python"><div class="highlight"><pre>/my_application
   ├── __init__.py
   ├── /apps
-  ├── /aliases
-  ├── /triggers
   ├── meta.py
-  ├── my_application.py</pre>
+  ├── my_application.py
+</pre></div>
 </div>
 <p><strong>Parent directory (/my_application)</strong></p>
 <p>Put your app in a directory with the same name as your entry-point file.</p>
@@ -81,10 +80,6 @@ together.</p>
 <p>This makes your app a Python Package.</p>
 <p><strong>/apps</strong></p>
 <p>This directory will contain other apps that your app requires.</p>
-<p><strong>/aliases</strong></p>
-<p>Your SML and Python files for aliases could go here.</p>
-<p><strong>/triggers</strong></p>
-<p>Your SML and Python files for triggers could go here.</p>
 <p><strong>meta.py</strong></p>
 <p>Contains extra (meta) information and settings for your app.</p>
 <p><strong>Entry point (my_application.py)</strong></p>

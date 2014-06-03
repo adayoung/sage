@@ -128,10 +128,11 @@ create groups first. Sage supports full hierarchies of groups:</p>
 </pre></div>
 </div>
 <p>Will create the following structure:</p>
-<div class="highlight-python"><pre>+-group_1
+<div class="highlight-python"><div class="highlight"><pre>+-group_1
 |  +-group_2
 |    +-group_4  (this group is disabled)
-+-group_3</pre>
++-group_3
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -272,7 +273,8 @@ behaviors depending on which matchable type it is.</p>
 </pre></div>
 </div>
 <p><strong>exact</strong></p>
-<div class="highlight-python"><pre>no extra attributes</pre>
+<div class="highlight-python"><div class="highlight"><pre>no extra attributes
+</pre></div>
 </div>
 <p><strong>substring</strong></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Line: &quot;Sage has many ways to match a line.&quot;</span>
@@ -321,10 +323,11 @@ matchable:</p>
 </div>
 <p>You can &#8216;walk&#8217; through groups to a matchable by using &#8216;/&#8217; to define the
 structure. Assume the following structure:</p>
-<div class="highlight-python"><pre>+-group_1
+<div class="highlight-python"><div class="highlight"><pre>+-group_1
   +-group_2
     +-group_3
-      +-my_trigger</pre>
+      +-my_trigger
+</pre></div>
 </div>
 <p>The following call to get would return <cite>my_trigger</cite>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">my_trigger</span> <span class="o">=</span> <span class="n">group_1</span><span class="p">(</span><span class="s">&#39;group_2/group_3/my_trigger&#39;</span><span class="p">)</span>
@@ -347,58 +350,18 @@ attempt to find a group with the name you provided:</p>
 </div>
 <p>In this final example we&#8217;ll enable a matchable in another group from a bound
 method. Assume the following structure:</p>
-<div class="highlight-python"><pre>+-app
+<div class="highlight-python"><div class="highlight"><pre>+-app
    +-group_1
    |  +-trigger_1
    +-group_2
-      +-trigger_2 (disabled)</pre>
+      +-trigger_2 (disabled)
+</pre></div>
 </div>
 <p>When <cite>trigger_1</cite> gets matched, it will enable trigger_2:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="nd">@group_1.exact</span><span class="p">(</span><span class="s">&quot;Something is coming!&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">trigger_1</span><span class="p">(</span><span class="n">trigger</span><span class="p">):</span>
     <span class="n">trigger</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;group_2/trigger_2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
 </pre></div>
-</div>
-</div>
-<div class="section" id="sml-sage-matchable-language">
-<h2>SML - Sage Matchable Language<a class="headerlink" href="#sml-sage-matchable-language" title="Permalink to this headline">¶</a></h2>
-<p>When you have many matchables with similar behavior, writing through the API
-can become cumbersome. To alleviate this, Sage provides the &#8216;Sage Matchable
-Language&#8217; (SML). SML provides an easy and brief syntax for writing matchables
-and groups expressed in <a class="reference external" href="http://www.yaml.org/">YAML</a>. Here&#8217;s an example:</p>
-<div class="highlight-python"><pre>group_1:
-    :trigger_1:
-        exact: An exact line that will be matched.
-        some_method: true
-
-    sub_group_1:
-        :sub_trigger_1:
-            exact: Another exact line.
-            method_1: "a string"
-            method_2: "another string"
-
-group_2:
-    :trigger_2:
-        regex: ^Regular expressions are (cool|confusing)\.$
-        another_method: [A, List, of, Strings]</pre>
-</div>
-<p><strong>Creating Groups</strong></p>
-<p>Groups are just keys with the value being a list of matchables and/or groups.</p>
-<div class="highlight-python"><pre>my_group:
-    ...
-    ...
-    child_group:
-        ...
-        ...
-sibling:
-    ...
-    ...</pre>
-</div>
-<p>You can have groups enabled or disabled by default by having <cite>enabled: (bool)</cite> as a member of the
-group&#8217;s list:</p>
-<div class="highlight-python"><pre>my_group:
-    enabled: False  # This will be disabled by default
-    ...</pre>
 </div>
 </div>
 </div>
@@ -430,7 +393,6 @@ group&#8217;s list:</p>
 </li>
 <li><a class="reference internal" href="#bound-methods">Bound Methods</a></li>
 <li><a class="reference internal" href="#selecting-matchables">Selecting Matchables</a></li>
-<li><a class="reference internal" href="#sml-sage-matchable-language">SML - Sage Matchable Language</a></li>
 </ul>
 </li>
 </ul>
