@@ -318,7 +318,7 @@ class GMCPReceiver(object):
     # Char.Items.Add
     def add_item(self, d):
 
-        num = int(d['item']['id'])
+        item = int(d['item']['id'])
         name = d['item']['name']
         attrib = None
 
@@ -326,18 +326,18 @@ class GMCPReceiver(object):
             attrib = d['item']['attrib']
 
         if d['location'] == 'room':
-            item = player.room.items.add(num, name, attrib)
+            item = player.room.items.add(item, name, attrib)
             gmcp_signals.room_add_item.send(item=item, container=player.room.items)
 
         elif d['location'] == 'inv':
-            item = player.inv.add(num, name, attrib)
+            item = player.inv.add(item, name, attrib)
             gmcp_signals.inv_add_item.send(item=item, container=player.inv)
 
         elif d['location'].startswith('rep'):
             num = int(d['location'][3:])
 
             if num in player.inv:
-                item = player.inv[num].add_item(num, name, attrib)
+                player.inv[num].add_item(item, name, attrib)
                 gmcp_signals.inv_add_item.send(item=item, container=player.inv[num])
 
         else:
