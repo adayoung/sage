@@ -70,6 +70,13 @@ class Item(object):
         """ Is the item wielded in both hands? """
         return self.wielded_left and self.wielded_right
 
+    def add_item(self, num, name, attrib=None):
+        """ Add an item to this item's inventory. """
+        self.container = True
+        if not hasattr(self, 'items'):
+                self.items = Inventory()
+        self.items.add(num, name, attrib)
+
 
     def __repr__(self):
         return "Item(%s)" % self.name

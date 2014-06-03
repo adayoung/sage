@@ -337,7 +337,7 @@ class GMCPReceiver(object):
             num = int(d['location'][3:])
 
             if num in player.inv:
-                item = player.inv[num].items.add(num, name, attrib)
+                item = player.inv[num].add_item(num, name, attrib)
                 gmcp_signals.inv_add_item.send(item=item, container=player.inv[num])
 
         else:
@@ -353,7 +353,7 @@ class GMCPReceiver(object):
                 del(player.room.items[item])
             gmcp_signals.room_remove_item.send(item=item, container=player.room.items)
         elif d['location'] == 'inv':
-            if item in player.room.items:
+            if item in player.inv:
                 del(player.inv[item])
             gmcp_signals.inv_remove_item.send(item=item, container=player.inv)
 
@@ -362,7 +362,10 @@ class GMCPReceiver(object):
 
             if num in player.inv:
                 gmcp_signals.room_remove_item.send(item=item, container=player.inv[num])
-                del(player.inv[num])
+                try:
+                    del(player.inv[num].items[item])
+                except KeyError:
+                    pass
         else:
            print("Char.Items.Remove %s" % d)
 
