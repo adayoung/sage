@@ -23,6 +23,9 @@ vitals = Signal(providing_args=[
 #: Updated room
 room = Signal(providing_args=['room'])
 
+#: Room has changed
+room_changed = Signal(providing_args=['room'])
+
 #: Updated room items
 room_items = Signal(providing_args=['items'])
 

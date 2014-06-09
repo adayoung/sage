@@ -89,6 +89,7 @@ class GMCPReceiver(object):
 
         self.pings = deque(maxlen=20)
         self.lag_defer = None
+        self.last_room = 0
 
     def map(self, cmd, args=None):
         """ Map GMCP commands to assigned methods """
@@ -234,19 +235,25 @@ class GMCPReceiver(object):
     def room(self, d):
         if int(d['num']) != player.room.id:
             player.room.last_id = player.room.id
+
         player.room.id = int(d['num'])
         player.room.name = d['name']
         player.room.area = d['area']
         player.room.exits = d['exits']
         player.room.environment = d['environment']
+
         if d['coords'] == '':
             player.room.coords = None
         else:
             player.room.coords = [int(c) for c in d['coords'].split(',')]
+
         player.room.details = d['details']
         player.room.map = d['map']
 
         gmcp_signals.room.send(room=player.room)
+
+        if player.room.last_id != player.room.id:
+            gmcp_signals.room_changed.send(room=player.room)
 
     # Room.Players
     def room_players(self, d=None):
