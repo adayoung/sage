@@ -164,7 +164,7 @@ class Inventory(dict):
     def wielded(self):
         """ Return list of wielded items """
 
-        return [item for item in self.values() if item.wielded]
+        return [item for item in self.values() if item.wielded()]
 
     def groupable(self):
         """ Return list of groupable items """
