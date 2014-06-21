@@ -637,8 +637,7 @@ class Group(object):
                     m.bind(func, param)
                     return func
                 else:
-                    raise MatchableCreationError('No pattern defined for %s'
-                        % mname)
+                    raise MatchableCreationError('No pattern defined for %s' % mname)
 
             m = self.create(mname, mtype, pattern,
                 enabled=enabled, ignorecase=ignorecase, delay=delay,

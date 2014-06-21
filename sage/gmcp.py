@@ -5,6 +5,7 @@ from twisted.internet.task import LoopingCall
 from twisted.internet import reactor
 import json
 import sage
+from sage import config, _log as log
 from sage.utils import json_str_loads
 from sage.signals import gmcp as gmcp_signals
 from sage.signals import net as net_signals
@@ -32,6 +33,19 @@ skill_ranks = {
     'Mythical': 10,
     'Transcendent': 11
 }
+
+
+def debug(channel, payload):
+    if config['gmcp_debug'] is False:
+        return
+
+    if channel in config['gmcp_ignore_channels']:
+        return
+
+    if payload is None:
+        log.msg("[%s]" % channel, system='GMCP')
+    else:
+        log.msg("[%s]: %s" % (channel, payload), system='GMCP')
 
 
 class GMCPReceiver(object):
@@ -100,8 +114,10 @@ class GMCPReceiver(object):
 
         if args:
             self.command_map[cmd](args)
+            debug(cmd, args)
         else:
             self.command_map[cmd]()
+            debug(cmd, None)
 
     def unhandled_command(self, cmd, args):
 

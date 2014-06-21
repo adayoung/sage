@@ -21,6 +21,8 @@ class Configuration(dict):
 
 defaults = Configuration({
     'DEBUG': True,
+    'gmcp_debug': False,
+    'gmcp_ignore_channels': ['Core.Ping'],
     'port': 2003,
     'host': 'achaea.com',
     'telnet_proxy': True,
@@ -34,5 +36,5 @@ defaults = Configuration({
     'backdoor_password': 'sage',
     'backdoor_port': 5494,
     'backdoor_host': 'localhost',
-    'auto_reload': True
+    'auto_reload': True,
 })
