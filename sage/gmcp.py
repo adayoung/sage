@@ -373,18 +373,21 @@ class GMCPReceiver(object):
 
         if d['location'] == 'room':
             if item in player.room.items:
+                gmcp_signals.room_remove_item.send(item=player.room.items[item], container=player.room.items)
                 del(player.room.items[item])
-            gmcp_signals.room_remove_item.send(item=item, container=player.room.items)
+
         elif d['location'] == 'inv':
             if item in player.inv:
+                gmcp_signals.inv_remove_item.send(item=player.inv[item], container=player.inv)
                 del(player.inv[item])
-            gmcp_signals.inv_remove_item.send(item=item, container=player.inv)
+
+            gmcp_signals.inv_remove_item_raw(item=d)
 
         elif d['location'].startswith('rep'):
             num = int(d['location'][3:])
 
             if num in player.inv:
-                gmcp_signals.room_remove_item.send(item=item, container=player.inv[num])
+                gmcp_signals.room_remove_item.send(item=player.inv[num].items[item], container=player.inv[num])
                 try:
                     del(player.inv[num].items[item])
                 except KeyError:

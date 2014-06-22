@@ -59,6 +59,9 @@ inv_update_item = Signal(providing_args=['item'])
 #: Item removed from inventory
 inv_remove_item = Signal(providing_args=['item', 'container'])
 
+#: Raw GMCP item removed from inventory (because of Achaea bug with blind)
+inv_remove_item_raw = Signal(providing_args=['item'])
+
 #: Updated inventory items
 inv_items = Signal(providing_args=['items'])
 

@@ -103,3 +103,6 @@ equilibrium = Balance()
 
 #: Player in blackout
 blackout = False
+
+#: Prompt stats
+prompt_stats = ''

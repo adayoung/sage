@@ -8,6 +8,7 @@ from sage import triggers
 
 blackout_triggers = triggers.get_group('sage').create_group('blackout', enabled=False)
 
+
 @blackout_triggers.exact('You have recovered equilibrium.')
 def blackout_eq_on(trigger):
     player.equilibrium.on()
@@ -59,6 +60,7 @@ def receiver(raw):
     stats = prompt.split(' ')[-1][:-1]
 
     prompt_stats.send(stats=stats, renderer=renderer)
+    player.prompt_stats = stats
 
     renderer.receive(raw, stats)
 
