@@ -313,7 +313,7 @@ class GMCPReceiver(object):
                 attrib = item['attrib'] if 'attrib' in item else None
                 player.inv.add(int(item['id']), item['name'], attrib)
 
-            gmcp_signals.inv_items.send(items=player.inv.items)
+            gmcp_signals.inv_items.send(items=player.inv)
 
         else:
             print("Char.Items.List %s" % d)

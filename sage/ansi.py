@@ -13,8 +13,7 @@ ANSI_COLOR_REGEXP = re.compile('(' + chr(27) + '\[[0-9;]*m)')
 # Used for strfcolor
 CFORMAT = re.compile('[%&].')
 
-color_names = ('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', \
-    'white')
+color_names = ('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white')
 foreground = dict([(color_names[x], '3%s' % x) for x in range(8)])
 background = dict([(color_names[x], '4%s' % x) for x in range(8)])
 opt_dict = {'bold': '1', 'underscore': '4', 'blink': '5', 'reverse': '7', 'conceal': '8'}
@@ -149,6 +148,7 @@ strfcolor_table = {
     '%%': '%'
 }
 
+
 def repl_color(matchobj):
     key = matchobj.group(0)
     if key in strfcolor_table:
@@ -186,7 +186,6 @@ def strfcolor(string):
     %0 = reset
     """
     return CFORMAT.sub(repl_color, string)
-
 
 
 # Helper methods
