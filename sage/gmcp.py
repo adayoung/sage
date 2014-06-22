@@ -381,7 +381,7 @@ class GMCPReceiver(object):
                 gmcp_signals.inv_remove_item.send(item=player.inv[item], container=player.inv)
                 del(player.inv[item])
 
-            gmcp_signals.inv_remove_item_raw(item=d)
+            gmcp_signals.inv_remove_item_raw.send(item=d)
 
         elif d['location'].startswith('rep'):
             num = int(d['location'][3:])
