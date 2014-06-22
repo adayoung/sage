@@ -4,7 +4,7 @@
 class Item(object):
 
     def __init__(self, num, name, worn=False, wearable=False, wielded_left=False,
-            wielded_right=False, groupable=False, riftable=False, takeable=False,
+            wielded_right=False, groupable=False, rifted=False, takeable=False,
             denizen=False, dead=False, container=False):
 
         self.id = num
@@ -15,7 +15,7 @@ class Item(object):
         self.wielded_left = wielded_left
         self.wielded_right = wielded_right
         self.groupable = groupable
-        self.riftable = riftable
+        self.rifted = rifted
         self.takeable = takeable
         self.denizen = denizen
         self.dead = dead
@@ -32,7 +32,7 @@ class Item(object):
         self.groupable = False
         self.container = False
         self.takeable = False
-        self.riftable = False
+        self.rifted = False
         self.denizen = False
         self.dead = False
 
@@ -54,7 +54,7 @@ class Item(object):
         if 't' in attrib:
             self.takeable = True
         if 'r' in attrib:
-            self.riftable = True
+            self.rifted = True
         if 'm' in attrib:
             self.denizen = True
         if 'd' in attrib:
@@ -91,7 +91,7 @@ class Inventory(dict):
         worn = False
         wearable = False
         groupable = False
-        riftable = False
+        rifted = False
         takeable = False
         denizen = False
         dead = False
@@ -115,7 +115,7 @@ class Inventory(dict):
             if 't' in attrib:
                 takeable = True
             if 'r' in attrib:
-                riftable = True
+                rifted = True
             if 'm' in attrib:
                 denizen = True
             if 'd' in attrib:
@@ -129,7 +129,7 @@ class Inventory(dict):
             wielded_left=wielded_left,
             wielded_right=wielded_right,
             groupable=groupable,
-            riftable=riftable,
+            rifted=rifted,
             takeable=takeable,
             denizen=denizen,
             dead=dead,
@@ -171,13 +171,13 @@ class Inventory(dict):
 
         return [item for item in self.values() if item.groupable]
 
-    def riftable(self):
-        """ Return list of riftable items """
+    def rifted(self):
+        """ Return list of rifted items """
 
-        return [item for item in self.values() if item.riftable]
+        return [item for item in self.values() if item.rifted]
 
     def takeable(self):
-        """ Return list of riftable items """
+        """ Return list of rifted items """
 
         return [item for item in self.values() if item.takeable]
 
