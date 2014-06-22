@@ -381,7 +381,7 @@ class GMCPReceiver(object):
                 gmcp_signals.inv_remove_item.send(item=player.inv[item], container=player.inv)
                 del(player.inv[item])
 
-            gmcp_signals.inv_remove_item_raw.send(item=d)
+            gmcp_signals.inv_remove_item_raw.send(item=d['item'])
 
         elif d['location'].startswith('rep'):
             num = int(d['location'][3:])
@@ -393,7 +393,7 @@ class GMCPReceiver(object):
                 except KeyError:
                     pass
         else:
-           print("Char.Items.Remove %s" % d)
+            print("Char.Items.Remove %s" % d)
 
     # IRE.Rift.List
     def rift_list(self, d=None):
