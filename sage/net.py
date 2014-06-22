@@ -97,6 +97,7 @@ class TelnetClient(Telnet):
 
         # Hold over incomplete app data until the next packet
         self.data_buffer = ''
+        self.outbound_buffer = ''
 
         # Setup recieving GMCP negotation
         self.negotiationMap[GMCP] = self.gmcpRecieved
@@ -185,11 +186,11 @@ class TelnetClient(Telnet):
         sage._send = self.transport.write
 
     def connectionLost(self, reason):
+        self.telnet_server.write(self.data_buffer)
         sage.connected = False
         signal.disconnected.send()
-        '''if self.telnet_server is not None:
-            self.server.transport.loseConnection()
-            self.server = None'''
+        self.telnet_server.write("Disconnected from Achaea.")
+        reactor.stop()
 
     def dataReceived(self, data):
         """ Recieves and processes raw data from the server """
@@ -361,9 +362,13 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
 
     def __init__(self):
         Telnet.__init__(self)
+        self.reset()
         self.client_factory = TelnetClientFactory()
+        self.client = self.client_factory.client
+        self.client.telnet_server = self
 
-        self.data_buffer = ''
+        self.outbound_buffer = ''
+        self.inbound_buffer = ''
 
         if self.client_factory.client.connected:
             self.ready()
@@ -371,31 +376,47 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     def ready(self):
         """ Gets called when the client successfully connects """
         self.applicationDataReceived = self._applicationDataReceived
-        self.applicationDataReceived(self.data_buffer)
-        self.data_buffer = ''
+        self.applicationDataReceived(self.outbound_buffer)
+        self.outbound_buffer = ''
+
+    def reset(self):
+        self.applicationDataReceived = self._buffer_applicationDataReceived
 
     def connectionMade(self):
         """ Local client connected. Start client connection to server. """
         self.factory.transports.append(self.transport)
         self.transport.write("Connected to Sage\n")
-        self.client = self.client_factory.client
-        self.client.telnet_server = self
+
         sage._echo = self.write
 
         if bool(self.client.connected) is False:
+            self.transport.write("Connected to Sage\n")
             reactor.connectTCP(config.host, config.port, self.client_factory)
+        else:
+            self.transport.write("Reconnected to Sage\n")
 
         self.will(GMCP)
+
+        if len(self.client.outbound_buffer) > 0:
+            self.transport.write(">>> Start Buffer >>>\n")
+            self.write(self.client.outbound_buffer)
+            self.transport.write(">>> End Buffer >>>\n")
+
+        self.client.outbound_buffer = ''
 
     def connectionLost(self, reason):
         self.connected = False
         self.factory.transports.remove(self.transport)
+        self.reset()
         if sage.connected:
             _log.msg('Client disconnected. Sage is still connected to Achaea.')
 
     def applicationDataReceived(self, data):
+        pass
+
+    def _buffer_applicationDataReceived(self, data):
         if self.client.transport is None:
-            self.data_buffer += data
+            self.outbound_buffer += data
 
     def _applicationDataReceived(self, data):
         self.client.send(data)
@@ -403,6 +424,9 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     def write(self, data):
         for transport in self.factory.transports:
             transport.write(data)
+
+        if len(self.factory.transports) == 0:
+            self.client.outbound_buffer += data
 
     def enableLocal(self, option):
         if option == GMCP:
