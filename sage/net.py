@@ -78,6 +78,7 @@ class ISageWSProxy(ISageProxy):
     def instream(self, lines, prompt):
         pass
 
+
 class TelnetClient(Telnet):
     """ Connects to the remote server. """
 
