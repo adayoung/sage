@@ -360,7 +360,7 @@ class GMCPReceiver(object):
             num = int(d['location'][3:])
 
             if num in player.inv:
-                player.inv[num].add_item(item, name, attrib)
+                item = player.inv[num].add_item(item, name, attrib)
                 gmcp_signals.inv_add_item.send(item=item, container=player.inv[num])
 
         else:
@@ -387,8 +387,9 @@ class GMCPReceiver(object):
             num = int(d['location'][3:])
 
             if num in player.inv:
-                gmcp_signals.room_remove_item.send(item=player.inv[num].items[item], container=player.inv[num])
+                # gmcp_signals.room_remove_item.send(item=player.inv[num].items[item], container=player.inv[num])
                 try:
+                    gmcp_signals.room_remove_item.send(item=player.inv[num].items[item], container=player.inv[num])
                     del(player.inv[num].items[item])
                 except KeyError:
                     pass
