@@ -30,15 +30,17 @@ defaults = Configuration({
     'telnet_port': 5493,
     'ws_server': True,
     'ws_port': 9000,
-    'ws_host': 'localhost',
+    'ws_host': '127.0.0.1',
     'ws_debug': False,
+    'wamp_realm': 'realm1',
     'backdoor': True,
     'backdoor_user': 'sage',
     'backdoor_password': 'sage',
     'backdoor_port': 5494,
     'backdoor_host': 'localhost',
     'auto_reload': True,
-    'exit_on_disconnect': False
+    'exit_on_disconnect': False,
+    'ws_components': []    # This will be changed to WampComponent by default
 })
 
 

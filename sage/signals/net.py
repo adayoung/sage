@@ -15,3 +15,6 @@ lagging = Signal()
 
 #: Sage is no longer lagging
 lag_recovered = Signal()
+
+#: Input from client
+wamp_input = Signal(providing_args=['data'])

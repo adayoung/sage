@@ -81,6 +81,28 @@ class Item(object):
     def __repr__(self):
         return "Item(%s)" % self.name
 
+    def encode(self):
+        representation = {
+            'id': self.id,
+            'name': self.name,
+            'worn': self.worn,
+            'wearable': self.wearable,
+            'wielded_left': self.wielded_left,
+            'wielded_right': self.wielded_right,
+            'groupable': self.groupable,
+            'rifted': self.rifted,
+            'takeable': self.takeable,
+            'denizen': self.denizen,
+            'dead': self.dead,
+            'container': self.container,
+            'items': None
+        }
+
+        if self.container:
+            representation['items'] = self.items.encode()
+
+        return representation
+
 
 class Inventory(dict):
     """ Container for the inventory """
@@ -196,6 +218,15 @@ class Inventory(dict):
 
         return [item for item in self.values() if item.container]
 
+    def encode(self):
+        representation = {}
+
+        for num,item in self.iteritems():
+            representation[num] = item.encode()
+
+        return representation
+
+
 
 class Rift(dict):
     """ Container for the Rift """
@@ -217,3 +248,20 @@ class Room(object):
         self.items = Inventory()
         self.players = set()
         self.last_id = None
+
+    def encode(self):
+        representation = {
+            'id': self.id,
+            'name': self.name,
+            'exits': self.exits,
+            'area': self.area,
+            'environment': self.environment,
+            'coords': self.coords,
+            'details': self.details,
+            'map': self.map,
+            'items': self.items.encode(),
+            'players': list(self.players),
+            'last_id': self.last_id
+        }
+
+        return representation

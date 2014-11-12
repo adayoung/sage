@@ -363,7 +363,6 @@ class GMCPReceiver(object):
 
     # Room.AddPlayer
     def room_addplayer(self, d):
-
         player.room.players.add(d['name'])
         gmcp_signals.room_add_player.send(player=d['name'])
 

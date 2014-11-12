@@ -3,7 +3,7 @@ from sage import player, signals, aliases, echo
 from . import client
 from twisted.internet import reactor
 
-channel = '#astralinae'
+channel = '#trifecta'
 server = 'irc.freenode.net'
 port = 6667
 
@@ -12,6 +12,11 @@ ic = factory.client
 
 
 def init():
+    from sage import config
+
+    print "SAGE CONFIG"
+    print config
+    
     if sage.connected:
         connect()
     else:

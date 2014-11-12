@@ -2,5 +2,6 @@ Twisted==14.0.2
 pyasn1>=0.1.7
 pycrypto>=2.6.1
 watchdog==0.8.2
-autobahn==0.9.3-3
+autobahn==0.12.1
 six>=1.8.0
+
