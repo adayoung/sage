@@ -527,19 +527,3 @@ def build_wamp_router():
 
     server = serverFromString(reactor, b"tcp:%s" % config.ws_port)
     server.listen(transport_factory)
-
-'''
-WAMP websocket stuff is disabled for the moment
-def build_ws_factory():
-    """ Setup Websocket factory """
-
-    factory = WampServerFactory("ws://%s:%s" % (config.ws_host, config.ws_port), debugWamp=config.ws_debug)
-    SAGEProtoServerProtocol.client = client
-    factory.protocol = SAGEProtoServerProtocol
-    factory.setProtocolOptions(allowHixie76=True)
-    reactor.listenTCP(config.ws_port, factory)
-    #listenWS(factory)
-    return factory
-'''
-
-from autobahn.twisted.wamp import ApplicationRunner
