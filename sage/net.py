@@ -6,10 +6,17 @@ Local Client <--> TelnetServer() <--> TelnetClient() <--> Remote Server
 """
 from __future__ import absolute_import
 from twisted.conch.telnet import Telnet, StatefulTelnetProtocol
+from twisted.internet.defer import inlineCallbacks
 from twisted.internet.protocol import ClientFactory, ServerFactory
+from twisted.internet.endpoints import serverFromString
 from twisted.internet import reactor
 #from autobahn.websocket import listenWS
 #from autobahn.wamp import WampServerFactory, WampServerProtocol
+from autobahn.twisted.wamp import ApplicationSession, ApplicationSessionFactory    # New shit
+from autobahn.twisted.websocket import WampWebSocketClientFactory   # Wamp-over-Websocket transport
+from autobahn.twisted.wamp import ApplicationRunner
+from autobahn.wamp.types import ComponentConfig
+
 import sage
 from sage.utils import error
 from sage import inbound, outbound, gmcp, prompt, config, _log, ansi
@@ -85,6 +92,7 @@ class TelnetClient(Telnet):
         Telnet.__init__(self)
 
         self.ws_server = ISageWSProxy()
+        self.wamp_client = None  # Ref to ApplicationSession object -- main component for WAMP
         self.telnet_server = ISageProxy()
 
         self.compress = False
@@ -474,6 +482,52 @@ def build_telnet_factory():
     return factory
 
 
+class WampComponent(ApplicationSession):
+
+    @inlineCallbacks
+    def onJoin(self, details):
+
+        # We have to set this reference somewhere
+        # this may not be the way to do it, but this is
+        # how it's getting done for now
+        if client.wamp_client is None:
+            client.wamp_client = self
+
+
+        def onIOEvent(msg):
+            print msg
+
+        yield self.subscribe(onIOEvent, u"com.sage.io") 
+        # allplayers = yield self.call(u'com.pyrator.getplayercities', ["mhaldor", "ashtan", "hashan", "targossas", "cyrene", "eleusis"])
+
+        # print allplayers
+
+def build_wamp_client():
+    # wamp_app_config = ComponentConfig(realm=config.realm)
+    runner = ApplicationRunner("ws://%s:%s/ws" % (config.ws_host, config.ws_port), config.wamp_realm)
+    runner.run(WampComponent, start_reactor=False)
+
+def build_wamp_router():
+    """ 
+    This is a basica WAMP Router implementation 
+
+    Got it from: 
+    https://github.com/tavendo/AutobahnPython/blob/master/examples/twisted/wamp/basic/basicrouter.py
+    """ 
+
+    from autobahn.twisted.wamp import RouterFactory
+    from autobahn.twisted.wamp import RouterSessionFactory
+    from autobahn.twisted.websocket import WampWebSocketServerFactory
+
+    router_factory = RouterFactory()
+    session_factory = RouterSessionFactory(router_factory)
+
+    transport_factory = WampWebSocketServerFactory(session_factory, debug = False)
+    transport_factory.setProtocolOptions(failByDrop = False)
+
+    server = serverFromString(reactor, b"tcp:%s" % config.ws_port)
+    server.listen(transport_factory)
+
 '''
 WAMP websocket stuff is disabled for the moment
 def build_ws_factory():
@@ -487,3 +541,5 @@ def build_ws_factory():
     #listenWS(factory)
     return factory
 '''
+
+from autobahn.twisted.wamp import ApplicationRunner

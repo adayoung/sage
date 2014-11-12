@@ -37,8 +37,11 @@ def run():
         sage.factory = factory
         print("Telnet proxy port: %s" % config.telnet_port)
 
-    #if config.ws_server:
+    if config.ws_server:
+        net.build_wamp_router()
+        net.build_wamp_client()
         #factory = net.build_ws_factory()
+        print("Started SAGE Wamp client and router")
         #print("Sage WS protocol: ws://%s:%s" % (config.ws_host, config.ws_port))
 
     # Add shutdown events
