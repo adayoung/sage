@@ -6,3 +6,4 @@ dist
 dev
 html
 build
+*.DS_Store
