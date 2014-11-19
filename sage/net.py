@@ -321,7 +321,6 @@ class TelnetClient(Telnet):
             self.telnet_server.write(IAC + SB + GMCP + data + IAC + SE)
 
     def send(self, data):
-
         if data == '':
             return
 
@@ -394,7 +393,6 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
         """ Local client connected. Start client connection to server. """
         self.factory.transports.append(self.transport)
         self.transport.write("Connected to Sage\n")
-
         sage._echo = self.write
 
         if bool(self.client.connected) is False:
@@ -432,6 +430,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     def write(self, data):
         for transport in self.factory.transports:
             transport.write(data)
+            self.client.wamp_client.write(data)
 
         if len(self.factory.transports) == 0:
             self.client.outbound_buffer += data
@@ -444,34 +443,6 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
         return False
 
 
-'''
-class SAGEProtoServerProtocol(WampServerProtocol):
-
-    def onSessionOpen(self):
-        self.client.ws_server = self
-        self.registerForPubSub("http://sage/event#", True)
-        self.registerMethodForRpc('http://sage/input', self, SAGEProtoServerProtocol.input)
-        self.registerMethodForRpc('http://sage/is_connected', self, SAGEProtoServerProtocol.is_connected)
-        self.registerMethodForRpc('http://sage/connect', self, SAGEProtoServerProtocol.connect)
-
-    def connect(self):
-        pass
-
-    def input(self, msg):
-        msg = msg.encode('us-ascii')  # data going to TelnetClient MUST be us-ascii
-        self.client.send(msg + NL)
-
-    def is_connected(self):
-        self.dispatch('http://sage/event#connected', sage.connected)
-
-    def instream(self, lines, p):
-        self.dispatch('http://sage/event#instream', {'lines': lines, 'prompt': p})
-
-    def ready(self):
-        pass
-'''
-
-
 def build_telnet_factory():
     """ Setup Twisted factory """
 
@@ -482,7 +453,7 @@ def build_telnet_factory():
     return factory
 
 
-class WampComponent(ApplicationSession):
+class WampComponent(ApplicationSession, ISageWSProxy):
 
     @inlineCallbacks
     def onJoin(self, details):
@@ -495,12 +466,23 @@ class WampComponent(ApplicationSession):
 
 
         def onIOEvent(msg):
-            print msg
+            # We must decode to ascii because browsers may send unicode
+            tmp_msg = msg.encode('ascii', 'ignore')
+            client.send(tmp_msg)
+            
 
         yield self.subscribe(onIOEvent, u"com.sage.io") 
         # allplayers = yield self.call(u'com.pyrator.getplayercities', ["mhaldor", "ashtan", "hashan", "targossas", "cyrene", "eleusis"])
 
         # print allplayers
+
+    @inlineCallbacks
+    def instream(self, lines, prompt):
+        yield self.publish(u'com.sage.io', [lines, prompt])
+
+    def write(self, data):
+        self.publish(u'com.sage.io', [data])
+
 
 def build_wamp_client():
     # wamp_app_config = ComponentConfig(realm=config.realm)
