@@ -460,22 +460,19 @@ from twisted.internet.protocol import Factory, Protocol
 from twisted.internet.endpoints import TCP4ClientEndpoint
 
 # Pls don't kill me todd, I know it's ugly. We'll fix this prototype soon
-class Greeter(Protocol):
-    def sendMessage(self, msg):
-        # self.transport.write("blelaksdjflsf\r\n")
-        pass
+class WAMPProxy(Protocol):
+    pass
 
-    def dataReceived(self, data):
-        pass
+class WAMPProxyFactory(Factory):
 
-class GreeterFactory(Factory):
+    def __init__(self):
+        self.proxy = WAMPProxy()
+
     def buildProtocol(self, addr):
-        return Greeter()
-
-def gotProtocol(p):
-    p.sendMessage("Hello")
+        return self.proxy
 
 class WampComponent(ApplicationSession, ISageWSProxy):
+    deferred = None
 
     @inlineCallbacks
     def onJoin(self, details):
@@ -487,12 +484,12 @@ class WampComponent(ApplicationSession, ISageWSProxy):
             client.wamp_client = self
 
         import sage
-        print "on join"
 
         def ready():
-            point = TCP4ClientEndpoint(reactor, "localhost", 5493)
-            d = point.connect(GreeterFactory())
-            d.addCallback(gotProtocol)
+            if not self.deferred:
+                point = TCP4ClientEndpoint(reactor, "localhost", 5493)
+                self.deferred = point.connect(WAMPProxyFactory())
+                # self.deferred.addCallback(gotProtocol)
 
 
         def onIOEvent(msg):
@@ -501,17 +498,11 @@ class WampComponent(ApplicationSession, ISageWSProxy):
             client.send(tmp_msg)
             
         yield self.register(ready, u"com.sage.wsclientready")
-        yield self.subscribe(onIOEvent, u"com.sage.io") 
-        # allplayers = yield self.call(u'com.pyrator.getplayercities', ["mhaldor", "ashtan", "hashan", "targossas", "cyrene", "eleusis"])
-
-        # print allplayers
-
-    @inlineCallbacks
-    def instream(self, lines, prompt):
-        yield self.publish(u'com.sage.io', [lines, prompt])
+        yield self.subscribe(onIOEvent, u"com.sage.io")
 
     def write(self, data):
         self.publish(u'com.sage.io', data)
+
 
 class ApplicationRunner:
     """
