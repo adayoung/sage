@@ -18,7 +18,7 @@ from autobahn.wamp import router, broker, dealer
 from autobahn.websocket.protocol import parseWsUrl
 from autobahn.twisted.wamp import RouterFactory
 from autobahn.twisted.wamp import RouterSessionFactory
-# from autobahn.twisted.wamp import ApplicationRunner
+from autobahn.twisted.wamp import ApplicationRunner
 from autobahn.wamp.types import ComponentConfig
 
 import sage
@@ -26,6 +26,7 @@ from sage.utils import error
 from sage import inbound, outbound, gmcp, prompt, config, _log, ansi
 from sage.signals import net as signal
 from sage.signals import post_prompt, pre_prompt
+from sage.signals.gmcp import vitals
 import re
 import zlib
 
@@ -471,8 +472,11 @@ class WAMPProxyFactory(Factory):
     def buildProtocol(self, addr):
         return self.proxy
 
+from sage.contrib import Vital, Balance
+
 class WampComponent(ApplicationSession, ISageWSProxy):
     deferred = None
+    vitals = None
 
     @inlineCallbacks
     def onJoin(self, details):
@@ -484,19 +488,35 @@ class WampComponent(ApplicationSession, ISageWSProxy):
             client.wamp_client = self
 
         import sage
+        import json
+        def onIOEvent(msg):
+            # We must decode to ascii because browsers may send unicode
+            tmp_msg = msg.encode('ascii', 'ignore')
+            client.send(tmp_msg)
+
+
+        def vitalsReceived(*args, **kwargs):
+            kwargs.pop('signal')
+            values = {}
+            
+            for key,val in kwargs.iteritems():
+                if isinstance(val, Vital):
+                    values[key] = val.value
+                elif isinstance(val, Balance):
+                    values[key] = val.balance
+                else:
+                    values[key] = val
+
+            self.publish(u"com.sage.vitals", values)
+
 
         def ready():
             if not self.deferred:
                 point = TCP4ClientEndpoint(reactor, "localhost", 5493)
                 self.deferred = point.connect(WAMPProxyFactory())
-                # self.deferred.addCallback(gotProtocol)
+                self.vitals = vitals.connect(vitalsReceived)
 
 
-        def onIOEvent(msg):
-            # We must decode to ascii because browsers may send unicode
-            tmp_msg = msg.encode('ascii', 'ignore')
-            client.send(tmp_msg)
-            
         yield self.register(ready, u"com.sage.wsclientready")
         yield self.subscribe(onIOEvent, u"com.sage.io")
 
@@ -504,91 +524,7 @@ class WampComponent(ApplicationSession, ISageWSProxy):
         self.publish(u'com.sage.io', data)
 
 
-class ApplicationRunner:
-    """
-    This class is a convenience tool mainly for development and quick hosting
-    of WAMP application components.
-    It can host a WAMP application component in a WAMP-over-WebSocket client
-    connecting to a WAMP router.
-    """
 
-    def __init__(self, url, realm, extra = None, serializers = None, standalone = False,
-        debug = False, debug_wamp = False, debug_app = False):
-        """
-        :param url: The WebSocket URL of the WAMP router to connect to (e.g. `ws://somehost.com:8090/somepath`)
-        :type url: unicode
-        :param realm: The WAMP realm to join the application session to.
-        :type realm: unicode
-        :param extra: Optional extra configuration to forward to the application component.
-        :type extra: dict
-        :param serializers: A list of WAMP serializers to use (or None for default serializers).
-        Serializers must implement :class:`autobahn.wamp.interfaces.ISerializer`.
-        :type serializers: list
-        :param debug: Turn on low-level debugging.
-        :type debug: bool
-        :param debug_wamp: Turn on WAMP-level debugging.
-        :type debug_wamp: bool
-        :param debug_app: Turn on app-level debugging.
-        :type debug_app: bool
-        """
-        self.url = url
-        self.realm = realm
-        self.extra = extra or dict()
-        self.standalone = standalone
-        self.debug = debug
-        self.debug_wamp = debug_wamp
-        self.debug_app = debug_app
-        self.make = None
-        self.serializers = serializers
-
-
-    def run(self, make, start_reactor = True):
-        """
-        Run the application component.
-        :param make: A factory that produces instances of :class:`autobahn.asyncio.wamp.ApplicationSession`
-        when called with an instance of :class:`autobahn.wamp.types.ComponentConfig`.
-        :type make: callable
-        """
-        from twisted.internet import reactor
-
-        isSecure, host, port, resource, path, params = parseWsUrl(self.url)
-
-        ## start logging to console
-        if self.debug or self.debug_wamp or self.debug_app:
-            log.startLogging(sys.stdout)
-
-        ## factory for use ApplicationSession
-        def create():
-            cfg = ComponentConfig(self.realm, self.extra)
-            try:
-                session = make(cfg)
-            except Exception:
-                ## the app component could not be created .. fatal
-                log.err()
-                reactor.stop()
-            else:
-                session.debug_app = self.debug_app
-                return session
-
-        ## create a WAMP-over-WebSocket transport client factory
-        transport_factory = WampWebSocketClientFactory(create, url = self.url, serializers = self.serializers,
-        debug = self.debug, debug_wamp = self.debug_wamp)
-
-        ## start the client from a Twisted endpoint
-        from twisted.internet.endpoints import clientFromString
-
-        if isSecure:
-            endpoint_descriptor = "ssl:{0}:{1}".format(host, port)
-        else:
-            endpoint_descriptor = "tcp:{0}:{1}".format(host, port)
-
-        client = clientFromString(reactor, endpoint_descriptor)
-        client.connect(transport_factory)
-
-        ## now enter the Twisted reactor loop
-        if start_reactor:
-            reactor.run()
-            
 
 def build_wamp_client():
     # wamp_app_config = ComponentConfig(realm=config.realm)
