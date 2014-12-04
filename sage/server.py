@@ -37,10 +37,6 @@ def run():
         sage.factory = factory
         print("Telnet proxy port: %s" % config.telnet_port)
 
-    #if config.ws_server:
-        #factory = net.build_ws_factory()
-        #print("Sage WS protocol: ws://%s:%s" % (config.ws_host, config.ws_port))
-
     # Add shutdown events
     reactor.addSystemEventTrigger('before', 'shutdown', pre_shutdown)
     reactor.addSystemEventTrigger('after', 'shutdown', post_shutdown)

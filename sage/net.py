@@ -437,34 +437,6 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
         return False
 
 
-'''
-class SAGEProtoServerProtocol(WampServerProtocol):
-
-    def onSessionOpen(self):
-        self.client.ws_server = self
-        self.registerForPubSub("http://sage/event#", True)
-        self.registerMethodForRpc('http://sage/input', self, SAGEProtoServerProtocol.input)
-        self.registerMethodForRpc('http://sage/is_connected', self, SAGEProtoServerProtocol.is_connected)
-        self.registerMethodForRpc('http://sage/connect', self, SAGEProtoServerProtocol.connect)
-
-    def connect(self):
-        pass
-
-    def input(self, msg):
-        msg = msg.encode('us-ascii')  # data going to TelnetClient MUST be us-ascii
-        self.client.send(msg + NL)
-
-    def is_connected(self):
-        self.dispatch('http://sage/event#connected', sage.connected)
-
-    def instream(self, lines, p):
-        self.dispatch('http://sage/event#instream', {'lines': lines, 'prompt': p})
-
-    def ready(self):
-        pass
-'''
-
-
 def build_telnet_factory():
     """ Setup Twisted factory """
 
@@ -473,18 +445,3 @@ def build_telnet_factory():
     factory.transports = []
     reactor.listenTCP(config.telnet_port, factory)
     return factory
-
-
-'''
-WAMP websocket stuff is disabled for the moment
-def build_ws_factory():
-    """ Setup Websocket factory """
-
-    factory = WampServerFactory("ws://%s:%s" % (config.ws_host, config.ws_port), debugWamp=config.ws_debug)
-    SAGEProtoServerProtocol.client = client
-    factory.protocol = SAGEProtoServerProtocol
-    factory.setProtocolOptions(allowHixie76=True)
-    reactor.listenTCP(config.ws_port, factory)
-    #listenWS(factory)
-    return factory
-'''
