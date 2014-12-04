@@ -190,9 +190,9 @@ class TelnetClient(Telnet):
         self.telnet_server.write(self.data_buffer)
         sage.connected = False
         signal.disconnected.send()
-        self.telnet_server.write("Disconnected from Achaea.")
+        self.telnet_server.write("Sage has disconnected from Achaea.")
         if reactor.running:
-           reactor.stop()
+            reactor.callInThread(reactor.stop)
 
     def dataReceived(self, data):
         """ Recieves and processes raw data from the server """
