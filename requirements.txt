@@ -1,7 +1,6 @@
-Twisted==13.2.0
+Twisted==14.0.2
 pyasn1>=0.1.7
-pycrypto==2.6.1
-zope.interface>=4.0.5
-watchdog==0.7.1
-autobahn==0.8.4-2
-six==1.6.1
+pycrypto>=2.6.1
+watchdog==0.8.2
+autobahn==0.9.3-3
+six>=1.8.0
