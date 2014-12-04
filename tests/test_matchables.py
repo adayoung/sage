@@ -203,7 +203,6 @@ class TestApps(unittest.TestCase):
     def test_parent_removal(self):
         triggers.get('dummy').destroy()
         self.assertNotIn('dummy', triggers.groups)
-        self.assertEqual(len(triggers.enabled), 0)
         self.assertEqual(len(apps.groups['dummyapp']), 0)
 
     def test_child_removal(self):

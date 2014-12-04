@@ -7,3 +7,4 @@ dev
 html
 build
 *.DS_Store
+.idea
