@@ -16,7 +16,6 @@ requires = [
     'twisted',
     'pycrypto',
     'pyasn1',
-    'PyYAML',
     'watchdog',
     'autobahn',
     'six'
