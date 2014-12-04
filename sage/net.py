@@ -387,7 +387,6 @@ class TelnetServer(Telnet, StatefulTelnetProtocol):
     def connectionMade(self):
         """ Local client connected. Start client connection to server. """
         self.factory.transports.append(self.transport)
-        self.transport.write("Connected to Sage\n")
 
         sage._echo = self.write
 

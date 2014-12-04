@@ -627,6 +627,15 @@ class Group(object):
 
             if name is None:
                 mname = func.__name__
+
+                # matchable by this name already exists, increment a new one
+                if mname in self.matchables:
+                    if hasattr(func, '_matchable_counter'):
+                        func._matchable_counter += 1
+                    else:
+                        func._matchable_counter = 2
+
+                    mname = mname + str(func._matchable_counter)
             else:
                 mname = name
 
