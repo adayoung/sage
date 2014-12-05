@@ -58,7 +58,7 @@ DONT = chr(254)     # Indicates the demand that the other party stop performing,
 IAC = chr(255)      # Interpret as a command
 
 
-class ISageProxy(object):
+class ISageProxyReceiver(object):
 
     def __init__(self):
         self.connected = False
@@ -72,11 +72,23 @@ class ISageProxy(object):
     def send(self, data):
         pass
 
-
-class ISageWSProxy(ISageProxy):
-
     def instream(self, lines, prompt):
         pass
+
+
+class Receivers(list):
+
+    def ready(self):
+        for r in self:
+            r.ready()
+
+    def write(self, data):
+        for r in self:
+            r.write(data)
+
+    def instream(self, lines, prompt):
+        for r in self:
+            r.instream(lines, prompt)
 
 
 class TelnetClient(Telnet):
@@ -85,8 +97,12 @@ class TelnetClient(Telnet):
     def __init__(self):
         Telnet.__init__(self)
 
-        self.ws_server = ISageWSProxy()
-        self.telnet_server = ISageProxy()
+        """
+        !! TODO
+        Remove .ws_server and .telnet_server and embrace .receivers and ISageProxyReceiver
+
+        """
+        self.receivers = Receivers()  # ISageProxyReceiver receivers (like a Telnet Server or a WS Server)
 
         self.compress = False
         self.decompressobj = zlib.decompressobj()
@@ -173,24 +189,22 @@ class TelnetClient(Telnet):
             prompt=ansi.filter_ansi(prompt_output)
         )
 
-        self.ws_server.instream(lines, prompt_output)
-        self.telnet_server.write(output)
+        self.receivers.instream(lines, prompt_output)
 
     def connectionMade(self):
         for option in self.options_enabled:
             self.do(option)
 
         sage.connected = True
-        self.telnet_server.ready()
-        self.ws_server.ready()
+        self.receivers.ready()
         signal.connected.send()
         sage._send = self.transport.write
 
     def connectionLost(self, reason):
-        self.telnet_server.write(self.data_buffer)
+        self.receivers.write(self.data_buffer)
         sage.connected = False
         signal.disconnected.send()
-        self.telnet_server.write("Sage has disconnected from Achaea.")
+        self.receivers.write("Sage has disconnected from Achaea." + IAC + GA)
         if reactor.running:
             reactor.callInThread(reactor.stop)
 
@@ -312,7 +326,7 @@ class TelnetClient(Telnet):
         self.gmcp.call(data)
 
         if self.gmcp_passthrough:
-            self.telnet_server.write(IAC + SB + GMCP + data + IAC + SE)
+            self.receivers.write(IAC + SB + GMCP + data + IAC + SE)
 
     def send(self, data):
 
@@ -356,7 +370,7 @@ class TelnetServerFactory(ServerFactory):
     pass
 
 
-class TelnetServer(Telnet, StatefulTelnetProtocol):
+class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
     """
     Local client connects to TelnetServer().
     TelnetServer() connects to TelnetClient()
