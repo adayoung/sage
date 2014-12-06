@@ -7,18 +7,13 @@ Local Client <--> TelnetServer() <--> TelnetClient() <--> Remote Server
 from __future__ import absolute_import
 from twisted.conch.telnet import Telnet, StatefulTelnetProtocol
 from twisted.internet.defer import inlineCallbacks
-from twisted.internet.protocol import ClientFactory, ServerFactory
-from twisted.internet.endpoints import serverFromString
+from twisted.internet.protocol import ClientFactory, ServerFactory, Factory, Protocol
+from twisted.internet.endpoints import serverFromString, TCP4ClientEndpoint 
 from twisted.internet import reactor
-#from autobahn.websocket import listenWS
-#from autobahn.wamp import WampServerFactory, WampServerProtocol
-from autobahn.twisted.wamp import ApplicationSession, ApplicationSessionFactory    # New shit
 from autobahn.twisted.websocket import WampWebSocketClientFactory, WampWebSocketServerFactory, WampWebSocketServerProtocol   # Wamp-over-Websocket transport
 from autobahn.wamp import router, broker, dealer
 from autobahn.websocket.protocol import parseWsUrl
-from autobahn.twisted.wamp import RouterFactory
-from autobahn.twisted.wamp import RouterSessionFactory
-from autobahn.twisted.wamp import ApplicationRunner
+from autobahn.twisted.wamp import RouterFactory, RouterSessionFactory, ApplicationRunner, ApplicationSession, ApplicationSessionFactory
 from autobahn.wamp.types import ComponentConfig
 
 import sage
@@ -29,6 +24,7 @@ from sage.signals import post_prompt, pre_prompt
 from sage.signals.gmcp import vitals
 import re
 import zlib
+import json
 
 
 """ TELNET VALUES """
@@ -457,8 +453,6 @@ def build_telnet_factory():
     reactor.listenTCP(config.telnet_port, factory)
     return factory
 
-from twisted.internet.protocol import Factory, Protocol
-from twisted.internet.endpoints import TCP4ClientEndpoint
 
 # Pls don't kill me todd, I know it's ugly. We'll fix this prototype soon
 class WAMPProxy(Protocol):
@@ -472,9 +466,15 @@ class WAMPProxyFactory(Factory):
     def buildProtocol(self, addr):
         return self.proxy
 
-from sage.contrib import Vital, Balance
 
 class WampComponent(ApplicationSession, ISageWSProxy):
+    """
+    Barebones WAMP component implementation for Sage. This is
+    intended to be overridden elsewhere. In order to override it with
+    Sage the ideal thing to do is set sage.config.ws_component to a subclass
+    of this class.
+    """
+
     deferred = None
     vitals = None
 
@@ -487,34 +487,15 @@ class WampComponent(ApplicationSession, ISageWSProxy):
         if client.wamp_client is None:
             client.wamp_client = self
 
-        import sage
-        import json
         def onIOEvent(msg):
             # We must decode to ascii because browsers may send unicode
             tmp_msg = msg.encode('ascii', 'ignore')
             client.send(tmp_msg)
 
-
-        def vitalsReceived(*args, **kwargs):
-            kwargs.pop('signal')
-            values = {}
-            
-            for key,val in kwargs.iteritems():
-                if isinstance(val, Vital):
-                    values[key] = val.value
-                elif isinstance(val, Balance):
-                    values[key] = val.balance
-                else:
-                    values[key] = val
-
-            self.publish(u"com.sage.vitals", values)
-
-
         def ready():
             if not self.deferred:
                 point = TCP4ClientEndpoint(reactor, "localhost", 5493)
                 self.deferred = point.connect(WAMPProxyFactory())
-                self.vitals = vitals.connect(vitalsReceived)
 
 
         yield self.register(ready, u"com.sage.wsclientready")
@@ -524,12 +505,13 @@ class WampComponent(ApplicationSession, ISageWSProxy):
         self.publish(u'com.sage.io', data)
 
 
-
-
 def build_wamp_client():
-    # wamp_app_config = ComponentConfig(realm=config.realm)
     runner = ApplicationRunner("ws://%s:%s/ws" % (config.ws_host, config.ws_port), config.wamp_realm)
-    runner.run(WampComponent, start_reactor=False)
+
+    if config.ws_component is None:
+        config.ws_component = WampComponent
+
+    runner.run(config.ws_component, start_reactor=False)
 
 def build_wamp_router():
     """ 
