@@ -41,13 +41,42 @@ class CustomComponent(WampComponent):
 
             self.publish(u"com.sage.vitals", values)
 
+        def pingReceived(signal, latency):
+            self.publish(u"com.sage.ping", latency)
+
+        def roomUpdated(signal, room):
+            self.publish(u"com.sage.room", room.encode())
+
+        def riftUpdated(signal, rift):
+            self.publish(u"com.sage.rift", rift)
+
+        def skillsUpdated(signal, skills):
+            self.publish(u"com.sage.skills", skills)
+
+        def commsReceived(signal, talker, channel, text):
+            self.publish(u"com.sage.communications", {
+                "talker": talker,
+                "channel": channel,
+                "text": text
+            })
+
+        def invItemsUpdated(signal, items):
+            self.publish(u"com.sage.inv", items.encode())
 
         def ready():
             if not self.deferred:
                 point = TCP4ClientEndpoint(reactor, "localhost", 5493)
                 self.deferred = point.connect(WAMPProxyFactory())
-                self.vitals = vitals.connect(vitalsReceived)
 
+                # Connect signals to publish events, signals 
+                # on right are imported from sage.signals.gmcp
+                self.vitals = vitals.connect(vitalsReceived)
+                self.ping = ping.connect(pingReceived)
+                self.room = room.connect(roomUpdated)
+                self.rift = rift.connect(riftUpdated)
+                self.skills = skills.connect(skillsUpdated)
+                self.comms = comms.connect(commsReceived)
+                self.inv = inv_items.connect(invItemsUpdated)
 
         yield self.register(ready, u"com.sage.wsclientready")
         yield self.subscribe(onIOEvent, u"com.sage.io")
