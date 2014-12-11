@@ -10,7 +10,7 @@ from twisted.internet.protocol import ClientFactory, ServerFactory
 from twisted.internet import reactor
 import sage
 from sage.utils import error
-from sage import inbound, outbound, gmcp, prompt, config, _log, ansi
+from sage import inbound, outbound, gmcp, prompt, config, _log, ansi, aliases
 from sage.signals import net as signal
 from sage.signals import post_prompt, pre_prompt
 import re
@@ -184,6 +184,22 @@ class TelnetClient(Telnet):
 
         self.receivers.input(lines, prompt_output)
 
+    def connect(self):
+        """ Initiate connection to Achaea """
+
+        reactor.connectTCP(config.host, config.port, TelnetClientFactory())
+
+    def disconnect(self):
+        """ Disconnect client from Achaea """
+
+        self.transport.loseConnection()
+
+    def reset(self):
+        """ Reset the client for a new connection """
+        self.options = {}  # reset negotiation options
+        self.gmcp = gmcp.GMCP(self)
+        sage.gmcp = self.gmcp
+
     def connectionMade(self):
         for option in self.options_enabled:
             self.do(option)
@@ -197,9 +213,18 @@ class TelnetClient(Telnet):
         self.receivers.write(self.data_buffer)
         sage.connected = False
         signal.disconnected.send()
+
+        self.reset()
+
         self.receivers.write("Sage has disconnected from Achaea." + IAC + GA)
-        if reactor.running:
-            reactor.callInThread(reactor.stop)
+
+        if config.exit_on_disconnect is True:
+            if reactor.running:
+                self.receivers.write("sage.config.exit_on_disconnect is enabled. Shutting down Sage." + IAC + GA)
+                reactor.callLater(1, reactor.stop)
+        else:
+            self.receivers.write("Sage is still running. Type '.connect' to reconnect." + IAC + GA)
+
 
     def dataReceived(self, data):
         """ Recieves and processes raw data from the server """
@@ -402,7 +427,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
 
         if bool(self.client.connected) is False:
             self.transport.write("Connected to Sage\n")
-            reactor.connectTCP(config.host, config.port, TelnetClientFactory())
+            self.client.connect()
         else:
             self.transport.write("Reconnected to Sage\n")
 
@@ -459,3 +484,16 @@ def build_telnet_factory():
     factory.transports = []
     reactor.listenTCP(config.telnet_port, factory)
     return factory
+
+
+net_aliases = aliases.get_group('sage')
+
+
+@net_aliases.exact('.connect')
+def connect(alias):
+    client.connect()
+
+
+@net_aliases.exact('.disconnect')
+def disconnect(alias):
+    client.disconnect()

@@ -36,5 +36,6 @@ defaults = Configuration({
     'backdoor_password': 'sage',
     'backdoor_port': 5494,
     'backdoor_host': 'localhost',
-    'auto_reload': True
+    'auto_reload': True,
+    'exit_on_disconnect': False
 })

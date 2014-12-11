@@ -59,6 +59,8 @@ from .matching import TriggerMasterGroup, AliasMasterGroup
 #: Master alias group (:class:`sage.matching.AliasMasterGroup`)
 aliases = AliasMasterGroup()
 
+aliases.create_group('sage', app='sage')
+
 #: Master trigger group (:class:`sage.matching.TriggerMasterGroup`)
 triggers = TriggerMasterGroup()
 
