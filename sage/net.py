@@ -8,8 +8,6 @@ from __future__ import absolute_import
 from twisted.conch.telnet import Telnet, StatefulTelnetProtocol
 from twisted.internet.protocol import ClientFactory, ServerFactory
 from twisted.internet import reactor
-#from autobahn.websocket import listenWS
-#from autobahn.wamp import WampServerFactory, WampServerProtocol
 import sage
 from sage.utils import error
 from sage import inbound, outbound, gmcp, prompt, config, _log, ansi
@@ -72,7 +70,7 @@ class ISageProxyReceiver(object):
     def send(self, data):
         pass
 
-    def instream(self, lines, prompt):
+    def input(self, lines, prompt):
         pass
 
 
@@ -86,9 +84,9 @@ class Receivers(list):
         for r in self:
             r.write(data)
 
-    def instream(self, lines, prompt):
+    def input(self, lines, prompt):
         for r in self:
-            r.instream(lines, prompt)
+            r.input(lines, prompt)
 
 
 class TelnetClient(Telnet):
@@ -97,12 +95,8 @@ class TelnetClient(Telnet):
     def __init__(self):
         Telnet.__init__(self)
 
-        """
-        !! TODO
-        Remove .ws_server and .telnet_server and embrace .receivers and ISageProxyReceiver
-
-        """
-        self.receivers = Receivers()  # ISageProxyReceiver receivers (like a Telnet Server or a WS Server)
+        # ISageProxyReceiver receivers (like a Telnet Server or a WS Server)
+        self.receivers = Receivers()
 
         self.compress = False
         self.decompressobj = zlib.decompressobj()
@@ -158,7 +152,7 @@ class TelnetClient(Telnet):
 
         pre_prompt.send(raw_data=data)
 
-        # lines recieved
+        # lines received
         lines = data[:-1]
 
         # last line is always the prompt
@@ -181,15 +175,14 @@ class TelnetClient(Telnet):
         if len(lines):
             output = '\r\n'.join(lines) + '\r\n'
 
-        output += prompt_output + '\r\n'
-
         signal.pre_outbound.send(
-            lines=sage.buffer,
+            raw_lines=sage.buffer,
+            lines=lines,
             ansi_prompt=prompt_output,
             prompt=ansi.filter_ansi(prompt_output)
         )
 
-        self.receivers.instream(lines, prompt_output)
+        self.receivers.input(lines, prompt_output)
 
     def connectionMade(self):
         for option in self.options_enabled:
@@ -379,14 +372,17 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
     def __init__(self):
         Telnet.__init__(self)
         self.reset()
-        self.client_factory = TelnetClientFactory()
-        self.client = self.client_factory.client
+        self.client = client
+
+        if self not in self.client.receivers:
+            self.client.receivers.append(self)
+
         self.client.telnet_server = self
 
         self.outbound_buffer = ''
         self.inbound_buffer = ''
 
-        if self.client_factory.client.connected:
+        if self.client.connected:
             self.ready()
 
     def ready(self):
@@ -406,7 +402,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
 
         if bool(self.client.connected) is False:
             self.transport.write("Connected to Sage\n")
-            reactor.connectTCP(config.host, config.port, self.client_factory)
+            reactor.connectTCP(config.host, config.port, TelnetClientFactory())
         else:
             self.transport.write("Reconnected to Sage\n")
 
@@ -437,11 +433,10 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         self.client.send(data)
 
     def write(self, data):
-        for transport in self.factory.transports:
-            transport.write(data)
-
         if len(self.factory.transports) == 0:
             self.client.outbound_buffer += data
+
+        self.transport.write(data)
 
     def enableLocal(self, option):
         if option == GMCP:
@@ -449,6 +444,11 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
             return True
 
         return False
+
+    def input(self, lines, prompt):
+        output = '\r\n'.join(lines) + '\r\n' + prompt + '\r\n'
+
+        self.write(output)
 
 
 def build_telnet_factory():

@@ -29,13 +29,6 @@ class TestingClient(TelnetClient):
         self.results = []
         TelnetClient.__init__(self)
 
-    def to_client(self, data):
-        print "I GOT CALLED"
-        """ Override to_client to work for tests """
-
-        print data
-        self.results.append(data)
-
     def write(self, data):
         data = data + "\nprompt"
         self.dataReceived(data + IAC + GA)
@@ -50,7 +43,7 @@ class TelnetTests(unittest.TestCase):
         self.client.write('Hello')
 
     def test_anything(self):
-        pass
+        self.client.write('hello')
 
     """
     def test_gmcp_name(self):
