@@ -11,7 +11,6 @@ from twisted.internet.protocol import ClientFactory, ServerFactory, Factory, Pro
 from twisted.internet.endpoints import serverFromString, TCP4ClientEndpoint 
 from twisted.internet import reactor
 from autobahn.twisted.websocket import WampWebSocketClientFactory, WampWebSocketServerFactory, WampWebSocketServerProtocol   # Wamp-over-Websocket transport
-from autobahn.wamp import router, broker, dealer
 from autobahn.websocket.protocol import parseWsUrl
 from autobahn.twisted.wamp import RouterFactory, RouterSessionFactory, ApplicationRunner, ApplicationSession, ApplicationSessionFactory
 from autobahn.wamp.types import ComponentConfig
@@ -515,7 +514,7 @@ def build_wamp_client():
 
 def build_wamp_router():
     """ 
-    This is a basica WAMP Router implementation 
+    This is a basic WAMP Router implementation 
 
     Got it from: 
     https://github.com/tavendo/AutobahnPython/blob/master/examples/twisted/wamp/basic/basicrouter.py
