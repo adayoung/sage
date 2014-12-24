@@ -129,6 +129,10 @@ class TelnetClient(Telnet):
         # Achaea will sometimes give us a line that is just a color code...
         self.color_newline = re.compile('^' + ESC + '\[[0-9;]*[m]' + NL)
 
+    def addReceiver(self, receiver):
+        """ Helper method for adding an ISageProxyReceiver """
+        self.receivers.append(receiver)
+
     def applicationDataReceived(self, data):
         """ Gather data until we get EOR or GA (prompt) """
 
@@ -400,7 +404,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         self.client = client
 
         if self not in self.client.receivers:
-            self.client.receivers.append(self)
+            self.client.addReceiver(self)
 
         self.client.telnet_server = self
 
