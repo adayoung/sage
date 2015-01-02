@@ -74,9 +74,11 @@ class TelnetTests(unittest.TestCase):
         self.assertIn('test', self.receiver.lines)
         self.assertEqual('prompt', self.receiver.prompt)
 
+    """
     def test_gmcp_name(self):
         self.a.gmcp('Char.Name', {'name': 'Test', 'fullname': 'Full Name Test'})
         self.assertEqual(player.name, 'Test')
+    """
 
 if __name__ == '__main__':
     unittest.main()
