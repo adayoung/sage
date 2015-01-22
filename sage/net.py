@@ -174,11 +174,6 @@ class TelnetClient(Telnet):
 
         post_prompt.send()
 
-        output = ''
-
-        if len(lines):
-            output = '\r\n'.join(lines) + '\r\n'
-
         signal.pre_outbound.send(
             raw_lines=sage.buffer,
             lines=lines,
