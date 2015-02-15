@@ -110,4 +110,4 @@ class Vital(MutableInt):
         self.percentage = int(round(self.value / self.max * 100))
 
         if self.delta is not 0:
-            self.signal.send(vital=self)
+            self.signal.send(vital=self,delta=self.delta)
