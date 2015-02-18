@@ -81,7 +81,7 @@ class Vital(MutableInt):
     """ Tracks a vital value (health, mana, etc) """
 
     def __init__(self):
-        self.signal = Signal(providing_args=['vital'])
+        self.signal = Signal(providing_args=['vital', 'delta'])
         self.value = None
         self.max = None
         self.delta = None
