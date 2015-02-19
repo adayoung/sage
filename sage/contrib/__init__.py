@@ -81,7 +81,7 @@ class Vital(MutableInt):
     """ Tracks a vital value (health, mana, etc) """
 
     def __init__(self):
-        self.signal = Signal(providing_args=['vital', 'delta'])
+        self.signal = Signal(providing_args=['vital'])
         self.value = None
         self.max = None
         self.delta = None
@@ -110,4 +110,4 @@ class Vital(MutableInt):
         self.percentage = int(round(self.value / self.max * 100))
 
         if self.delta is not 0:
-            self.signal.send(vital=self,delta=self.delta)
+            self.signal.send(vital=self)
