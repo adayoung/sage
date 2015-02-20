@@ -142,7 +142,7 @@ important right here and provide links to the canonical documentation.</p>
 <h3>Main Containers<a class="headerlink" href="#main-containers" title="Permalink to this headline">¶</a></h3>
 <dl class="data">
 <dt id="sage.config">
-<tt class="descclassname">sage.</tt><tt class="descname">config</tt><em class="property"> = {'backdoor_port': 5494, 'auto_reload': True, 'telnet_proxy': True, 'ws_port': 9000, 'backdoor_user': 'sage', 'telnet_port': 5493, 'ws_debug': False, 'backdoor_host': 'localhost', 'backdoor_password': 'sage', 'ws_server': True, 'backdoor': True, 'host': 'achaea.com', 'DEBUG': True, 'ws_host': 'localhost', 'port': 2003}</em><a class="headerlink" href="#sage.config" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.</tt><tt class="descname">config</tt><em class="property"> = {'telnet_proxy': True, 'ws_port': 9000, 'backdoor_user': 'sage', 'ws_debug': False, 'exit_on_disconnect': False, 'host': 'achaea.com', 'DEBUG': True, 'gmcp_debug': False, 'port': 2003, 'backdoor_port': 5494, 'auto_reload': True, 'gmcp_ignore_channels': ['Core.Ping'], 'telnet_port': 5493, 'backdoor_host': 'localhost', 'backdoor_password': 'sage', 'backdoor': True, 'ws_host': 'localhost', 'ws_server': True}</em><a class="headerlink" href="#sage.config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Container for sage configuration</p>
 </dd></dl>
 
@@ -212,7 +212,7 @@ important right here and provide links to the canonical documentation.</p>
 
 <dl class="data">
 <dt id="sage.aliases">
-<tt class="descclassname">sage.</tt><tt class="descname">aliases</tt><em class="property"> = &lt;class 'sage.matching.AliasMasterGroup'&gt; (0 groups, 0 objects)</em><a class="headerlink" href="#sage.aliases" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.</tt><tt class="descname">aliases</tt><em class="property"> = &lt;class 'sage.matching.AliasMasterGroup'&gt; (1 groups, 0 objects)</em><a class="headerlink" href="#sage.aliases" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="data">
@@ -517,7 +517,7 @@ both are identical. The only difference is where they occur in execution.</p>
 <dd><p>Base matchable group</p>
 <dl class="method">
 <dt id="sage.matching.Group.create">
-<tt class="descname">create</tt><big>(</big><em>name</em>, <em>mtype</em>, <em>pattern</em>, <em>methods=</em>, <span class="optional">[</span><span class="optional">]</span><em>enabled=True</em>, <em>ignorecase=True</em>, <em>delay=None</em>, <em>disable_on_match=False</em>, <em>disable_on_prompt=False</em>, <em>gag=False</em>, <em>intercept=True</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.create" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">create</tt><big>(</big><em>name</em>, <em>mtype</em>, <em>pattern</em>, <em>methods=[]</em>, <em>enabled=True</em>, <em>ignorecase=True</em>, <em>delay=None</em>, <em>disable_on_match=False</em>, <em>disable_on_prompt=False</em>, <em>gag=False</em>, <em>intercept=True</em><big>)</big><a class="reference internal" href="_modules/sage/matching.html#Group.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sage.matching.Group.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a trigger or alias (depending on the master group)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -996,6 +996,12 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 </dd></dl>
 
 <dl class="data">
+<dt id="sage.player.prompt_stats">
+<tt class="descclassname">sage.player.</tt><tt class="descname">prompt_stats</tt><em class="property"> = ''</em><a class="headerlink" href="#sage.player.prompt_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prompt stats</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="sage.player.race">
 <tt class="descclassname">sage.player.</tt><tt class="descname">race</tt><em class="property"> = None</em><a class="headerlink" href="#sage.player.race" title="Permalink to this definition">¶</a></dt>
 <dd><p>race of character</p>
@@ -1009,7 +1015,7 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 
 <dl class="data">
 <dt id="sage.player.room">
-<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.contrib.containers.Room object at 0x10ac67d10&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.player.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.contrib.containers.Room object at 0x104140e10&gt;</em><a class="headerlink" href="#sage.player.room" title="Permalink to this definition">¶</a></dt>
 <dd><p>Room data</p>
 </dd></dl>
 
@@ -1062,194 +1068,206 @@ lookup and call <a class="reference internal" href="#sage.matching.Group.enable"
 whenever a signal is called.</p>
 <dl class="data">
 <dt id="sage.signals.player_connected">
-<tt class="descclassname">sage.signals.</tt><tt class="descname">player_connected</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8ae910&gt;</em><a class="headerlink" href="#sage.signals.player_connected" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.</tt><tt class="descname">player_connected</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x104226390&gt;</em><a class="headerlink" href="#sage.signals.player_connected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Player has successfully logged in</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.post_prompt">
-<tt class="descclassname">sage.signals.</tt><tt class="descname">post_prompt</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8aea50&gt;</em><a class="headerlink" href="#sage.signals.post_prompt" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.</tt><tt class="descname">post_prompt</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x104226350&gt;</em><a class="headerlink" href="#sage.signals.post_prompt" title="Permalink to this definition">¶</a></dt>
 <dd><p>After prompt is received</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.pre_prompt">
-<tt class="descclassname">sage.signals.</tt><tt class="descname">pre_prompt</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8ae2d0&gt;</em><a class="headerlink" href="#sage.signals.pre_prompt" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.</tt><tt class="descname">pre_prompt</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x104183b90&gt;</em><a class="headerlink" href="#sage.signals.pre_prompt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Before prompt processing</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.pre_shutdown">
-<tt class="descclassname">sage.signals.</tt><tt class="descname">pre_shutdown</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8ae1d0&gt;</em><a class="headerlink" href="#sage.signals.pre_shutdown" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.</tt><tt class="descname">pre_shutdown</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1042264d0&gt;</em><a class="headerlink" href="#sage.signals.pre_shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Before the Twisted Reactor stops</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.pre_start">
-<tt class="descclassname">sage.signals.</tt><tt class="descname">pre_start</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8ae6d0&gt;</em><a class="headerlink" href="#sage.signals.pre_start" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.</tt><tt class="descname">pre_start</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1041fddd0&gt;</em><a class="headerlink" href="#sage.signals.pre_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Before the sage server starts</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.prompt_stats">
-<tt class="descclassname">sage.signals.</tt><tt class="descname">prompt_stats</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8ae890&gt;</em><a class="headerlink" href="#sage.signals.prompt_stats" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.</tt><tt class="descname">prompt_stats</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x104226490&gt;</em><a class="headerlink" href="#sage.signals.prompt_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prompt stats (eq, bal, kola, cloak, etc)</p>
 </dd></dl>
 
 </div>
 <span class="target" id="module-sage.signals.gmcp"></span><dl class="data">
 <dt id="sage.signals.gmcp.comms">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">comms</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9e90&gt;</em><a class="headerlink" href="#sage.signals.gmcp.comms" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">comms</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x103fe7c50&gt;</em><a class="headerlink" href="#sage.signals.gmcp.comms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Someone speaking on a communications channel</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.goodbye">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">goodbye</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8ae150&gt;</em><a class="headerlink" href="#sage.signals.gmcp.goodbye" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">goodbye</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1041fd610&gt;</em><a class="headerlink" href="#sage.signals.gmcp.goodbye" title="Permalink to this definition">¶</a></dt>
 <dd><p>Goodbye</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.inv_add_item">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_add_item</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9c50&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_add_item" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_add_item</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1040f3ad0&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_add_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Item added to inventory</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.inv_items">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_items</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9250&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_items" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_items</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1040f39d0&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_items" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updated inventory items</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.inv_remove_item">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_remove_item</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9cd0&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_remove_item" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_remove_item</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1040f3990&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_remove_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Item removed from inventory</p>
 </dd></dl>
 
 <dl class="data">
+<dt id="sage.signals.gmcp.inv_remove_item_raw">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_remove_item_raw</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1040f3a10&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_remove_item_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raw GMCP item removed from inventory (because of Achaea bug with blind)</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="sage.signals.gmcp.inv_update_item">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_update_item</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9d50&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_update_item" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">inv_update_item</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1040f3c90&gt;</em><a class="headerlink" href="#sage.signals.gmcp.inv_update_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Item updated</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.iretime">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">iretime</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a99d0&gt;</em><a class="headerlink" href="#sage.signals.gmcp.iretime" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">iretime</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x103fe7990&gt;</em><a class="headerlink" href="#sage.signals.gmcp.iretime" title="Permalink to this definition">¶</a></dt>
 <dd><p>IRE Time update</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.ping">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">ping</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a96d0&gt;</em><a class="headerlink" href="#sage.signals.gmcp.ping" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">ping</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1041227d0&gt;</em><a class="headerlink" href="#sage.signals.gmcp.ping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recieved a GMCP Ping from Achaea</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.rift">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">rift</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9910&gt;</em><a class="headerlink" href="#sage.signals.gmcp.rift" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">rift</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1040f3a50&gt;</em><a class="headerlink" href="#sage.signals.gmcp.rift" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updated rift change</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.rift_change">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">rift_change</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a92d0&gt;</em><a class="headerlink" href="#sage.signals.gmcp.rift_change" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">rift_change</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x103fe7b10&gt;</em><a class="headerlink" href="#sage.signals.gmcp.rift_change" title="Permalink to this definition">¶</a></dt>
 <dd><p>Changed rift item</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.room">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9550&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x104140550&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updated room</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.room_add_item">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_add_item</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9890&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_add_item" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_add_item</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x104140450&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_add_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Item added to room</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.room_add_player">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_add_player</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9d90&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_add_player" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_add_player</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1040cfd90&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_add_player" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a player to the room</p>
 </dd></dl>
 
 <dl class="data">
+<dt id="sage.signals.gmcp.room_changed">
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_changed</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1041404d0&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_changed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Room has changed</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="sage.signals.gmcp.room_items">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_items</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9190&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_items" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_items</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x104140490&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_items" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updated room items</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.room_players">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_players</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9710&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_players" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_players</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1040cfa90&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_players" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updated players in the room</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.room_remove_item">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_remove_item</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9b50&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_remove_item" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_remove_item</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x104140590&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_remove_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Item removed from room</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.room_remove_player">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_remove_player</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9650&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_remove_player" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_remove_player</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1040cfa10&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_remove_player" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a player to the room</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.room_update_item">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_update_item</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9750&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_update_item" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_update_item</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x104140510&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_update_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Item in room updated</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.room_wrongdir">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_wrongdir</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9a10&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_wrongdir" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">room_wrongdir</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1040cffd0&gt;</em><a class="headerlink" href="#sage.signals.gmcp.room_wrongdir" title="Permalink to this definition">¶</a></dt>
 <dd><p>You attempted to go in the wrong direction</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.skills">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">skills</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9f10&gt;</em><a class="headerlink" href="#sage.signals.gmcp.skills" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">skills</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x103fe7c10&gt;</em><a class="headerlink" href="#sage.signals.gmcp.skills" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updated dictionary of all skills</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.gmcp.vitals">
-<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">vitals</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10a8a9fd0&gt;</em><a class="headerlink" href="#sage.signals.gmcp.vitals" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.gmcp.</tt><tt class="descname">vitals</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x1041405d0&gt;</em><a class="headerlink" href="#sage.signals.gmcp.vitals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Received a Char.Vitals</p>
 </dd></dl>
 
 <span class="target" id="module-sage.signals.net"></span><dl class="data">
 <dt id="sage.signals.net.connected">
-<tt class="descclassname">sage.signals.net.</tt><tt class="descname">connected</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10ac09790&gt;</em><a class="headerlink" href="#sage.signals.net.connected" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.net.</tt><tt class="descname">connected</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x103c57210&gt;</em><a class="headerlink" href="#sage.signals.net.connected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connected to Achaea</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.net.disconnected">
-<tt class="descclassname">sage.signals.net.</tt><tt class="descname">disconnected</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10ac09350&gt;</em><a class="headerlink" href="#sage.signals.net.disconnected" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.net.</tt><tt class="descname">disconnected</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x103c57750&gt;</em><a class="headerlink" href="#sage.signals.net.disconnected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Disconnected from Achaea</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.net.lag_recovered">
-<tt class="descclassname">sage.signals.net.</tt><tt class="descname">lag_recovered</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10ac097d0&gt;</em><a class="headerlink" href="#sage.signals.net.lag_recovered" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.net.</tt><tt class="descname">lag_recovered</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x103c57390&gt;</em><a class="headerlink" href="#sage.signals.net.lag_recovered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sage is no longer lagging</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.net.lagging">
-<tt class="descclassname">sage.signals.net.</tt><tt class="descname">lagging</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10ac09750&gt;</em><a class="headerlink" href="#sage.signals.net.lagging" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.net.</tt><tt class="descname">lagging</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x103c57410&gt;</em><a class="headerlink" href="#sage.signals.net.lagging" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sage is lagging</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="sage.signals.net.pre_outbound">
-<tt class="descclassname">sage.signals.net.</tt><tt class="descname">pre_outbound</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x10ac09510&gt;</em><a class="headerlink" href="#sage.signals.net.pre_outbound" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">sage.signals.net.</tt><tt class="descname">pre_outbound</tt><em class="property"> = &lt;sage.dispatch.signal.Signal object at 0x103c57dd0&gt;</em><a class="headerlink" href="#sage.signals.net.pre_outbound" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processed lines about to go out to the client</p>
 </dd></dl>
 
