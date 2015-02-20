@@ -490,7 +490,8 @@ net_aliases = aliases.get_group('sage')
 
 @net_aliases.exact('.connect')
 def connect(alias):
-    client.connect()
+    if sage.connected is False:
+        client.connect()
 
 
 @net_aliases.exact('.disconnect')
