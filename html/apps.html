@@ -143,9 +143,12 @@ and <cite>post_reload</cite>. A basic entry point could look like the following:
 <span class="sd">  imported). Any apps in meta.py&#39;s `installed_apps` will have already been</span>
 <span class="sd">  loaded before this is called. &quot;&quot;&quot;</span>
 
+<span class="k">def</span> <span class="nf">post_init</span><span class="p">():</span>
+  <span class="sd">&quot;&quot;&quot; Called after init() is called for all apps. &quot;&quot;&quot;</span>
+
 
 <span class="k">def</span> <span class="nf">unload</span><span class="p">():</span>
-  <span class="sd">&quot;&quot;&quot; Called when an app is unloaded (or reloaded). &quot;&quot;&quot;</span>
+  <span class="sd">&quot;&quot;&quot; Called when an app is unloaded. &quot;&quot;&quot;</span>
 
 
 <span class="k">def</span> <span class="nf">pre_reload</span><span class="p">():</span>
