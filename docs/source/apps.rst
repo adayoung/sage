@@ -107,9 +107,12 @@ and `post_reload`. A basic entry point could look like the following: ::
       imported). Any apps in meta.py's `installed_apps` will have already been
       loaded before this is called. """
 
+    def post_init():
+      """ Called after init() is called for all apps. """
+
 
     def unload():
-      """ Called when an app is unloaded (or reloaded). """
+      """ Called when an app is unloaded. """
 
 
     def pre_reload():
