@@ -95,7 +95,10 @@ class Matchable(object):
 
         if methods:
             for method in methods:
-                if type(method) is tuple:
+                if type(method) is tuple or type(method) is list:
+                    if len(method) != 2:
+                        raise MatchableCreationError("Methods with parameters must be a " + \
+                            "tuple or list with 2 elements")
                     self.bind(method[0], method[1])
                 else:
                     self.bind(method)
