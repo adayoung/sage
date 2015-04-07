@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 import sage
 import sys
-from twisted.python.rebuild import rebuild
-from twisted.python.filepath import FilePath
-from sage.utils import imports
 import gc
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
 import os
 import importlib
 from collections import OrderedDict
 import inspect
+
+from twisted.python.rebuild import rebuild
+
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+
+from sage.utils import imports
 
 class AppNotLoaded(Exception):
     pass
@@ -130,6 +132,13 @@ class Apps(dict):
         sage._log.msg("Failed to load app '%s'" % name)
         return False
 
+    def load_manifest(self):
+        for app in sage.manifest.apps:
+            if 'path' in app:
+                self.load(app['path'])
+            else:
+                self.load(app['name'])
+
     def _generate_paths(self):
         self.paths = dict()
 
@@ -242,3 +251,9 @@ class Apps(dict):
             return self.__getitem__(item)
         else:
             raise AppNotLoaded("App '%s' not currently loaded" % item)
+
+
+class ManifestFile(object):
+
+    def __init__(self, path):
+        pass

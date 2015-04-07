@@ -92,28 +92,40 @@ def run(args):
     else:
         path = os.getcwd()
 
-    if os.path.exists('%s/%s.py' % (path, args.app)):
-        path = '/'.join(path.split('/')[:-1])
-
-    os.chdir(path)
-
-    sys.path.append(path)
-
     sage.path = path
 
+    home_path = os.path.expanduser('~')
+
     print(banner)
-
     observer = sage._log.startLogging(sys.stdout)
-
     observer.timeFormat = "%Y-%m-%d %H:%M:%S:%f"
 
-    app = args.app
-
-    from sage.server import run, setup_system
+    from sage.server import run as run_sage, setup_system
 
     setup_system()
 
-    sage.apps.load(app)
+    if args.app is None:
+        # load app manifest?
+        if args.manifest is None:
+            if os.path.isfile(home_path + '/.sage-manifest'):
+                sage.manifest.load(home_path + '/.sage-manifest')
+            else:
+                print('No default manifest file found. Creating %s' % home_path + '/.sage-manifest')
+                sage.manifest.create_template(home_path + '/.sage-manifest')
+        else:
+            sage.manifest.load(args.manifest)
+
+        sage.apps.load_manifest()
+    else:
+        if os.path.exists('%s/%s.py' % (path, args.app)):
+            path = '/'.join(path.split('/')[:-1])
+
+        os.chdir(path)
+
+        sys.path.append(path)
+
+        sage.path = path
+        sage.apps.load(args.app)
 
     if args.no_backdoor:
         sage.config.backdoor = False
@@ -133,7 +145,7 @@ def run(args):
         profile.runcall(run)
         profile.dump_stats(args.profile)
     else:
-        run()
+        run_sage()
 
 
 def version():
@@ -159,7 +171,8 @@ runparser.add_argument('-t', '--no-telnet-proxy', action='store_true', help='Dis
 #runparser.add_argument('-w', '--no-websocket', action='store_true', help='Disable the websocket server')
 #runparser.add_argument('-D', '--ws-debug', action='store_true', help='Enable Websocket WAMP debugging')
 runparser.add_argument('--gmcp-debug', action='store_true', help='Enable GMCP debugging messages')
-runparser.add_argument('app')
+runparser.add_argument('-m', '--manifest', help='Sage manifest file')
+runparser.add_argument('app',  nargs='?')
 
 mkappparser = subparsers.add_parser('mkapp', parents=[parent])
 mkappparser.add_argument('-m', '--minimal', action='store_true', help='Create a minimal application')

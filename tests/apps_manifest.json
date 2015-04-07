@@ -1,0 +1,6 @@
+{
+    "apps": [
+        {"name": "dummyapp"},
+        {"name": "dummyapp", "path": "dummyapp"}
+    ]
+}

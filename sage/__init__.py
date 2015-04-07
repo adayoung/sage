@@ -30,10 +30,13 @@ from twisted.python import log as _log
 
 path = None
 
-from .defaults import defaults
+from .defaults import defaults, Manifest
 
 #: default configuration
 config = defaults
+
+#: manifest instance
+manifest = Manifest()
 
 from .app import Apps
 

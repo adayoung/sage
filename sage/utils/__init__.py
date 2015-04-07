@@ -24,6 +24,11 @@ def json_str_loads(data):
     return json.loads(data, object_hook=_decode_dict)
 
 
+def json_str_load(path):
+    """ Load JSON file using regular strings instead of unicode """
+    return json.load(path, object_hook=_decode_dict)
+
+
 def _decode_list(data):
     """ JSON object hook utility to convert unicode strings to regular ones """
 

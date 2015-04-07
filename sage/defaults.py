@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 
 
 class Configuration(dict):
@@ -39,3 +40,28 @@ defaults = Configuration({
     'auto_reload': True,
     'exit_on_disconnect': False
 })
+
+
+class Manifest(object):
+
+    apps = []
+
+    def load(self, path):
+        self.fp = open(path, 'rw')
+        data = json.load(self.fp)
+        self.apps = data['apps']
+
+    def create_template(self, path):
+        template = {
+            'apps': []
+        }
+
+        with open(path, 'w') as f:
+            json.dump(template, f)
+
+    def save(self):
+        data = {
+            'apps': self.apps
+        }
+
+        json.dump(self.fp, data)
