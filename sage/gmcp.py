@@ -57,6 +57,12 @@ class GMCPReceiver(object):
 
         self.command_map = {
             'Core.Ping': self.ping,
+            'Char.Afflictions.Add': self.afflictions_add,
+            'Char.Afflictions.List': self.afflictions_list,
+            'Char.Afflictions.Remove': self.afflictions_remove,
+            'Char.Defences.Add': self.defences_add,
+            'Char.Defences.List': self.defences_list,
+            'Char.Defences.Remove': self.defences_remove,
             'Char.Name': self.name,
             'Char.Status': self.status,
             'Core.Goodbye': self.goodbye,
@@ -105,6 +111,8 @@ class GMCPReceiver(object):
         self.lag_defer = None
         self.last_room = 0
 
+        self.affs_to_defs = ('insomnia', )
+
     def map(self, cmd, args=None):
         """ Map GMCP commands to assigned methods """
 
@@ -122,6 +130,66 @@ class GMCPReceiver(object):
     def unhandled_command(self, cmd, args):
 
         print("GMCP - Unhandled Command: %s %s" % (cmd, args))
+
+    # Char.Afflictions.Add
+    def afflictions_add(self, d):
+        aff = d['name']
+
+        if aff not in self.affs_to_defs:
+            player.afflictions.add(aff)
+            gmcp_signals.affliction_add.send(affliction=aff)
+        else:
+            player.defences.add(aff)
+            gmcp_signals.defence_add.send(defence=aff)
+
+    # Char.Afflictions.List
+    def afflictions_list(self, d):
+        player.afflictions.clear()
+
+        affs = [aff['name'] for aff in d]
+
+        for aff in affs:
+
+            # affs that are actually defences...
+            if aff in self.affs_to_defs:
+                player.defences.add(aff)
+            else:
+                player.afflictions.add(aff)
+
+        gmcp_signals.afflictions.send(afflictions=player.afflictions)
+
+    # Char.Afflictions.Remove
+    def afflictions_remove(self, d):
+        for affliction in d:
+            player.afflictions.discard(affliction)
+            gmcp_signals.affliction_remove(affliction)
+
+
+    # Char.Defences.Add
+    def defences_add(self, d):
+        defence = d['name']
+
+        player.defences.add(defence)
+
+        gmcp_signals.defence_add.send(defence=defence)
+        gmcp_signals.defences.send(defences=player.defences)
+
+    # Char.Defences.List
+    def defences_list(self, d):
+
+        player.defences.clear()
+
+        for dobj in d:
+            player.defences.add(dobj['name'])
+
+        gmcp_signals.defences.send(defences=player.defences)
+
+    # Char.Defences.Remove
+    def defences_remove(self, d):
+        for defence in d:
+            player.defences.discard(defence)
+            gmcp_signals.defence_remove(defence)
+
 
     # Char.Name
     def name(self, d):

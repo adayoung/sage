@@ -79,3 +79,21 @@ skills = Signal(providing_args=['skills'])
 
 #: Someone speaking on a communications channel
 comms = Signal(providing_args=['talker', 'channel', 'text'])
+
+#: Defences list
+defences = Signal(providing_args=['defences'])
+
+#: New defence brought up
+defence_add = Signal(providing_args=['defence'])
+
+#: Defence taken down
+defence_remove = Signal(providing_args=['defence'])
+
+#: Afflictions list
+afflictions = Signal(providing_args=['afflictions'])
+
+#: New affliction
+affliction_add = Signal(providing_args=['affliction'])
+
+#: Affliction cured
+affliction_remove = Signal(providing_args=['affliction'])

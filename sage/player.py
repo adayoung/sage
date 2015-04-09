@@ -106,3 +106,9 @@ blackout = False
 
 #: Prompt stats
 prompt_stats = ''
+
+#: List of active afflictions
+afflictions = set()
+
+#: List of active defences
+defences = set()
