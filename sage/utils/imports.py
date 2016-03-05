@@ -89,11 +89,12 @@ def import_file(fpath):
         _os.chdir(mod_name)
 
     tup = _imp.find_module(mod_name, ['.'])
-    module = _imp.reload(mod_name, *tup)
     fhandle = tup[0]
-
-    _os.chdir(original_path)
-    if fhandle is not None:
-        fhandle.close()
-
-    return module
+    module = None
+    try:
+        module = _imp.load_module(mod_name, *tup)
+        _os.chdir(original_path)
+        return module
+    finally:
+        if fhandle:
+            fhandle.close()
