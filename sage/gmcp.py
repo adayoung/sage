@@ -120,12 +120,12 @@ class GMCPReceiver(object):
             self.unhandled_command(cmd, args)
             return
 
+        debug(cmd, args)
+
         if args:
             self.command_map[cmd](args)
-            debug(cmd, args)
         else:
             self.command_map[cmd]()
-            debug(cmd, None)
 
     def unhandled_command(self, cmd, args):
 
@@ -143,8 +143,13 @@ class GMCPReceiver(object):
             gmcp_signals.defence_add.send(defence=aff)
 
     # Char.Afflictions.List
-    def afflictions_list(self, d):
+    def afflictions_list(self, *args):
         player.afflictions.clear()
+
+        try:
+            d = args[0]
+        except IndexError:
+            d = []
 
         affs = [aff['name'] for aff in d]
 
@@ -175,7 +180,11 @@ class GMCPReceiver(object):
         gmcp_signals.defences.send(defences=player.defences)
 
     # Char.Defences.List
-    def defences_list(self, d):
+    def defences_list(self, *args):
+        try:
+            d = args[0]
+        except IndexError:
+            d = []
 
         player.defences.clear()
 
@@ -186,9 +195,12 @@ class GMCPReceiver(object):
 
     # Char.Defences.Remove
     def defences_remove(self, d):
+        if not d:
+            return
+
         for defence in d:
             player.defences.discard(defence)
-            gmcp_signals.defence_remove(defence)
+            gmcp_signals.defence_remove.send(defence=defence)
 
 
     # Char.Name
@@ -339,7 +351,7 @@ class GMCPReceiver(object):
             gmcp_signals.room_changed.send(room=player.room)
 
     # Room.Players
-    def room_players(self, d=None):
+    def room_players(self, d):
         player.room.players.clear()
 
         if d is not None:
@@ -464,7 +476,7 @@ class GMCPReceiver(object):
             print("Char.Items.Remove %s" % d)
 
     # IRE.Rift.List
-    def rift_list(self, d=None):
+    def rift_list(self, d):
 
         player.rift.clear()
 
@@ -487,7 +499,7 @@ class GMCPReceiver(object):
         gmcp_signals.goodbye.send()
 
     # Core.Ping
-    def ping(self):
+    def ping(self, *args):
         """ Recieves a Core.Ping and times it """
 
         if self.lag_defer is not None:
