@@ -5,36 +5,19 @@ This file creates a telnet proxy and works like this:
 Local Client <--> TelnetServer() <--> TelnetClient() <--> Remote Server
 """
 from __future__ import absolute_import
+
+import re
+import zlib
+
 from twisted.conch.telnet import Telnet, StatefulTelnetProtocol
-from twisted.internet.defer import inlineCallbacks
-from twisted.internet.protocol import ClientFactory, ServerFactory, Factory, Protocol
-from twisted.internet.endpoints import serverFromString, TCP4ClientEndpoint 
 from twisted.internet import reactor
-from autobahn.twisted.websocket import WampWebSocketClientFactory, WampWebSocketServerFactory, WampWebSocketServerProtocol   # Wamp-over-Websocket transport
-from autobahn.websocket.protocol import parseWsUrl
-from autobahn.twisted.wamp import ApplicationRunner, ApplicationSession, ApplicationSessionFactory
-from autobahn.wamp.types import ComponentConfig
-from autobahn.wamp.exception import SerializationError
 from twisted.internet.protocol import ClientFactory, ServerFactory
-from twisted.internet.endpoints import serverFromString
-from twisted.internet import reactor
-#from autobahn.websocket import listenWS
-#from autobahn.wamp import WampServerFactory, WampServerProtocol
-from autobahn.twisted.wamp import ApplicationSession, ApplicationSessionFactory    # New shit
-from autobahn.twisted.websocket import WampWebSocketClientFactory   # Wamp-over-Websocket transport
-from autobahn.twisted.wamp import ApplicationRunner
-from autobahn.wamp.types import ComponentConfig
 
 import sage
-from sage.utils import error
 from sage import inbound, outbound, gmcp, prompt, config, _log, ansi, aliases
 from sage.signals import net as signal
 from sage.signals import post_prompt, pre_prompt
-from sage.signals.gmcp import vitals
-import re
-import zlib
-import json
-
+from sage.utils import error
 
 """ TELNET VALUES """
 NULL = chr(0)       # NULL
@@ -116,8 +99,6 @@ class TelnetClient(Telnet):
 
         # ISageProxyReceiver receivers (like a Telnet Server or a WS Server)
         self.receivers = Receivers()
-        #self.ws_server = ISageWSProxy()
-        self.wamp_client = None  # Ref to ApplicationSession object -- main component for WAMP
 
         self.compress = False
         self.decompressobj = zlib.decompressobj()
@@ -404,7 +385,11 @@ class TelnetClientFactory(ClientFactory):
 
 
 class TelnetServerFactory(ServerFactory):
-    pass
+
+    def buildProtocol(self, addr):
+        instance = TelnetServer(client)
+        instance.factory = self
+        return instance
 
 
 class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
@@ -413,15 +398,13 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
     TelnetServer() connects to TelnetClient()
     """
 
-    def __init__(self):
+    def __init__(self, telnet_client):
         Telnet.__init__(self)
         self.reset()
-        self.client = client
+        self.client = telnet_client
 
         if self not in self.client.receivers:
             self.client.addReceiver(self)
-
-        self.client.telnet_server = self
 
         self.outbound_buffer = ''
         self.inbound_buffer = ''
@@ -442,21 +425,21 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         """ Local client connected. Start client connection to server. """
         self.factory.transports.append(self.transport)
 
-        self.transport.write("Connected to Sage\n")
+        # self.transport.write("Connected to Sage\n")
         sage._echo = self.write
 
         if bool(self.client.connected) is False:
-            self.transport.write("Connected to Sage\n")
+            self.write("Connected to Sage\n")
             self.client.connect()
         else:
-            self.transport.write("Reconnected to Sage\n")
+            self.write("Reconnected to Sage\n")
 
         self.will(GMCP)
 
         if len(self.client.outbound_buffer) > 0:
-            self.transport.write(">>> Start Buffer >>>\n")
+            self.write(">>> Start Buffer >>>\n")
             self.write(self.client.outbound_buffer)
-            self.transport.write(">>> End Buffer >>>\n")
+            self.write(">>> End Buffer >>>\n")
 
         self.client.outbound_buffer = ''
 
@@ -475,17 +458,24 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
             self.outbound_buffer += data
 
     def _applicationDataReceived(self, data):
+        """
+        Input from local clients received, passes it on to TelnetClient
+        Remote Server <- TelnetClient <- TelnetServer._applicationDataReceived() <- Local Clients
+        """
         self.client.send(data)
 
     def write(self, data):
+        """
+        Writes assembled data (lines + prompt) coming from Achaea to clients
+        TelnetServer.write() -> Local clients
+        """
         for transport in self.factory.transports:
             transport.write(data)
-            #self.client.wamp_client.write(data)
 
         if len(self.factory.transports) == 0:
             self.client.outbound_buffer += data
 
-        self.transport.write(data)
+        # self.transport.write(data)
 
     def enableLocal(self, option):
         if option == GMCP:
@@ -495,6 +485,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         return False
 
     def input(self, lines, prompt):
+        """ Assembles data from Achaea, passes it to self.write to be emitted to clients """
         output = '\r\n'.join(lines) + '\r\n' + prompt + '\r\n'
 
         self.write(output)
@@ -523,133 +514,6 @@ def connect(alias):
 def disconnect(alias):
     client.disconnect()
 
-from sage.contrib import Vital, Balance
-
-
-class WAMPProxy(Protocol):
-    pass
-
-
-class WAMPProxyFactory(Factory):
-
-    def __init__(self):
-        self.proxy = WAMPProxy()
-
-    def buildProtocol(self, addr):
-        return self.proxy
-
-
-class WampComponent(ApplicationSession, ISageProxyReceiver):
-    """
-    Barebones WAMP component implementation for Sage. This is
-    intended to be overridden elsewhere. In order to override it with
-    Sage the ideal thing to do is set sage.config.ws_component to a subclass
-    of this class.
-    """
-
-    deferred = None
-    vitals = None
-
-    @inlineCallbacks
-    def onJoin(self, details):
-        print("Party has joined, details: %s" % details)
-
-        # We have to set this reference somewhere
-        # this may not be the way to do it, but this is
-        # how it's getting done for now
-        if client.wamp_client is None:
-            client.wamp_client = self
-
-            if self not in client.receivers:
-                print("Adding ourselves to client's receivers")
-                print(len(client.receivers))
-                client.addReceiver(self)
-
-        def onIOEvent(msg):
-            """ Send to msg to Achaea """
-            print("Message sent to achaea: %s" % msg)
-
-            # We must decode to ascii because browsers may send unicode
-            tmp_msg = msg.encode('ascii', 'ignore')
-            signal.wamp_input.connect(client.send)
-
-
-        def recvReady():
-            if not self.deferred:
-                print("Ready!")
-                point = TCP4ClientEndpoint(reactor, "localhost", 5493)
-                self.deferred = point.connect(WAMPProxyFactory())
-                self.ready()
-
-
-        yield self.register(recvReady, u"com.sage.wsclientready")
-        yield self.subscribe(onIOEvent, u"com.sage.io")
-
-    def ready(self):
-        print("Ready called in WAMP client")
-
-    def input(self, lines, prompt):
-        """ Lines + Prompt emitted by Sage, should be sent to local client """
-
-    def write(self, data):
-        """ Data from Achaea/Sage, send to client """
-        print("Write on data called: %s" % data)
-
-        if data and data not in ('\r\n', '\r', '\n'):
-            try:
-                data = data.encode('ascii', 'ignore')
-            except UnicodeDecodeError:
-                print("UnicodeDecodeError on %s" % data)
-                data = unicode(data, errors='replace')
-
-            try:
-                self.publish(u'com.sage.io', data)
-            except SerializationError as se:
-                print "Error in publish to websocket connection."
-                print se
-                print(se.args)
-                print(data)
-
-def build_wamp_client():
-    print("Build wamp client called")
-    runners = []
-
-    if len(config.ws_components) == 0:
-        print("No wamp components")
-        config.ws_components.append(
-            (
-                unicode('ws://%s:%s/ws' % (config.ws_host, config.ws_port)),
-                unicode(config.wamp_realm),
-                WampComponent
-            )
-        )
-
-    # Component Tuples should take the form of (url, realm, Component Class)
-    for component_tuple in config.ws_components:
-        runner = ApplicationRunner(unicode(component_tuple[0]), unicode(component_tuple[1]))
-        runner.run(component_tuple[2], start_reactor=False)
-
-def build_wamp_router():
-    """ 
-    This is a basic WAMP Router implementation 
-
-    Got it from: 
-    https://github.com/tavendo/AutobahnPython/blob/master/examples/twisted/wamp/basic/basicrouter.py
-    """ 
-
-    #from autobahn.twisted.wamp import RouterFactory
-    #from autobahn.twisted.wamp import RouterSessionFactory
-    from autobahn.twisted.websocket import WampWebSocketServerFactory
-
-    #router_factory = RouterFactory()
-    #session_factory = RouterSessionFactory(router_factory)
-
-    #transport_factory = WampWebSocketServerFactory(session_factory, debug=False)
-    #transport_factory.setProtocolOptions(failByDrop=False)
-
-    #server = serverFromString(reactor, b"tcp:%s" % config.ws_port)
-    #server.listen(transport_factory)
-    print("Build wamp router called")
 
 @net_aliases.exact('.disconnect')
 def disconnect(alias):

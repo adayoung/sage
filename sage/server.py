@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
+import os
+
 from twisted.internet import reactor
-from sage import net, config, apps, path, triggers, player
+from twisted.conch.ssh.keys import Key
+
+from sage import net, wamp, config, apps, path, triggers, player
 from sage.signals import pre_start, player_connected
 from sage.signals import pre_shutdown as pre_shutdown_signal
 
@@ -37,13 +41,10 @@ def run():
         sage.factory = factory
         print("Telnet proxy port: %s" % config.telnet_port)
 
-    if config.ws_server:
-        net.build_wamp_router()
-        net.build_wamp_client()
-
-        #factory = net.build_ws_factory()
-        print("Started SAGE Wamp client and router")
-        #print("Sage WS protocol: ws://%s:%s" % (config.ws_host, config.ws_port))
+    if config.ws_proxy:
+        wamp.wamp_registry.register_client(config.ws_host, config.ws_port, realm=config.ws_realm)
+    # In case any apps want to register custom clients we will wait for reactor start
+    reactor.addSystemEventTrigger('after', 'startup', wamp.wamp_registry.run_clients)
 
     # Add shutdown events
     reactor.addSystemEventTrigger('before', 'shutdown', pre_shutdown)
@@ -98,6 +99,15 @@ def get_manhole_factory(namespace):
     p.registerChecker(checker)
 
     factory = manhole_ssh.ConchFactory(p)
+    # As of Twisted~v16.0.0 we now have to give host SSH keys to any subclass of SSHFactory
+    key_path = os.path.expanduser(config.ssh_key_path)
+    factory.publicKeys = {
+        'ssh-rsa': Key.fromFile(key_path)
+    }
+
+    factory.privateKeys = {
+        'ssh-rsa': Key.fromFile(key_path)
+    }
 
     return factory
 

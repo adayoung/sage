@@ -21,16 +21,18 @@ class Configuration(dict):
 
 
 defaults = Configuration({
-    'DEBUG': True,
+    'DEBUG': False,
     'gmcp_debug': False,
     'gmcp_ignore_channels': ['Core.Ping'],
     'port': 2003,
     'host': 'achaea.com',
     'telnet_proxy': True,
     'telnet_port': 5493,
-    'ws_server': True,
-    'ws_port': 9000,
+    # Set only if you want the default server. Otherwise construct your own!
+    'ws_proxy': False,
+    'ws_port': 5495,
     'ws_host': '127.0.0.1',
+    'ws_realm': 'realm1',
     'ws_debug': False,
     'wamp_realm': 'realm1',
     'backdoor': True,
@@ -40,7 +42,8 @@ defaults = Configuration({
     'backdoor_host': 'localhost',
     'auto_reload': True,
     'exit_on_disconnect': False,
-    'ws_components': []    # This will be changed to WampComponent by default
+    # Path to private key (pub is derived from that), does not support passphrases
+    'ssh_key_path': '~/.ssh/ssh_host_key'
 })
 
 
