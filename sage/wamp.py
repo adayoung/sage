@@ -6,6 +6,8 @@ from autobahn.wamp import SerializationError
 from twisted.internet.defer import inlineCallbacks
 
 from sage.net import ISageProxyReceiver, client
+from sage.contrib import Vital, Balance
+from sage.signals import gmcp
 
 
 class WampComponent(ApplicationSession, ISageProxyReceiver):
@@ -28,6 +30,19 @@ class WampComponent(ApplicationSession, ISageProxyReceiver):
             'players': u'com.sage.players',
             'skills': u'com.sage.skills'
         }
+
+        # References to channels <-> signals mapping
+        self.signals = {
+            'vitals': None,
+            'comms': None,
+            'rift': None,
+            'ping': None,
+            'inv': None,
+            'players': None,
+            'skills': None
+        }
+
+        # Reference to the telnet_client from sage.net
         self.client = None
 
         ApplicationSession.__init__(self, config)
@@ -54,14 +69,77 @@ class WampComponent(ApplicationSession, ISageProxyReceiver):
         outgoing = '{}\r\n{}'.format('\r\n'.join(lines), prompt)
         self.publish(self.channels['io'], outgoing)
 
+    def publish_to_client(self, channel, data):
+        try:
+            self.publish(channel, unicode(data))
+        except SerializationError as se:
+            print("SerializationError: %s" % se)
+        except Exception as e:
+            print("Unexpected exception: %s" % e)
+
     def _from_client(self, data):
         # Browsers have a tendency to send unicode by default
         data = data.encode('ascii', 'ignore')
         self.client.send(data)
 
+    def _connect_signals(self):
+        """ Call when the signals need to be connected for GMCP """
+
+        self.signals['vitals'] = gmcp.vitals.connect(self._recv_vitals)
+        self.signals['comms'] = gmcp.comms.connect(self._recv_comms)
+        self.signals['ping'] = gmcp.ping.connect(self._recv_ping)
+        self.signals['room'] = gmcp.room.connect(self._recv_room)
+        self.signals['rift'] = gmcp.rift.connect(self._recv_rift)
+        self.signals['skills'] = gmcp.skills.connect(self._recv_skills)
+        self.signals['players'] = gmcp.room_players.connect(self._recv_players)
+
     def _client_ready(self):
-        """ This is where we should do all signal connections """
+        """ Called by the the RPC endpoint come.sage.wsclientready,
+
+        i.e.: NOT the telnet client from sage.net
+        """
+        self._connect_signals()
         self.client.connect()
+
+    def _recv_vitals(self, *args, **kwargs):
+        kwargs.pop('signal')
+        values = {}
+
+        for key, val in kwargs.iteritems():
+            if isinstance(val, Vital):
+                values[key] = val.value
+            elif isinstance(val, Balance):
+                values[key] = val.balance
+            else:
+                values[key] = val
+
+        self.publish(self.channels['vitals'], values)
+
+    def _recv_comms(self, signal, talker, channel, text):
+        d = {
+            'talker': talker,
+            'channel': channel,
+            'text': text
+        }
+        self.publish(self.channels['comms'], d)
+
+    def _recv_ping(self, signal, latency):
+        self.publish(self.channels['ping'], latency)
+
+    def _recv_room(self, signal, room):
+        self.publish(self.channels['room'], room.encode())
+
+    def _recv_rift(self, signal, rift):
+        self.publish(self.channels['rift'], rift)
+
+    def _recv_skills(self, signal, skills):
+        self.publish(self.channels['skills'], skills)
+
+    def _recv_inv(self, signal, inv):
+        self.publish(self.channels['inv'], inv.encode())
+
+    def _recv_players(self, signal, players=None):
+        self.publish(self.channels['players'], list(players))
 
     @inlineCallbacks
     def onJoin(self, details):
@@ -71,10 +149,10 @@ class WampComponent(ApplicationSession, ISageProxyReceiver):
             client.addReceiver(self)
 
         yield self.register(self._client_ready, u"com.sage.wsclientready")
-        yield self.subscribe(self._from_client, u"com.sage.io")
+        yield self.subscribe(self._from_client, self.channels['io'])
 
     def ready(self):
-        pass
+        self._connect_signals()
 
 
 class WampClientContainer(object):
