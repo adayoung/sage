@@ -133,8 +133,8 @@ def run(args):
     if args.no_telnet_proxy:
         sage.config.telnet_proxy = False
 
-    #if args.no_websocket:
-        #sage.config.ws_server = False
+    if args.websockets:
+        sage.config.ws_proxy = True
 
     if args.gmcp_debug:
         sage.config.gmcp_debug = True
@@ -168,8 +168,7 @@ runparser = subparsers.add_parser('run', parents=[parent])
 runparser.add_argument('-b', '--no-backdoor', action='store_true', help='Disable the SSH backdoor')
 runparser.add_argument('-p', '--profile', help='Run cProfile and save the stats to file')
 runparser.add_argument('-t', '--no-telnet-proxy', action='store_true', help='Disable the telnet proxy')
-#runparser.add_argument('-w', '--no-websocket', action='store_true', help='Disable the websocket server')
-#runparser.add_argument('-D', '--ws-debug', action='store_true', help='Enable Websocket WAMP debugging')
+runparser.add_argument('-w', '--websockets', action='store_true', help='Enable Websocket capabilities')
 runparser.add_argument('--gmcp-debug', action='store_true', help='Enable GMCP debugging messages')
 runparser.add_argument('-m', '--manifest', help='Sage manifest file')
 runparser.add_argument('app',  nargs='?')
