@@ -187,12 +187,11 @@ class TelnetClient(Telnet):
 
     def connect(self):
         """ Initiate connection to Achaea """
-
-        reactor.connectTCP(config.host, config.port, TelnetClientFactory())
+        if not sage.connected:
+            reactor.connectTCP(config.host, config.port, TelnetClientFactory())
 
     def disconnect(self):
         """ Disconnect client from Achaea """
-
         self.transport.loseConnection()
 
     def reset(self):

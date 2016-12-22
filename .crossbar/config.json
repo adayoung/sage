@@ -36,7 +36,7 @@
                     "type": "websocket",
 					"debug": true,
 					"options": {
-						"allowed_origins": ["ws://*", "http://*", "file://*", "https://*"]
+						"allowed_origins": ["ws://*", "http://*", "file://*", "https://*", "chrome-extension://*"]
 					},
                     "endpoint": {
                         "type": "tcp",
