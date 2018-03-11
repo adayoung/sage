@@ -355,7 +355,7 @@ class TelnetClient(Telnet):
             return
 
         if NL not in data:
-            line = outbound.receiver(data)
+            line = outbound.receiver(data) or ""
             self.transport.write(line + CR + NL)
         else:
             data = data.replace(CR, '').split(NL)[:-1]
