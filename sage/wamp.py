@@ -5,6 +5,7 @@ from autobahn.twisted.wamp import ApplicationRunner
 from autobahn.wamp import SerializationError
 from twisted.internet.defer import inlineCallbacks
 
+import sage
 from sage.net import ISageProxyReceiver, client
 from sage.contrib import Vital, Balance
 from sage.signals import gmcp
@@ -145,6 +146,13 @@ class WampComponent(ApplicationSession, ISageProxyReceiver):
     def onJoin(self, details):
         # TODO Gotta do something about all these global references to obj instances
         self.client = client
+
+        # TODO dedup, fix this nastiness
+        # This is an ugly wart of a sage bootstrapping mechanism.
+        # Because sage's telnet client's receivers are not setup immediately we can't bind
+        # directly to their write() methods. This code also exists in
+        # sage/net.py::TelnetServer::write
+        sage._echo = self.write
         if self not in client.receivers:
             client.addReceiver(self)
 
