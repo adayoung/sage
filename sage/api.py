@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 import sage
-from twisted.internet import reactor
+from twisted.internet import reactor, task
 import inspect
 from .utils import caller_name
 
@@ -55,6 +55,25 @@ def delay(seconds, method, *args, **kwargs):
     """
 
     return reactor.callLater(seconds, method, *args, **kwargs)
+
+
+def loopdelay(seconds, func, immediate=True, *args, **kwargs):
+    """ Delay a method call in the reactor...
+
+    ...and do it again, and again..
+
+    :param seconds: seconds between each function call
+    :type seconds: float
+    :param method: function to call
+    :type method: callable
+    :param immediate:
+    :type immediate: bool
+    :param args:
+    :param kwargs:
+    """
+    interval = task.LoopingCall(func, *args, **kwargs)
+    interval.start(seconds, now=immediate)
+    return interval
 
 
 def log(msg, inspection=True):

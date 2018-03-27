@@ -4,6 +4,8 @@ from __future__ import division
 from twisted.internet.task import LoopingCall
 from twisted.internet import reactor
 import json
+import sys
+import traceback
 import sage
 from sage import config, _log as log
 from sage.utils import json_str_loads
@@ -122,10 +124,19 @@ class GMCPReceiver(object):
 
         debug(cmd, args)
 
-        if args:
-            self.command_map[cmd](args)
-        else:
-            self.command_map[cmd]()
+        # In blackout we get [] for Room.Players
+        # Ideally we don't want to say there are NO players, because that may not be true
+        # So instead we just don't send an update
+        if cmd == 'Room.Players' and player.blackout:
+            return
+
+        try:
+            if args:
+                self.command_map[cmd](args)
+            else:
+                self.command_map[cmd]()
+        except:
+            print(traceback.format_exc())
 
     def unhandled_command(self, cmd, args):
 
@@ -167,7 +178,7 @@ class GMCPReceiver(object):
     def afflictions_remove(self, d):
         for affliction in d:
             player.afflictions.discard(affliction)
-            gmcp_signals.affliction_remove(affliction)
+            gmcp_signals.affliction_remove.send(affliction=affliction)
 
 
     # Char.Defences.Add

@@ -3,6 +3,7 @@ import sage
 import sys
 import gc
 import os
+import time
 import importlib
 from collections import OrderedDict
 import inspect
@@ -33,6 +34,9 @@ class Apps(dict):
         self.meta = OrderedDict()
         self.paths = dict()
 
+        self._last_reload = dict()
+        self._reload_backoff = 5  # secs to wait before reloading again
+
         # names available before load is completed
         self._names = set(['sage'])
 
@@ -41,7 +45,7 @@ class Apps(dict):
         self.event_handler.on_any_event = self.file_event
 
     def file_event(self, event):
-        if event.event_type != 'modified':
+        if event.is_directory:
             return
 
         if '.py' not in event.src_path:
@@ -168,6 +172,12 @@ class Apps(dict):
 
     def reload(self, name, event_src_path=None):
         """ Try to fully rebuild an app """
+
+        # Don't reload the same app if we did it within last the 5 sec
+        if time.time() - self._last_reload.get(name, 0) < 5:
+            return
+
+        self._last_reload[name] = time.time()
 
         if name not in self:
             return False
