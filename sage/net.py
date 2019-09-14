@@ -468,13 +468,10 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         Writes assembled data (lines + prompt) coming from Achaea to clients
         TelnetServer.write() -> Local clients
         """
-        for transport in self.factory.transports:
-            transport.write(data)
-
         if len(self.factory.transports) == 0:
             self.client.outbound_buffer += data
 
-        # self.transport.write(data)
+        self.transport.write(data)
 
     def enableLocal(self, option):
         if option == GMCP:
