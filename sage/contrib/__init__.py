@@ -33,10 +33,8 @@ class Balance(object):
             self.signal.send(state=True)
 
     def on_for(self):
-        """ Return how long the balance has been available for or False if not"""
-
-        if self.balance == False:
-            return False
+        """ If balance is on, returns how long it's been on for.
+        If off, returns how long it last remained on for."""
 
         return time() - self.last_on
 
@@ -51,10 +49,8 @@ class Balance(object):
             self.signal.send(state=False)
 
     def off_for(self):
-        """ Return how long the balance has been off for or False if on """
-
-        if self.balance:
-            return False
+        """ If balance is off, returns how long it's been off for.
+        If on, returns how long it last remained off for."""
 
         return time() - self.last_off
 
