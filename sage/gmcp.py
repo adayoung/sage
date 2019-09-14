@@ -226,6 +226,15 @@ class GMCPReceiver(object):
 
     # Char.Vitals
     def vitals(self, d):
+        player.charstats = {}
+        for stat in d['charstats']:
+            key, value = stat.split(": ")
+            try:
+                value = int(value.strip('%'))
+            except ValueError:
+                pass
+            player.charstats[key] = value
+
         player.health.update(d['hp'], d['maxhp'])
         player.mana.update(d['mp'], d['maxmp'])
         player.endurance.update(d['ep'], d['maxep'])

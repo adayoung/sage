@@ -68,6 +68,9 @@ skill_groups = {}
 #: dictionary of skills and contained abilities
 skills = {}
 
+# dictionary of battlerage, class-related vitals, etc
+charstats = {}
+
 #: player health vital
 health = Vital()
 
