@@ -97,3 +97,6 @@ affliction_add = Signal(providing_args=['affliction'])
 
 #: Affliction cured
 affliction_remove = Signal(providing_args=['affliction'])
+
+#: Class change
+class_changed = Signal(providing_args=['new_class', 'last_class'])

@@ -289,7 +289,15 @@ class GMCPReceiver(object):
             elif k == 'specialisation':
                 player.specialisation = v.lower() if v is not None else None
             elif k == 'class':
-                player.combatclass = v.lower() if v is not None else None
+                if v is not None:
+                    combatclass = v.lower()
+                else:
+                    combatclass = None
+                if combatclass != player.combatclass:
+                    last_combatclass = player.combatclass
+                    gmcp_signals.class_changed.send(new_class=combatclass, last_class=last_combatclass)
+                player.combatclass = combatclass
+
             elif k == 'order':
                 player.order = v
             elif k == 'race':
