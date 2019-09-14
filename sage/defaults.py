@@ -42,6 +42,7 @@ defaults = Configuration({
     'backdoor_host': 'localhost',
     'auto_reload': True,
     'exit_on_disconnect': False,
+    'serverside_command_separator': '&&',
     # Path to private key (pub is derived from that), does not support passphrases
     'ssh_key_path': '~/.ssh/ssh_host_key'
 })

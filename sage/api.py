@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 import sage
+from sage import config
 from twisted.internet import reactor, task
 import inspect
 from .utils import caller_name
@@ -20,16 +21,23 @@ def echo(msg):
             sage._echo("%s\n" % msg)
 
 
-def send(msg):
+def send(msg, separated=False):
     """ Send a message to the server
 
     :param msg: message to be sent to the server.
     :type msg: string or list
     """
+
     if sage._send:
         if type(msg) is list:
-            for line in msg:
-                sage._send("%s\n" % line)
+            if separated:
+                for line in msg:
+                    sage._send("%s\n" % line)
+            else:
+                chunks = [msg[i:i + 10] for i in xrange(0, len(msg), 10)]
+                for chunk in chunks:
+                    m = config['serverside_command_separator'].join(chunk) + "\n"
+                    sage._send(m)
         else:
             sage._send("%s\n" % msg)
 
