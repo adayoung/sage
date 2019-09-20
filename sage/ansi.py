@@ -36,6 +36,8 @@ def colorize(text='', opts=(), **kwargs):
 
     Valid colors:
         'black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'
+        8 bit color codes: 0-255
+        24 bit colour codes: (r, g, b)
 
     Valid options:
         'bold'
@@ -47,6 +49,8 @@ def colorize(text='', opts=(), **kwargs):
 
     Examples:
         colorize('hello', fg='red', bg='blue', opts=('blink',))
+        colorize('hello', fg=140)
+        colorize('hello', fg=(240, 128, 128))
         colorize()
         colorize('goodbye', opts=('underscore',))
         print(colorize('first line', fg='red', opts=('noreset',)))
@@ -59,9 +63,19 @@ def colorize(text='', opts=(), **kwargs):
         return '\x1b[%sm' % RESET
     for k, v in kwargs.iteritems():
         if k == 'fg':
-            code_list.append(foreground[v])
+            if isinstance(v, tuple): 
+                code_list.append('38;2;{};{};{}'.format(v[0], v[1], v[2]))
+            elif isinstance(v, int):
+                code_list.append('38;5;{}'.format(code))
+            else:
+                code_list.append(foreground[v])
         elif k == 'bg':
-            code_list.append(background[v])
+            if isinstance(v, tuple): 
+                code_list.append('48;2;{};{};{}'.format(v[0], v[1], v[2]))
+            elif isinstance(v, int):
+                code_list.append('48;5;{}'.format(code))
+            else:
+                code_list.append(background[v])
 
     for o in opts:
         if o in opt_dict:
