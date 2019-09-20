@@ -88,7 +88,9 @@ class GMCPReceiver(object):
             'IRE.Rift.List': self.rift_list,
             'IRE.Rift.Change': self.rift_change,
             'IRE.Time.Update': self.time_update,
-            'IRE.Time.List': self.time_update
+            'IRE.Time.List': self.time_update,
+            'IRE.Display.ButtonActions' : self.display_buttonactions,
+            'IRE.Display.FixedFont' : self.display_fixedfont,
         }
 
         # time when ping started
@@ -572,6 +574,12 @@ class GMCPReceiver(object):
         player.iretime = d
         gmcp_signals.iretime.send(time=d)
 
+    def display_buttonactions(self, d):
+        player.buttonactions = d
+
+    def display_fixedfont(self, d):
+        return
+
 
 class GMCP(object):
 
@@ -586,7 +594,7 @@ class GMCP(object):
         self.options = {
             'modules': ["Char 1", "Char.Vitals 1", "Char.Skills 1", \
             "Char.Items 1", "Room 1", "IRE.Rift 1", "Comm.Channel 1", \
-            "IRE.Time 1"],
+            "IRE.Time 1", "IRE.Display 3"],
             'ping': True,
             'ping_frequency': 1,
             'lag_factor': 5  # multiple by how much time over average ping is lagging
