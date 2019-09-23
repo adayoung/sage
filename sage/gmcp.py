@@ -33,7 +33,19 @@ skill_ranks = {
     'Virtuoso': 8,
     'Fabled': 9,
     'Mythical': 10,
-    'Transcendent': 11
+    'Transcendent': 11,
+    'White belt': 0,
+    'Grey belt': 1,
+    'Yellow belt': 2,
+    'Green belt': 3,
+    'Blue belt': 4,
+    'Orange belt': 5,
+    'Red belt': 6,
+    'Purple belt': 7,
+    'Bronze belt': 8,
+    'Silver belt': 9,
+    'Gold belt': 10,
+    'Black belt': 11,
 }
 
 
