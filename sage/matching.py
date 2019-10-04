@@ -5,7 +5,7 @@
     In sage, a 'matchable' is either a trigger or an alias. The behavior of
     both are identical. The only difference is where they occur in execution.
 """
-from __future__ import absolute_import
+
 import re
 from time import time
 from sage.dispatch.signal import Hook
@@ -411,10 +411,10 @@ class Group(object):
             if child is False:
                 self.enabled = False
 
-            for instance in self.matchables.values():
+            for instance in list(self.matchables.values()):
                 self.parent()._disable(instance)
 
-            for group in self.groups.values():
+            for group in list(self.groups.values()):
                 group.disable(child=True)
 
             return True
@@ -427,10 +427,10 @@ class Group(object):
 
     def destroy(self):
         """ Destroys (deletes) the group """
-        for matchable in self.matchables.values():
+        for matchable in list(self.matchables.values()):
             matchable.destroy()
 
-        for child_group in self.groups.values():
+        for child_group in list(self.groups.values()):
             child_group.destroy()
 
         self.parent()._remove_group(self.name)
@@ -442,12 +442,12 @@ class Group(object):
             :type indent: integer
         """
 
-        for name, g in self.groups.iteritems():
-            print("%s<%s [%s]>" % ('\t' * indent, name, '+' if g.enabled else ' '))
+        for name, g in self.groups.items():
+            print(("%s<%s [%s]>" % ('\t' * indent, name, '+' if g.enabled else ' ')))
             g.debug(indent+1)
 
-        for name, m in self.matchables.iteritems():
-            print("%s-%s [%s]" % ('\t' * indent, name, '+' if m.enabled else ' '))
+        for name, m in self.matchables.items():
+            print(("%s-%s [%s]" % ('\t' * indent, name, '+' if m.enabled else ' ')))
 
 
     def enable(self, name=None, child=False):
@@ -464,10 +464,10 @@ class Group(object):
             if child is False:
                 self.enabled = True
 
-            for instance in self.matchables.values():
+            for instance in list(self.matchables.values()):
                 if instance.enabled:
                     self.parent()._enable(instance)
-            for group in self.groups.values():
+            for group in list(self.groups.values()):
                 if group.enabled:
                     group.enable(child=True)
             return True
@@ -576,7 +576,7 @@ class Group(object):
 
     def names(self):
         """ Returns names of all matchables """
-        return self.matchables.keys()
+        return list(self.matchables.keys())
 
     def _enable(self, instance):
         if self.enabled:

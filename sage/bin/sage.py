@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 import argparse
 import sage
 from sage.utils import touch
@@ -34,7 +34,7 @@ def console(args):
     port = args.port if args.port else sage.config.backdoor_port
     user = args.user if args.user else sage.config.backdoor_user
 
-    print("SSH to %s:%s as %s. Cntr-D to exit." % (host, port, user))
+    print(("SSH to %s:%s as %s. Cntr-D to exit." % (host, port, user)))
     os.system("ssh %s -p %s -l %s" % (host, port, user))
 
 
@@ -51,13 +51,13 @@ def mkapp(args):
 
     name = args.app
 
-    fullname = raw_input('Full app name [%s]: ' % name)
+    fullname = input('Full app name [%s]: ' % name)
     if fullname == '':
         fullname = name
 
-    description = raw_input('Description []: ')
+    description = input('Description []: ')
 
-    version = raw_input('Version: [1.0.0]: ')
+    version = input('Version: [1.0.0]: ')
     if version == '':
         version = '1.0.0'
 
@@ -79,7 +79,7 @@ def mkapp(args):
 
     meta.close()
 
-    print("Created '%s'" % name)
+    print(("Created '%s'" % name))
 
 
 def run(args):
@@ -110,7 +110,7 @@ def run(args):
             if os.path.isfile(home_path + '/.sage-manifest'):
                 sage.manifest.load(home_path + '/.sage-manifest')
             else:
-                print('No default manifest file found. Creating %s' % home_path + '/.sage-manifest')
+                print(('No default manifest file found. Creating %s' % home_path + '/.sage-manifest'))
                 sage.manifest.create_template(home_path + '/.sage-manifest')
         else:
             sage.manifest.load(args.manifest)
@@ -149,7 +149,7 @@ def run(args):
 
 
 def version():
-    print(sage.__version__)
+    print((sage.__version__))
 
 
 meta_template = """name = '{name}'

@@ -51,7 +51,7 @@ class Apps(dict):
         if '.py' not in event.src_path:
             return
 
-        for app, path in self.paths.items():
+        for app, path in list(self.paths.items()):
             if path in event.src_path:
                 self.reload(app, event.src_path)
 
@@ -146,7 +146,7 @@ class Apps(dict):
     def _generate_paths(self):
         self.paths = dict()
 
-        for name, meta in self.meta.items():
+        for name, meta in list(self.meta.items()):
             self.paths[name] = meta.path
 
     def _preload(self, name):
@@ -196,7 +196,7 @@ class Apps(dict):
 
                 targets = []
 
-                for mname, module in sys.modules.items():
+                for mname, module in list(sys.modules.items()):
                     if module:
                         if hasattr(module, '__file__'):
                             if event_src_path in module.__file__:

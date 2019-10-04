@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 
 from autobahn.twisted import ApplicationSession
 from autobahn.twisted.wamp import ApplicationRunner
@@ -21,15 +21,15 @@ class WampComponent(ApplicationSession, ISageProxyReceiver):
 
     def __init__(self,  config=None, channels=None):
         self.channels = {
-            'io': u'com.sage.io',
-            'vitals': u'com.sage.vitals',
-            'comms': u'com.sage.communications',
-            'rift': u'com.sage.rift',
-            'room': u'com.sage.room',
-            'ping': u'com.sage.ping',
-            'inv': u'com.sage.inv',
-            'players': u'com.sage.players',
-            'skills': u'com.sage.skills'
+            'io': 'com.sage.io',
+            'vitals': 'com.sage.vitals',
+            'comms': 'com.sage.communications',
+            'rift': 'com.sage.rift',
+            'room': 'com.sage.room',
+            'ping': 'com.sage.ping',
+            'inv': 'com.sage.inv',
+            'players': 'com.sage.players',
+            'skills': 'com.sage.skills'
         }
 
         # References to channels <-> signals mapping
@@ -53,7 +53,7 @@ class WampComponent(ApplicationSession, ISageProxyReceiver):
         if data:
             # Ugh, unicode in py27...
             try:
-                data = unicode(data, errors='replace')
+                data = str(data, errors='replace')
             except:
                 data = data.encode('ascii', 'ignore')
 
@@ -72,7 +72,7 @@ class WampComponent(ApplicationSession, ISageProxyReceiver):
 
     def publish_to_client(self, channel, data):
         try:
-            self.publish(channel, unicode(data))
+            self.publish(channel, str(data))
         except SerializationError as se:
             print("SerializationError: %s" % se)
         except Exception as e:
@@ -106,7 +106,7 @@ class WampComponent(ApplicationSession, ISageProxyReceiver):
         kwargs.pop('signal')
         values = {}
 
-        for key, val in kwargs.iteritems():
+        for key, val in kwargs.items():
             if isinstance(val, Vital):
                 values[key] = val.value
             elif isinstance(val, Balance):
@@ -156,7 +156,7 @@ class WampComponent(ApplicationSession, ISageProxyReceiver):
         if self not in client.receivers:
             client.addReceiver(self)
 
-        yield self.register(self._client_ready, u"com.sage.wsclientready")
+        yield self.register(self._client_ready, "com.sage.wsclientready")
         yield self.subscribe(self._from_client, self.channels['io'])
 
     def ready(self):
@@ -166,10 +166,10 @@ class WampComponent(ApplicationSession, ISageProxyReceiver):
 class WampClientContainer(object):
 
     def __init__(self, host, port, realm, component=WampComponent):
-        self.host = unicode(host)
-        self.port = unicode(port)
-        self.realm = unicode(realm)
-        self.connection_str = unicode("ws://{0}:{1}/ws".format(self.host, self.port))
+        self.host = str(host)
+        self.port = str(port)
+        self.realm = str(realm)
+        self.connection_str = str("ws://{0}:{1}/ws".format(self.host, self.port))
         self.component = component
         self.runner = None
 

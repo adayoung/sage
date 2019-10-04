@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
+
 import os
 
 from twisted.internet import reactor
@@ -33,13 +33,13 @@ def run():
 
         reactor.listenTCP(config.backdoor_port, get_manhole_factory(imports),
             interface=config.backdoor_host)
-        print("Backdoor port: %s" % config.backdoor_port)
+        print(("Backdoor port: %s" % config.backdoor_port))
 
     if config.telnet_proxy:
         factory = net.build_telnet_factory()
         import sage
         sage.factory = factory
-        print("Telnet proxy port: %s" % config.telnet_port)
+        print(("Telnet proxy port: %s" % config.telnet_port))
 
     if config.ws_proxy:
         wamp.wamp_registry.register_client(config.ws_host, config.ws_port, realm=config.ws_realm)

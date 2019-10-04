@@ -14,8 +14,8 @@ ic = factory.client
 def init():
     from sage import config
 
-    print "SAGE CONFIG"
-    print config
+    print("SAGE CONFIG")
+    print(config)
     
     if sage.connected:
         connect()

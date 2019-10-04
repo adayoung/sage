@@ -167,7 +167,7 @@ class Inventory(dict):
 
         query = query.lower()
 
-        for item in self.values():
+        for item in list(self.values()):
             if query in item.name.lower():
                 results.append(item)
 
@@ -176,52 +176,52 @@ class Inventory(dict):
     def worn(self):
         """ Return list of worn items """
 
-        return [item for item in self.values() if item.worn]
+        return [item for item in list(self.values()) if item.worn]
 
     def wearable(self):
         """ Return list of wearable (but not currently worn) items """
 
-        return [item for item in self.values() if item.wearable]
+        return [item for item in list(self.values()) if item.wearable]
 
     def wielded(self):
         """ Return list of wielded items """
 
-        return [item for item in self.values() if item.wielded()]
+        return [item for item in list(self.values()) if item.wielded()]
 
     def groupable(self):
         """ Return list of groupable items """
 
-        return [item for item in self.values() if item.groupable]
+        return [item for item in list(self.values()) if item.groupable]
 
     def rifted(self):
         """ Return list of rifted items """
 
-        return [item for item in self.values() if item.rifted]
+        return [item for item in list(self.values()) if item.rifted]
 
     def takeable(self):
         """ Return list of rifted items """
 
-        return [item for item in self.values() if item.takeable]
+        return [item for item in list(self.values()) if item.takeable]
 
     def denizens(self):
         """ Return list of denizens """
 
-        return [item for item in self.values() if item.denizen]
+        return [item for item in list(self.values()) if item.denizen]
 
     def dead(self):
         """ Return list of dead things """
 
-        return [item for item in self.values() if item.dead]
+        return [item for item in list(self.values()) if item.dead]
 
     def containers(self):
         """ Return list of containers """
 
-        return [item for item in self.values() if item.container]
+        return [item for item in list(self.values()) if item.container]
 
     def encode(self):
         representation = {}
 
-        for num,item in self.iteritems():
+        for num,item in self.items():
             representation[num] = item.encode()
 
         return representation

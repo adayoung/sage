@@ -4,7 +4,7 @@ This file creates a telnet proxy and works like this:
 
 Local Client <--> TelnetServer() <--> TelnetClient() <--> Remote Server
 """
-from __future__ import absolute_import
+
 
 import re
 import zlib

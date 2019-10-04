@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
-from __future__ import division
+
+
 from twisted.internet.task import LoopingCall
 from twisted.internet import reactor
 import json
@@ -150,11 +150,11 @@ class GMCPReceiver(object):
             else:
                 self.command_map[cmd]()
         except:
-            print(traceback.format_exc())
+            print((traceback.format_exc()))
 
     def unhandled_command(self, cmd, args):
 
-        print("GMCP - Unhandled Command: %s %s" % (cmd, args))
+        print(("GMCP - Unhandled Command: %s %s" % (cmd, args)))
 
     # Char.Afflictions.Add
     def afflictions_add(self, d):
@@ -282,7 +282,7 @@ class GMCPReceiver(object):
     # Char.Status
     def status(self, d):
 
-        for k, v in d.items():
+        for k, v in list(d.items()):
             if v == '(None)':
                 v = None
 
@@ -342,7 +342,7 @@ class GMCPReceiver(object):
         result = {}
 
         for item in d:
-            skill, rank = item.values()
+            skill, rank = list(item.values())
 
             result[skill.lower()] = skill_ranks[rank]
 
@@ -352,7 +352,7 @@ class GMCPReceiver(object):
         self._skill_groups.difference_update(self._skill_exclude)
 
         # Get full listing of our skills
-        for skill in player.skill_groups.keys():
+        for skill in list(player.skill_groups.keys()):
             self.out.get_skills(group=skill)
 
     # Char.Skills.List
@@ -436,7 +436,7 @@ class GMCPReceiver(object):
             gmcp_signals.inv_items.send(items=player.inv)
 
         else:
-            print("Char.Items.List %s" % d)
+            print(("Char.Items.List %s" % d))
 
     # 'Char.Items.Update'
     def update_item(self, d):
@@ -484,7 +484,7 @@ class GMCPReceiver(object):
                 gmcp_signals.inv_add_item.send(item=item, container=player.inv[num])
 
         else:
-            print("Char.Items.Add %s" % d)
+            print(("Char.Items.Add %s" % d))
 
     # Char.Items.Remove
     def remove_item(self, d):
@@ -514,7 +514,7 @@ class GMCPReceiver(object):
                 except KeyError:
                     pass
         else:
-            print("Char.Items.Remove %s" % d)
+            print(("Char.Items.Remove %s" % d))
 
     # IRE.Rift.List
     def rift_list(self, d):

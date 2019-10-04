@@ -31,7 +31,7 @@ class CustomComponent(WampComponent):
             kwargs.pop('signal')
             values = {}
 
-            for key,val in kwargs.iteritems():
+            for key,val in kwargs.items():
                 if isinstance(val, Vital):
                     values[key] = val.value
                 elif isinstance(val, Balance):
@@ -39,29 +39,29 @@ class CustomComponent(WampComponent):
                 else:
                     values[key] = val
 
-            self.publish(u"com.sage.vitals", values)
+            self.publish("com.sage.vitals", values)
 
         def pingReceived(signal, latency):
-            self.publish(u"com.sage.ping", latency)
+            self.publish("com.sage.ping", latency)
 
         def roomUpdated(signal, room):
-            self.publish(u"com.sage.room", room.encode())
+            self.publish("com.sage.room", room.encode())
 
         def riftUpdated(signal, rift):
-            self.publish(u"com.sage.rift", rift)
+            self.publish("com.sage.rift", rift)
 
         def skillsUpdated(signal, skills):
-            self.publish(u"com.sage.skills", skills)
+            self.publish("com.sage.skills", skills)
 
         def commsReceived(signal, talker, channel, text):
-            self.publish(u"com.sage.communications", {
+            self.publish("com.sage.communications", {
                 "talker": talker,
                 "channel": channel,
                 "text": text
             })
 
         def invItemsUpdated(signal, items):
-            self.publish(u"com.sage.inv", items.encode())
+            self.publish("com.sage.inv", items.encode())
 
         def ready():
             if not self.deferred:
@@ -78,7 +78,7 @@ class CustomComponent(WampComponent):
                 self.comms = comms.connect(commsReceived)
                 self.inv = inv_items.connect(invItemsUpdated)
 
-        yield self.register(ready, u"com.sage.wsclientready")
-        yield self.subscribe(onIOEvent, u"com.sage.io")
+        yield self.register(ready, "com.sage.wsclientready")
+        yield self.subscribe(onIOEvent, "com.sage.io")
 
 config.ws_component = CustomComponent

@@ -10,7 +10,7 @@ whenever a signal is called.
 
 """
 
-from __future__ import absolute_import
+
 from sage.dispatch.signal import Signal
 
 #: Before the sage server starts

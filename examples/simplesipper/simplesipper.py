@@ -5,7 +5,7 @@ simplesipper
 This is a rudimentary health and mana sipper only intended to be an example.
 
 """
-from __future__ import division
+
 import sage
 from sage import player, triggers
 from sage.contrib import Balance

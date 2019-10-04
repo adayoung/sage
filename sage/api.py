@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
+
 import sage
 from sage import config
 from twisted.internet import reactor, task
@@ -34,7 +34,7 @@ def send(msg, separated=False):
                 for line in msg:
                     sage._send("%s\n" % line)
             else:
-                chunks = [msg[i:i + 10] for i in xrange(0, len(msg), 10)]
+                chunks = [msg[i:i + 10] for i in range(0, len(msg), 10)]
                 for chunk in chunks:
                     m = config['serverside_command_separator'].join(chunk) + "\n"
                     sage._send(m)

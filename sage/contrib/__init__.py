@@ -1,4 +1,4 @@
-from __future__ import division
+
 from time import time
 from sage.utils import MutableInt
 from sage.dispatch.signal import Signal
@@ -67,7 +67,7 @@ class Balance(object):
             return False
         return self.balance == other
 
-    def __nonzero__(self):
+    def __bool__(self):
         if self.waiting:
             return False
         return self.balance
