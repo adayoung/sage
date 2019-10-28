@@ -106,7 +106,7 @@ class TelnetClient(Telnet):
 
         self.gmcp = gmcp.GMCP(self)
         sage.gmcp = self.gmcp  # make easily accessible
-        self.gmcp_passthrough = False  # send GMCP to client
+        self.gmcp_passthrough = True  # send GMCP to client
 
         # Hold over incomplete app data until the next packet
         self.data_buffer = ''
