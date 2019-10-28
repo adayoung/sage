@@ -482,7 +482,12 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
 
     def input(self, lines, prompt):
         """ Assembles data from Achaea, passes it to self.write to be emitted to clients """
-        output = '\r\n'.join(lines) + '\r\n' + prompt + '\r\n'
+        if len(lines) > 0:
+            output = '\r\n'.join(lines) +'\r\n'
+        else:
+            output = ''
+
+        output += prompt + '\r\n'
 
         self.write(output)
 
