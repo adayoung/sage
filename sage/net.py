@@ -402,6 +402,18 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         self.reset()
         self.client = telnet_client
 
+        self.gmcp = gmcp.GMCP(self)
+        sage.gmcp = self.gmcp  # make easily accessible
+        self.negotiationMap[GMCP] = self.gmcpReceived
+
+        # telnet options to enable
+        self.options_enabled = (
+            GMCP,
+            EOR,
+        )
+
+        self.options_disabled = ()
+
         if self not in self.client.receivers:
             self.client.addReceiver(self)
 
@@ -448,6 +460,12 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         self.reset()
         if sage.connected:
             _log.msg('Client disconnected. Sage is still connected to Achaea.')
+
+    def gmcpReceived(self, data):
+        """ Send GMCP data to the GMCP reciever """
+
+        data = ''.join(data)
+        self.gmcp.cmd(data)
 
     def applicationDataReceived(self, data):
         pass
