@@ -351,12 +351,12 @@ class TelnetClient(Telnet):
             return
 
         if data == NL:
-            self.transport.write(CR + NL)
+            self.transport.write(CR + NL + GA)
             return
 
         if NL not in data:
             line = outbound.receiver(data) or ""
-            self.transport.write(line + CR + NL)
+            self.transport.write(line + CR + NL + GA)
         else:
             data = data.replace(CR, '').split(NL)[:-1]
 
@@ -367,7 +367,7 @@ class TelnetClient(Telnet):
                 line = outbound.receiver(line)
 
                 if line:
-                    self.transport.write(line + CR + NL)
+                    self.transport.write(line + CR + NL + GA)
 
 
 # client instance
