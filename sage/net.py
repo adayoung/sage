@@ -113,7 +113,7 @@ class TelnetClient(Telnet):
         self.outbound_buffer = ''
 
         # Setup recieving GMCP negotation
-        self.negotiationMap[GMCP] = self.gmcpRecieved
+        self.negotiationMap[GMCP] = self.gmcpReceived
         self.negotiationMap[COMPRESS2] = self.enableCompress
 
         # telnet options to enable
@@ -337,7 +337,7 @@ class TelnetClient(Telnet):
 
         self.compress = True
 
-    def gmcpRecieved(self, data):
+    def gmcpReceived(self, data):
         """ Send GMCP data to the GMCP reciever """
 
         data = ''.join(data)
