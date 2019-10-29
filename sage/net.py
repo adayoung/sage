@@ -505,7 +505,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         else:
             output = ''
 
-        output += prompt + '\r\n'
+        output += prompt + IAC + EORD
 
         self.write(output)
 
