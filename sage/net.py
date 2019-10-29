@@ -402,8 +402,6 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         self.reset()
         self.client = telnet_client
 
-        self.gmcp = gmcp.GMCP(self)
-        sage.gmcp = self.gmcp  # make easily accessible
         self.negotiationMap[GMCP] = self.gmcpReceived
 
         # telnet options to enable
@@ -465,7 +463,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         """ Send GMCP data to the GMCP reciever """
 
         data = ''.join(data)
-        self.gmcp.cmd(data)
+        self.client.transport.write(IAC + SB + GMCP + data + IAC + SE)
 
     def applicationDataReceived(self, data):
         pass
