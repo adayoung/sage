@@ -33,18 +33,19 @@ class PromptRenderer(object):
         return self.raw
 
     def render_blackout(self):
-        return ansi.grey('(blackout)-')
+        return ansi.grey(b'(blackout)-')
 
 
 def receiver(raw):
     """ Receives the raw prompt text and parses """
+    line = raw.decode()
 
     # strip out the colors
-    prompt = ansi.filter_ansi(raw)
+    prompt = ansi.filter_ansi(line)
 
     # What is this??
     if '-' not in prompt:
-        return raw
+        return line
 
     if prompt[0] == '-':
         player.blackout = True
@@ -62,7 +63,7 @@ def receiver(raw):
     prompt_stats.send(stats=stats, renderer=renderer)
     player.prompt_stats = stats
 
-    renderer.receive(raw, stats)
+    renderer.receive(line, stats)
 
     return renderer.render()
 

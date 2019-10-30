@@ -3,6 +3,7 @@
 
 from twisted.internet.task import LoopingCall
 from twisted.internet import reactor
+from twisted.python.compat import _bytesChr as chr
 import json
 import sys
 import traceback
@@ -622,7 +623,7 @@ class GMCP(object):
 
         if ' ' in data:
             cmd, data = data.split(' ', 1)
-            data = json_str_loads(data)
+            data = json.loads(data)
         else:
             cmd = data
             data = None
@@ -637,6 +638,7 @@ class GMCP(object):
     def write(self, data):
         """ Write to server over GMCP """
 
+        data = data.encode("utf-8")
         self.client.transport.write(IAC + SB + GMCPOPT + data + IAC + SE)
 
     # Char.Items.Contents

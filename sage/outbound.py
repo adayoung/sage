@@ -2,7 +2,9 @@
 import sage
 
 
-def receiver(line):
+def receiver(raw):
+
+    line = raw.decode()
 
     sage.aliases.in_loop = True
 

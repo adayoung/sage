@@ -234,13 +234,12 @@ class Regex(Matchable):
 
         del(kwargs['ignorecase'])
 
-        kwargs['pattern'] = re.compile(kwargs['pattern'], flags=flags)
-
         Matchable.__init__(self, **kwargs)
+        self.regex = re.compile(self.pattern)
 
     def match(self, line):
 
-        match = self.pattern.match(line)
+        match = self.regex.match(line)
 
         if match:
             self.matchobj = match

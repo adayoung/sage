@@ -12,12 +12,13 @@ import zlib
 from twisted.conch.telnet import Telnet, StatefulTelnetProtocol
 from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory, ServerFactory
+from twisted.python.compat import _bytesChr as chr, iterbytes
 
 import sage
 from sage import inbound, outbound, gmcp, prompt, config, _log, ansi, aliases
 from sage.signals import net as signal
 from sage.signals import post_prompt, pre_prompt
-from sage.utils import error
+from sage.utils import error, utf8_to_str
 
 """ TELNET VALUES """
 NULL = chr(0)       # NULL
@@ -109,8 +110,8 @@ class TelnetClient(Telnet):
         self.gmcp_passthrough = True  # send GMCP to client
 
         # Hold over incomplete app data until the next packet
-        self.data_buffer = ''
-        self.outbound_buffer = ''
+        self.data_buffer = b''
+        self.outbound_buffer = b''
 
         # Setup recieving GMCP negotation
         self.negotiationMap[GMCP] = self.gmcpReceived
@@ -126,10 +127,10 @@ class TelnetClient(Telnet):
         self.options_disabled = ()
 
         # Used to identify a line that is only a color code
-        self.color_prefix = chr(27) + '[1;'
+        self.color_prefix = chr(27) + b'[1;'
 
         # Achaea will sometimes give us a line that is just a color code...
-        self.color_newline = re.compile('^' + ESC + '\[[0-9;]*[m]' + NL)
+        self.color_newline = re.compile(b'^' + ESC + b'\[[0-9;]*[m]' + NL)
 
     def addReceiver(self, receiver):
         """ Helper method for adding an ISageProxyReceiver """
@@ -142,7 +143,7 @@ class TelnetClient(Telnet):
 
     def segmentReceived(self):
         data = self.data_buffer
-        self.data_buffer = ''
+        self.data_buffer = b''
 
         # don't lead with a newline
         if data[0] == NL:
@@ -154,7 +155,7 @@ class TelnetClient(Telnet):
             color = data[0:color_newline.end() - 1]
             data = color + data[color_newline.end():]
 
-        data = data.split('\n')
+        data = data.split(b'\n')
 
         pre_prompt.send(raw_data=data)
 
@@ -183,6 +184,8 @@ class TelnetClient(Telnet):
             prompt=ansi.filter_ansi(prompt_output)
         )
 
+        lines = [ line.encode("utf-8") for line in lines ]
+        prompt_output = prompt_output.encode("utf-8")
         self.receivers.input(lines, prompt_output)
 
     def connect(self):
@@ -216,14 +219,14 @@ class TelnetClient(Telnet):
 
         self.reset()
 
-        self.receivers.write("Sage has disconnected from Achaea." + IAC + GA)
+        self.receivers.write(b"Sage has disconnected from Achaea." + IAC + GA)
 
         if config.exit_on_disconnect is True:
             if reactor.running:
-                self.receivers.write("sage.config.exit_on_disconnect is enabled. Shutting down Sage." + IAC + GA)
+                self.receivers.write(b"sage.config.exit_on_disconnect is enabled. Shutting down Sage." + IAC + GA)
                 reactor.callLater(1, reactor.stop)
         else:
-            self.receivers.write("Sage is still running. Type '.connect' to reconnect." + IAC + GA)
+            self.receivers.write(b"Sage is still running. Type '.connect' to reconnect." + IAC + GA)
 
 
     def dataReceived(self, data):
@@ -238,11 +241,11 @@ class TelnetClient(Telnet):
 
         appDataBuffer = []
 
-        for b in data:
+        for b in iterbytes(data):
             if self.state == 'data':
                 if b == IAC:
                     self.state = 'escaped'
-                elif b == '\r':
+                elif b == b'\r':
                     self.state = 'newline'
                 else:
                     appDataBuffer.append(b)
@@ -253,10 +256,10 @@ class TelnetClient(Telnet):
                 elif b == SB:
                     self.state = 'subnegotiation'
                     self.commands = []
-                elif b in (GA, EORD, NOP, DM, BRK, IP, AO, AYT, EC, EL):
+                elif b in (NOP, DM, BRK, IP, AO, AYT, EC, EL, GA, EORD):
                     self.state = 'data'
                     if appDataBuffer:
-                        self.applicationDataReceived(''.join(appDataBuffer))
+                        self.applicationDataReceived(b''.join(appDataBuffer))
                         del appDataBuffer[:]
                     self.commandReceived(b, None)
                     if b == EORD or b == GA:
@@ -273,15 +276,15 @@ class TelnetClient(Telnet):
                 command = self.command
                 del self.command
                 if appDataBuffer:
-                    self.applicationDataReceived(''.join(appDataBuffer))
+                    self.applicationDataReceived(b''.join(appDataBuffer))
                     del appDataBuffer[:]
                 self.commandReceived(command, b)
             elif self.state == 'newline':
                 self.state = 'data'
-                if b == '\n':
-                    appDataBuffer.append('\n')
-                elif b == '\0':
-                    appDataBuffer.append('\r')
+                if b == b'\n':
+                    appDataBuffer.append(b'\n')
+                elif b == b'\0':
+                    appDataBuffer.append(b'\r')
                 elif b == IAC:
                     # IAC isn't really allowed after \r, according to the
                     # RFC, but handling it this way is less surprising than
@@ -293,10 +296,10 @@ class TelnetClient(Telnet):
                     # CR NUL another (cursor to first column).  Absent the
                     # NUL, it still makes sense to interpret this as CR and
                     # then apply all the usual interpretation to the IAC.
-                    appDataBuffer.append('\r')
+                    appDataBuffer.append(b'\r')
                     self.state = 'escaped'
                 else:
-                    appDataBuffer.append('\r' + b)
+                    appDataBuffer.append(b'\r' + b)
             elif self.state == 'subnegotiation':
                 if b == IAC:
                     self.state = 'subnegotiation-escaped'
@@ -308,7 +311,7 @@ class TelnetClient(Telnet):
                     commands = self.commands
                     del self.commands
                     if appDataBuffer:
-                        self.applicationDataReceived(''.join(appDataBuffer))
+                        self.applicationDataReceived(b''.join(appDataBuffer))
                         del appDataBuffer[:]
                     self.negotiate(commands)
                 else:
@@ -318,7 +321,7 @@ class TelnetClient(Telnet):
                 error("Invalid telnet state")
 
         if appDataBuffer:
-            self.applicationDataReceived(''.join(appDataBuffer))
+            self.applicationDataReceived(b''.join(appDataBuffer))
 
     def enableRemote(self, option):
 
@@ -340,13 +343,14 @@ class TelnetClient(Telnet):
     def gmcpReceived(self, data):
         """ Send GMCP data to the GMCP reciever """
 
-        data = ''.join(data)
-        self.gmcp.call(data)
+        data = b''.join(data)
+        self.gmcp.call(utf8_to_str(data))
 
         if self.gmcp_passthrough:
             self.receivers.write(IAC + SB + GMCP + data + IAC + SE)
 
     def send(self, data):
+
         if data == '':
             return
 
@@ -356,18 +360,20 @@ class TelnetClient(Telnet):
 
         if NL not in data:
             line = outbound.receiver(data) or ""
-            self.transport.write(line + CR + NL + GA)
+            data = line.encode("utf-8")
+            self.transport.write(data + CR + NL + GA)
         else:
-            data = data.replace(CR, '').split(NL)[:-1]
+            data = data.replace(b'\r', b'').split(b'\n')[:-1]
 
             for line in data:
-                if line == '':
+                if line == b'':
                     continue
 
                 line = outbound.receiver(line)
 
                 if line:
-                    self.transport.write(line + CR + NL + GA)
+                    data = line.encode("utf-8")
+                    self.transport.write(data + CR + NL + GA)
 
 
 # client instance
@@ -415,8 +421,8 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         if self not in self.client.receivers:
             self.client.addReceiver(self)
 
-        self.outbound_buffer = ''
-        self.inbound_buffer = ''
+        self.outbound_buffer = b''
+        self.inbound_buffer = b''
 
         if self.client.connected:
             self.ready()
@@ -425,7 +431,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         """ Gets called when the client successfully connects """
         self.applicationDataReceived = self._applicationDataReceived
         self.applicationDataReceived(self.outbound_buffer)
-        self.outbound_buffer = ''
+        self.outbound_buffer = b''
 
     def reset(self):
         self.applicationDataReceived = self._buffer_applicationDataReceived
@@ -438,19 +444,19 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
         sage._echo = self.write
 
         if bool(self.client.connected) is False:
-            self.write("Connected to Sage\n")
+            self.write(b"Connected to Sage\n")
             self.client.connect()
         else:
-            self.write("Reconnected to Sage\n")
+            self.write(b"Reconnected to Sage\n")
 
         self.will(GMCP)
 
         if len(self.client.outbound_buffer) > 0:
-            self.write(">>> Start Buffer >>>\n")
+            self.write(b">>> Start Buffer >>>\n")
             self.write(self.client.outbound_buffer)
-            self.write(">>> End Buffer >>>\n")
+            self.write(b">>> End Buffer >>>\n")
 
-        self.client.outbound_buffer = ''
+        self.client.outbound_buffer = b''
 
     def connectionLost(self, reason):
         self.connected = False
@@ -462,7 +468,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
     def gmcpReceived(self, data):
         """ Send GMCP data to the GMCP reciever """
 
-        data = ''.join(data)
+        data = b''.join(data)
         self.client.transport.write(IAC + SB + GMCP + data + IAC + SE)
 
     def applicationDataReceived(self, data):
@@ -499,9 +505,9 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
     def input(self, lines, prompt):
         """ Assembles data from Achaea, passes it to self.write to be emitted to clients """
         if len(lines) > 0:
-            output = '\r\n'.join(lines) +'\r\n'
+            output = b'\r\n'.join(lines) + b'\r\n'
         else:
-            output = ''
+            output = b''
 
         output += prompt + IAC + EORD
 

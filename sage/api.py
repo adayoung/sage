@@ -4,7 +4,7 @@ import sage
 from sage import config
 from twisted.internet import reactor, task
 import inspect
-from .utils import caller_name
+from .utils import caller_name, str_to_utf8
 
 
 def echo(msg):
@@ -13,12 +13,15 @@ def echo(msg):
     :param msg: message to be echoed back to the client.
     :type msg: string or list
     """
+
+    msg = str_to_utf8(msg)
+
     if sage._echo:
         if type(msg) is list:
             for line in msg:
-                sage._echo("%s\n" % line)
+                sage._echo(b"%b\n" % line)
         else:
-            sage._echo("%s\n" % msg)
+            sage._echo(b"%b\n" % msg)
 
 
 def send(msg, separated=False):
@@ -28,18 +31,21 @@ def send(msg, separated=False):
     :type msg: string or list
     """
 
+    msg = str_to_utf8(msg)
+
     if sage._send:
         if type(msg) is list:
             if separated:
                 for line in msg:
-                    sage._send("%s\n" % line)
+                    sage._send(b"%s\n" % line)
             else:
                 chunks = [msg[i:i + 10] for i in range(0, len(msg), 10)]
                 for chunk in chunks:
-                    m = config['serverside_command_separator'].join(chunk) + "\n"
+                    sep = config['serverside_command_separator'].encode("utf-8")
+                    m = sep.join(chunk) + b"\n"
                     sage._send(m)
         else:
-            sage._send("%s\n" % msg)
+            sage._send(b"%s\n" % msg)
 
 
 def defer_to_prompt(method, *args):

@@ -55,6 +55,7 @@ class Buffer(list):
 def receiver(lines):
     """ Receives lines since the last prompt """
 
+    lines = [ line.decode() for line in lines ]
     sage.buffer = buf = Buffer(lines)
     trigs = sage.triggers.enabled
 
