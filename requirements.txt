@@ -1,4 +1,4 @@
-Twisted==14.0.2
+Twisted==19.7.0
 pyasn1>=0.1.7
 pycrypto>=2.6.1
 watchdog==0.8.2

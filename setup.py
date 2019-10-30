@@ -4,8 +4,8 @@
 import sys
 import os
 
-if sys.version_info < (2, 7, 0):
-    sys.stderr.write("sage requires Python 2.7 or newer.")
+if sys.version_info < (3, 6, 0):
+    sys.stderr.write("sage requires Python 3.6 or newer.")
     sys.stderr.write(os.linesep)
     sys.exit(-1)
 
@@ -27,7 +27,7 @@ entrypoints = {
 
 setup(
     name='sage',
-    version='2.0.0.a2',
+    version='2.0.0.a3',
     description="Proxy and development framework for IRE's Achaea.",
     author='Todd Wilson',
     url='http://github.com/spicerack/sage',
