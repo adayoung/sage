@@ -50,7 +50,7 @@ skill_ranks = {
 }
 
 
-def debug(channel, payload):
+def debug(channel, payload, source):
     if config['gmcp_debug'] is False:
         return
 
@@ -58,9 +58,9 @@ def debug(channel, payload):
         return
 
     if payload is None:
-        log.msg("[%s]" % channel, system='GMCP')
+        log.msg("{}: {}".format(source.upper(), channel), system='GMCP')
     else:
-        log.msg("[%s]: %s" % (channel, payload), system='GMCP')
+        log.msg("{}: {}, {}".format(source.upper(), channel, payload), system='GMCP')
 
 
 class GMCPReceiver(object):
@@ -136,8 +136,6 @@ class GMCPReceiver(object):
         if cmd not in self.command_map:
             self.unhandled_command(cmd, args)
             return
-
-        debug(cmd, args)
 
         # In blackout we get [] for Room.Players
         # Ideally we don't want to say there are NO players, because that may not be true
@@ -599,6 +597,8 @@ class GMCP(object):
     def __init__(self, client):
         self.client = client
         self.receiver = GMCPReceiver()
+        self.client_passthrough = False
+        self.server_passthrough = True
 
         # I know, wtf right?
         self.receiver.out = self
@@ -618,28 +618,45 @@ class GMCP(object):
         # looping ping call
         self.ping_task = LoopingCall(self.ping)
 
-    def call(self, data):
-        """ Process incoming GMCP data """
+    def read(self, raw_data, source):
+        data = raw_data.decode()
 
         if ' ' in data:
-            cmd, data = data.split(' ', 1)
-            data = json.loads(data)
+            cmd, args = data.split(' ', 1)
+            args = json.loads(args)
         else:
             cmd = data
-            data = None
+            args = None
 
-        self.receiver.map(cmd, data)
+        debug(cmd, args, source)
 
-    def cmd(self, command, data=None):
-        """ Send a GMCP command """
+        if source == 'client':
+            if self.server_passthrough:
+                if cmd == "Core.Supports.Set":
+                    # Change Core.Supports.Set from client to Core.Supports.Add
+                    # so that our own supported modules aren't disabled
+                    cmd = "Core.Supports.Add"
+                debug(cmd, args, 'sage')
+                self.write('%s %s' % (cmd, json.dumps(args)), source)
+        else:
+            self.receiver.map(cmd, args)
+            if self.client_passthrough:
+                self.write(data, source)
 
-        self.write('%s %s' % (command, json.dumps(data)))
-
-    def write(self, data):
-        """ Write to server over GMCP """
+    def write(self, data, source):
+        """ Write to server or client over GMCP """
 
         data = data.encode("utf-8")
-        self.client.transport.write(IAC + SB + GMCPOPT + data + IAC + SE)
+        if source == 'server':
+            self.client.receivers.write(IAC + SB + GMCPOPT + data + IAC + SE)
+        else:
+            self.client.transport.write(IAC + SB + GMCPOPT + data + IAC + SE)
+
+    def cmd(self, cmd, args=None):
+        """ Send a GMCP command """
+
+        debug(cmd, args, 'sage')
+        self.write('%s %s' % (cmd, json.dumps(args)), 'sage')
 
     # Char.Items.Contents
     def contents(self, container):
@@ -716,7 +733,7 @@ class GMCP(object):
     def keepalive(self):
         """ Causes the server to reset the timeout for the character """
 
-        self.write('Core.KeepAlive')
+        self.cmd('Core.KeepAlive')
 
     # Char.Login
     def login(self, name, password):
@@ -727,19 +744,19 @@ class GMCP(object):
     def inv(self):
         """ Send the list of items in player's inventory """
 
-        self.write('Char.Items.Inv')
+        self.cmd('Char.Items.Inv')
 
     # IRE.Rift.Request
     def rift(self):
         """ Send the Rift contents using the IRE.Rift.List message """
 
-        self.write('IRE.Rift.Request')
+        self.cmd('IRE.Rift.Request')
 
     # IRE.Time.Request
     def iretime(self):
         """ Ask for an update on current game time """
 
-        self.write('IRE.Time.Request')
+        self.cmd('IRE.Time.Request')
 
     # Core.Supports.Add
     def add_support(self, options):

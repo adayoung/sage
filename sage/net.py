@@ -107,7 +107,6 @@ class TelnetClient(Telnet):
 
         self.gmcp = gmcp.GMCP(self)
         sage.gmcp = self.gmcp  # make easily accessible
-        self.gmcp_passthrough = True  # send GMCP to client
 
         # Hold over incomplete app data until the next packet
         self.data_buffer = b''
@@ -342,12 +341,8 @@ class TelnetClient(Telnet):
 
     def gmcpReceived(self, data):
         """ Send GMCP data to the GMCP reciever """
-
         data = b''.join(data)
-        self.gmcp.call(utf8_to_str(data))
-
-        if self.gmcp_passthrough:
-            self.receivers.write(IAC + SB + GMCP + data + IAC + SE)
+        self.gmcp.read(data, source='server')
 
     def send(self, data):
 
@@ -466,10 +461,9 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
             _log.msg('Client disconnected. Sage is still connected to Achaea.')
 
     def gmcpReceived(self, data):
-        """ Send GMCP data to the GMCP reciever """
-
+        """ Forward GMCP data from user client to game server """
         data = b''.join(data)
-        self.client.transport.write(IAC + SB + GMCP + data + IAC + SE)
+        self.client.gmcp.read(data, source='client')
 
     def applicationDataReceived(self, data):
         pass
@@ -497,7 +491,7 @@ class TelnetServer(Telnet, StatefulTelnetProtocol, ISageProxyReceiver):
 
     def enableLocal(self, option):
         if option == GMCP:
-            self.client.gmcp_passthrough = True
+            self.client.gmcp.client_passthrough = True
             return True
 
         return False
