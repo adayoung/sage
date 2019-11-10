@@ -593,7 +593,9 @@ class GMCPReceiver(object):
     def display_fixedfont(self, d):
         return
 
-    def target_info(self, d={}):
+    def target_info(self, d=None):
+        if d is None:
+            d = {}
         player.target_info = d
 
 class GMCP(object):
