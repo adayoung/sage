@@ -103,6 +103,7 @@ class GMCPReceiver(object):
             'IRE.Time.List': self.time_update,
             'IRE.Display.ButtonActions' : self.display_buttonactions,
             'IRE.Display.FixedFont' : self.display_fixedfont,
+            'IRE.Target.Info': self.target_info,
         }
 
         # time when ping started
@@ -592,6 +593,10 @@ class GMCPReceiver(object):
     def display_fixedfont(self, d):
         return
 
+    def target_info(self, d=None):
+        if d is None:
+            d = {}
+        player.target_info = d
 
 class GMCP(object):
 
