@@ -391,7 +391,7 @@ class Group(object):
 
         self.matchables[name] = m
 
-        if enabled:
+        if enabled and self.enabled:
             self.parent()._enable(m)
 
         return m
