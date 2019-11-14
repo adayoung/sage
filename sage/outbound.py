@@ -14,7 +14,7 @@ def receiver(raw):
     for alias in sage.aliases.enabled:
 
         # if we match, don't return the line. Expect the method to send for us.
-        if alias.match(line):
+        if alias.match(line, None, 0):
             if alias.intercept is True:
                 out = None
 

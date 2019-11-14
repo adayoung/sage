@@ -73,6 +73,10 @@ class Matchable(object):
         #: matched line
         self.line = None
 
+        self.buffer = None
+
+        self.index = 0
+
         #: time match occurred
         self.time = None
 
@@ -136,10 +140,12 @@ class Matchable(object):
         """ Remove a method from a matchable """
         self.methods.disconnect(method)
 
-    def successful_match(self, line):
+    def successful_match(self, line, buf, i):
         """ Called when the matchable successfully matches """
         self.line = line
         self.time = time()
+        self.buffer = buf
+        self.index = i
 
         if self.disable_on_match:
             self.disable()
@@ -179,10 +185,10 @@ class CIMatchable(Matchable):
 class Exact(Matchable):
     """ Exact-match matchable """
 
-    def match(self, line):
+    def match(self, line, buf, i):
 
         if self.pattern == line:
-            return self.successful_match(line)
+            return self.successful_match(line, buf, i)
 
         return False
 
@@ -190,10 +196,10 @@ class Exact(Matchable):
 class CIExact(CIMatchable):
     """ Case-insensitive exact-match matchable """
 
-    def match(self, line):
+    def match(self, line, buf, i):
 
         if self.pattern == line.lower():
-            return self.successful_match(line)
+            return self.successful_match(line, buf, i)
 
         return False
 
@@ -201,11 +207,11 @@ class CIExact(CIMatchable):
 class Substring(Matchable):
     """ Substring matchable """
 
-    def match(self, line):
+    def match(self, line, buf, i):
 
         if self.pattern in line:
             self.prefix, self.suffix = line.split(self.pattern)
-            return self.successful_match(line)
+            return self.successful_match(line, buf, i)
 
         return False
 
@@ -213,11 +219,11 @@ class Substring(Matchable):
 class CISubstring(CIMatchable):
     """ Case-insensitive substring matchable """
 
-    def match(self, line):
+    def match(self, line, buf, i):
 
         if self.pattern in line.lower():
             self.prefix, self.suffix = line.split(self.pattern)
-            return self.successful_match(line)
+            return self.successful_match(line, buf, i)
 
         return False
 
@@ -237,14 +243,14 @@ class Regex(Matchable):
         Matchable.__init__(self, **kwargs)
         self.regex = re.compile(self.pattern)
 
-    def match(self, line):
+    def match(self, line, buf, i):
 
         match = self.regex.match(line)
 
         if match:
             self.matchobj = match
             self.groups = match.groups()
-            return self.successful_match(line)
+            return self.successful_match(line, buf, i)
 
         return False
 
@@ -252,11 +258,11 @@ class Regex(Matchable):
 class Startswith(Matchable):
     """ Starts-with string matchable """
 
-    def match(self, line):
+    def match(self, line, buf, i):
 
         if line.startswith(self.pattern):
             self.suffix = line.split(self.pattern)[1]
-            return self.successful_match(line)
+            return self.successful_match(line, buf, i)
 
         return False
 
@@ -264,11 +270,11 @@ class Startswith(Matchable):
 class CIStartswith(CIMatchable):
     """ Case-insensitive starts-with string matchable """
 
-    def match(self, line):
+    def match(self, line, buf, i):
 
         if line.lower().startswith(self.pattern):
             self.suffix = line.split(self.pattern)[1]
-            return self.successful_match(line)
+            return self.successful_match(line, buf, i)
 
         return False
 
@@ -276,11 +282,11 @@ class CIStartswith(CIMatchable):
 class Endswith(Matchable):
     """ Ends-with string matchable """
 
-    def match(self, line):
+    def match(self, line, buf, i):
 
         if line.endswith(self.pattern):
             self.prefix = line.split(self.pattern)[0]
-            return self.successful_match(line)
+            return self.successful_match(line, buf, i)
 
         return False
 
@@ -288,11 +294,11 @@ class Endswith(Matchable):
 class CIEndswith(CIMatchable):
     """ Case-insensitive ends-with string matchable """
 
-    def match(self, line):
+    def match(self, line, buf, i):
 
         if self.line.lower().endswith(self.pattern):
             self.prefix = line.split(self.pattern)[0]
-            return self.successful_match(line)
+            return self.successful_match(line, buf, i)
 
         return False
 

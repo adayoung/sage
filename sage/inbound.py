@@ -61,10 +61,10 @@ def receiver(lines):
 
     sage.triggers.in_loop = True
     # run trigger matching over lines
-    for line in buf:
+    for i, line in enumerate(buf):
         for trigger in trigs:
             if trigger.enabled:
-                trigger.match(line)
+                trigger.match(line, buf, i)
 
         sage.triggers.flush_set()
 
