@@ -2,8 +2,10 @@
 """
 This module contains all player "state" data much like a session.
 """
+import sage
 from sage.contrib.containers import Inventory, Rift, Room
 from sage.contrib import Vital, Balance
+from sage import triggers
 
 #: player is logged in and GMCP data received
 connected = False
@@ -115,3 +117,13 @@ afflictions = set()
 
 #: List of active defences
 defences = set()
+
+player_triggers = triggers.get_group('sage').create_group('player')
+
+@player_triggers.exact("Your starburst tattoo flares as the world is momentarily tinted red.")
+def starburst(trigger):
+    for cmd, args in sage.gmcp_buffer:
+        if cmd == "Char.Defences.Remove":
+            if 'starburst' in args:
+                sage.signals.player.starburst.send()
+
