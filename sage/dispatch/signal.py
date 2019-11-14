@@ -70,9 +70,8 @@ class Signal(object):
             self._clear_dead_receivers()
             for r_key, _ in self.receivers:
                 if r_key == lookup_key:
-                    break
-            else:
-                self.receivers.append((lookup_key, receiver))
+                    self.receivers.remove((r_key, _))
+            self.receivers.append((lookup_key, receiver))
 
     def disconnect(self, receiver=None, dispatch_uid=None):
         """
