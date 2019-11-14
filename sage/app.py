@@ -18,20 +18,102 @@ from sage.utils import imports
 class AppNotLoaded(Exception):
     pass
 
+class App(object):
+    def __init__(self, name, namespace, path, manager):
+        self.name = name
+        self.fullname = None
+        self.namespace = namespace
+        self.path = path
+        self.module = None
+        self.matchables = []
+        self.subapps = None
+        self.manager = manager
 
-class Apps(dict):
+        self.manager.paths[path] = name
+
+        meta = importlib.import_module(f'{self.namespace}.meta')
+        if hasattr(meta, 'installed_apps'):
+            if os.path.exists(self.path + '/apps') or os.path.isdir(self.path + '/apps'):
+                sys.path.append(self.path + '/apps')
+
+            self.subapps = meta.installed_apps
+
+        if hasattr(meta, 'name'):
+            self.fullname = meta.name
+
+        if hasattr(meta, 'version'):
+            if type(meta.version) is tuple:
+                self.fullname = "%s %s" % (self.fullname, '.'.join(str(x) for x in meta.version))
+            else:
+                self.fullname = '%s %s' % (self.fullname, meta.version)
+
+    def load(self):
+        self.module = importlib.import_module(f'{self.namespace}.{self.name}')
+        if hasattr(self.module, 'init'):
+            self.module.init()
+
+        return True
+
+    def post_init(self):
+        if hasattr(self.module, 'post_init'):
+            self.module.post_init()
+
+    def load_subapps(self):
+        if self.subapps is not None:
+            if os.path.exists(self.path + '/apps') or os.path.isdir(self.path + '/apps'):
+                sys.path.append(self.path + '/apps')
+
+            for subapp in self.subapps:
+                self.manager.load(subapp)
+
+    def reload(self):
+        if hasattr(self.module, 'pre_reload'):
+            self.module.pre_reload()
+
+        for group in self.matchables:
+            group.destroy()
+        self.matchables = []
+
+        targets = []
+
+        for mname, module in list(sys.modules.items()):
+            if module:
+                if hasattr(module, '__file__'):
+                    if self.path in module.__file__ and \
+                        self.path + '/apps' not in module.__file__:
+                        targets.append(module)
+        try:
+            for target in targets:
+                rebuild(target, False)
+
+            self.module = rebuild(self.module, False)
+        except:
+            sage._log.msg("Error reloading '%s'" % self.name)
+            sage._log.err()
+            return False
+
+    def post_reload(self):
+        if hasattr(self.module, 'post_reload'):
+            self.module.post_reload()
+
+    def unload(self):
+        if hasattr(self.module, 'unload'):
+            self.module.unload()
+
+    def add_matchables(self, group):
+        self.matchables.append(group)
+
+    def remove_matchables(self, group):
+        self.matchables.append(group)
+
+class AppManager(dict):
     """ Dict-like container of loaded apps """
 
     __bases__ = [dict]  # or unittests don't work
 
     def __init__(self):
-        super(Apps, self).__init__(self)
+        super(AppManager, self).__init__(self)
 
-        self.groups = {
-            'sage': set()
-        }
-
-        self.meta = OrderedDict()
         self.paths = dict()
 
         self._last_reload = dict()
@@ -48,37 +130,29 @@ class Apps(dict):
         if event.is_directory:
             return
 
-        if '.py' not in event.src_path:
+        if not event.src_path.endswith('.py'):
             return
 
-        for app, path in list(self.paths.items()):
-            if path in event.src_path:
-                self.reload(app, event.src_path)
+        path, filename = os.path.split(event.src_path)
 
-    def add_group(self, app, group):
-        self.groups[app].add(group)
+        for app_path in self.paths:
+            if app_path in path:
+                self.reload(self.paths[app_path], path, filename)
 
-    def remove_group(self, app, group):
-        self.groups[app].discard(group)
+    def add_matchables(self, app, group):
+        if app == 'sage':
+            return
+
+        self[app].add_matchables(group)
+
+    def remove_matchables(self, app, group):
+        if app == 'sage':
+            return
+
+        self[app].remove_matchables(group)
 
     def load(self, name):
-        self._load(name)
-
-        for app in self._names:
-            if app is not 'sage':
-                if hasattr(self[app], 'init'):
-                    self[app].init()
-
-        for app in self._names:
-            if app is not 'sage':
-                if hasattr(self[app], 'post_init'):
-                    self[app].post_init()
-
-    def _load(self, name):
-        """ Load a module or package into the namespace """
-
-        name = self._preload(name)
-
+        """ Load the root sage app """
         with imports.cwd_in_path():
             try:
                 ns = importlib.import_module(name)
@@ -89,50 +163,19 @@ class Apps(dict):
                     sage._log.err("Error: Unable to import app '%s'" % name)
                     return
 
-            path = os.path.dirname(inspect.getabsfile(ns))
+        self.load_app(name, ns)
+        for app in self:
+            self[app].post_init()
 
-            meta = importlib.import_module('%s.meta' % name)
-
-            modname = ns.__name__
-
-            if '.' in ns.__name__:
-                modname = name.split('.')[-1]
-
-            self._names.add(modname)
-
-            meta.path = path
-            meta.__name__ = modname
-
-            if hasattr(meta, 'installed_apps'):
-                if os.path.exists(path + '/apps') or os.path.isdir(path + '/apps'):
-                    sys.path.append(path + '/apps')
-
-                for subapp in meta.installed_apps:
-                    self._load(subapp)
-
-            self.meta[meta.__name__] = meta
-
-            app = importlib.import_module('%s.%s' % (ns.__name__, modname))
-
-            self[meta.__name__] = app
-
-            fullname = ns.__name__
-            if hasattr(meta, 'name'):
-                fullname = meta.name
-
-            if hasattr(meta, 'version'):
-                if type(meta.version) is tuple:
-                    fullname = "%s %s" % (fullname, '.'.join(str(x) for x in meta.version))
-                else:
-                    fullname = '%s %s' % (fullname, meta.version)
-
-            if meta.__name__ not in self.paths:
-                self._generate_paths()
-
-            sage._log.msg("Loaded app '%s'" % fullname)
+    def load_app(self, name, namespace):
+        """ Load a sage app """
+        path = os.path.dirname(inspect.getabsfile(namespace))
+        self[name] = App(name, namespace.__name__, path, self)
+        self[name].load_subapps()
+        if self[name].load():
+            sage._log.msg("Loaded app '%s'" % self[name].fullname)
             return True
 
-        del(self.groups[name])
         sage._log.msg("Failed to load app '%s'" % name)
         return False
 
@@ -143,84 +186,21 @@ class Apps(dict):
             else:
                 self.load(app['name'])
 
-    def _generate_paths(self):
-        self.paths = dict()
-
-        for name, meta in list(self.meta.items()):
-            self.paths[name] = meta.path
-
-    def _preload(self, name):
-
-        if name[-1] == '/':
-            name = name[0:-1]
-
-        if '/' in name:
-            shortname = name = name.split('/')[-1]
-        else:
-            shortname = name
-
-        if '.' in shortname:
-            shortname = shortname.split('.')[-1]
-
-        if name not in self.groups:
-            self.groups[shortname] = set()
-
-        return name
-
-    def get_path(self, name):
-        return self.meta[name].path
-
-    def reload(self, name, event_src_path=None):
+    def reload(self, name, path, filename):
         """ Try to fully rebuild an app """
 
-        # Don't reload the same app if we did it within last the 5 sec
-        if time.time() - self._last_reload.get(name, 0) < 5:
-            return
+        for f in os.listdir(path):
+            if os.path.isfile(f) and f.endswith('.pyc'):
+                os.remove(f)
 
-        self._last_reload[name] = time.time()
-
-        if name not in self:
-            return False
-
-        if hasattr(self[name], 'pre_reload'):
-            self[name].pre_reload()
-
-        try:
-            if event_src_path:
-
-                if event_src_path.endswith('.py'):
-                    path, f = os.path.split(event_src_path)
-                    pyc = path + '/' + f[:-3] + '.pyc'
-                    if os.path.isfile(pyc):
-                        os.remove(pyc)
-
-                targets = []
-
-                for mname, module in list(sys.modules.items()):
-                    if module:
-                        if hasattr(module, '__file__'):
-                            if event_src_path in module.__file__:
-                                targets.append(module)
-
-                for target in targets:
-                    rebuild(target, False)
-
-            else:
-                # generally try to reload the app
-                self[name] = rebuild(self[name], False)
-        except:
-            sage._log.msg("Error reloading '%s'" % name)
-            sage._log.err()
-            return False
+        if name in self:
+            self[name].reload()
 
         gc.collect()
 
-        if hasattr(self[name], 'post_reload'):
-            self[name].post_reload()
+        self[name].post_reload()
 
-        sage._log.msg("Reloaded app '%s'" % self.meta[name].name)
-
-        return True
+        sage._log.msg("Reloaded app '%s'" % name)
 
     def unload(self, name):
         """ Attempt to remove a module from the namespace """
@@ -228,19 +208,7 @@ class Apps(dict):
         if name not in self:
             return False
 
-        if hasattr(self[name], 'unload'):
-            self[name].unload()
-
-        if name in self.groups:
-            while len(self.groups[name]) > 0:
-                self.groups[name].pop().destroy()
-
-        del(self.groups[name])
-        del(self.paths[name])
-        del(self[name])
-        del(self.meta[name])
-        self._names.discard(name)
-
+        self[name].unload()
         to_del = [mod for mod in sys.modules if mod.startswith(name)]
 
         for mod in to_del:
@@ -251,14 +219,17 @@ class Apps(dict):
 
     def valid(self, name):
         """ Is a string the name of a valid app """
-        return name in self._names
+        if name == 'sage':
+            return True
+
+        return name in self
 
     def __repr__(self):
         return str(self.__class__)
 
     def __getattr__(self, item):
         if item in self:
-            return self.__getitem__(item)
+            return self.__getitem__(item).module
         else:
             raise AppNotLoaded("App '%s' not currently loaded" % item)
 

@@ -38,10 +38,10 @@ config = defaults
 #: manifest instance
 manifest = Manifest()
 
-from .app import Apps
+from .app import AppManager
 
 #: Loaded applications
-apps = Apps()
+apps = AppManager()
 
 #: Is sage connected
 connected = False

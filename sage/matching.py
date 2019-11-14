@@ -326,7 +326,7 @@ class Group(object):
         if apps.valid(app) is False:
             raise AppNotFound("Unable to find app named '%s'" % app)
 
-        apps.add_group(app, self)
+        apps.add_matchables(app, self)
 
     def create(self,
         name,
@@ -534,7 +534,6 @@ class Group(object):
         return False
 
     def _remove_group(self, name):
-        apps.remove_group(self.groups[name].app, self.groups[name])
         if name in self.groups:
             del(self.groups[name])
 
