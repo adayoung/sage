@@ -13,6 +13,7 @@ from sage import apps
 from sage.api import defer_to_prompt
 from twisted.internet import reactor
 import weakref
+import traceback
 
 
 class MatchableCreationError(Exception):
@@ -167,9 +168,16 @@ class Matchable(object):
         """ Send to all bound methods """
         for signal, param in self.methods:
             if param:
-                signal.send(self, param)
+                try:
+                    signal.send(self, param)
+                except Exception as ex:
+                    traceback.print_exception(type(ex), ex, ex.__traceback__)
+
             else:
-                signal.send(self)
+                try:
+                    signal.send(self)
+                except Exception as ex:
+                    traceback.print_exception(type(ex), ex, ex.__traceback__)
 
 
 class CIMatchable(Matchable):
