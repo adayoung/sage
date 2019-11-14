@@ -172,7 +172,9 @@ class TelnetClient(Telnet):
             prompt_output = "%s - %s" % (ansi.bold_red('ERROR:'), ansi.red(str(err)))
 
         # send lines to inbound receiver
+        sage.gmcp_buffer = self.gmcp.receiver.buffer
         lines = inbound.receiver(lines)
+        self.gmcp.receiver.clear()
 
         post_prompt.send()
 

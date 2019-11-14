@@ -106,6 +106,8 @@ class GMCPReceiver(object):
             'IRE.Display.FixedFont' : self.display_fixedfont,
         }
 
+        self.buffer = []
+
         # time when ping started
         self.ping_start = None
         # if we are waiting for a ping
@@ -130,6 +132,9 @@ class GMCPReceiver(object):
 
         self.affs_to_defs = ('insomnia', )
 
+    def clear(self):
+        self.buffer = []
+
     def map(self, cmd, args=None):
         """ Map GMCP commands to assigned methods """
 
@@ -148,6 +153,7 @@ class GMCPReceiver(object):
                 self.command_map[cmd](args)
             else:
                 self.command_map[cmd]()
+            self.buffer.append((cmd, args))
         except:
             print((traceback.format_exc()))
 
