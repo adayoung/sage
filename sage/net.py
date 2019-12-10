@@ -349,6 +349,7 @@ class TelnetClient(Telnet):
     def send(self, data):
 
         if data == '':
+            self.transport.write(CR + NL + GA)
             return
 
         if data == NL:
@@ -364,6 +365,7 @@ class TelnetClient(Telnet):
 
             for line in data:
                 if line == b'':
+                    self.transport.write(CR + NL + GA)
                     continue
 
                 line = outbound.receiver(line)
