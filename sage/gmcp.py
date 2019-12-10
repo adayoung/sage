@@ -588,7 +588,9 @@ class GMCPReceiver(object):
 
     # IRE.Time.Update & IRE.Time.List
     def time_update(self, d):
-        player.iretime = d
+        for k, v in d.items():
+            player.iretime[k] = v
+
         gmcp_signals.iretime.send(time=d)
 
     def display_buttonactions(self, d):
