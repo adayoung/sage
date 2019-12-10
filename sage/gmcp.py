@@ -631,7 +631,10 @@ class GMCP(object):
 
         if ' ' in data:
             cmd, args = data.split(' ', 1)
-            args = json.loads(args)
+            try:
+                args = json.loads(args)
+            except json.decoder.JSONDecodeError:
+                pass
         else:
             cmd = data
             args = None
@@ -645,7 +648,10 @@ class GMCP(object):
                     # so that our own supported modules aren't disabled
                     cmd = "Core.Supports.Add"
                 debug(cmd, args, 'sage')
-                self.write('%s %s' % (cmd, json.dumps(args)), source)
+                if args is not None:
+                    self.write('%s %s' % (cmd, json.dumps(args)), source)
+                else:
+                    self.write('%s' % cmd, source)
         else:
             self.receiver.map(cmd, args)
             if self.client_passthrough:
