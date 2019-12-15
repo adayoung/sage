@@ -137,9 +137,16 @@ class Matchable(object):
             param
         ))
 
-    def unbind(self, method):
+    def unbind_all(self):
+        for signal, param in self.methods:
+            signal.disconnect()
+        self.methods = []
+
+    def unbind(self, method, params=None):
         """ Remove a method from a matchable """
-        self.methods.disconnect(method)
+        for m in self.methods:
+            if method == m[0]:
+                self.methods.remove(m)
 
     def successful_match(self, line, buf, i):
         """ Called when the matchable successfully matches """
