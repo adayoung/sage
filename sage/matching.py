@@ -495,6 +495,7 @@ class Group(object):
             target = self.get(name)
 
             if target:
+                self.enabled = True
                 target.enable()
                 return True
 
