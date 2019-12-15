@@ -615,7 +615,7 @@ class GMCP(object):
         self.options = {
             'modules': ["Char 1", "Char.Vitals 1", "Char.Skills 1", \
             "Char.Items 1", "Room 1", "IRE.Rift 1", "Comm.Channel 1", \
-            "IRE.Time 1", "IRE.Display 3"],
+            "IRE.Time 1"],
             'ping': True,
             'ping_frequency': 1,
             'lag_factor': 5  # multiple by how much time over average ping is lagging
