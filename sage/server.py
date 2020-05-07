@@ -76,13 +76,13 @@ def get_manhole_factory(namespace):
 
     # I really hate Twisted's default colors
     colors = {
-        'identifier': '\x1b[1;36m',
-        'keyword': '\x1b[33m',
-        'parameter': '\x1b[33m',
-        'variable': '\x1b[36m',
-        'string': '\x1b[35m',
-        'number': '\x1b[1;32m',
-        'op': '\x1b[33m'
+        'identifier': b'\x1b[1;36m',
+        'keyword': b'\x1b[33m',
+        'parameter': b'\x1b[33m',
+        'variable': b'\x1b[36m',
+        'string': b'\x1b[35m',
+        'number': b'\x1b[1;32m',
+        'op': b'\x1b[33m'
     }
 
     manhole.VT102Writer.typeToColor.update(colors)
@@ -102,11 +102,11 @@ def get_manhole_factory(namespace):
     # As of Twisted~v16.0.0 we now have to give host SSH keys to any subclass of SSHFactory
     key_path = os.path.expanduser(config.ssh_key_path)
     factory.publicKeys = {
-        'ssh-rsa': Key.fromFile(key_path)
+        b'ssh-rsa': Key.fromFile(key_path)
     }
 
     factory.privateKeys = {
-        'ssh-rsa': Key.fromFile(key_path)
+        b'ssh-rsa': Key.fromFile(key_path)
     }
 
     return factory
